@@ -1,37 +1,21 @@
 function Card({
-
   children,
-
   className = "",
-
 }) {
-
   return (
-
     <div
-
       className={`
-
-        bg-white
-
         rounded-2xl
-
-        shadow-md
-
-        p-6
-
+        border
+        border-slate-200
+        bg-white
+        shadow-sm
         ${className}
-
       `}
-
     >
-
       {children}
-
     </div>
-
   );
-
 }
 
 export default Card;
