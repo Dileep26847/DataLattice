@@ -14,6 +14,13 @@ require("dotenv").config();
 require("./database/db");
 
 // ======================================
+// COMMUNICATION RUNTIME
+// ======================================
+
+const communicationRuntime =
+    require("./services/communication/communicationRuntime");
+
+// ======================================
 // ROUTE IMPORTS
 // ======================================
 
@@ -160,6 +167,13 @@ const uploadRoutes =
     require("./routes/uploadRoutes");
 
 // ======================================
+// COMMUNICATION ROUTES
+// ======================================
+
+const communicationRoutes =
+    require("./routes/communicationRoutes");
+
+// ======================================
 // EXPRESS APP
 // ======================================
 
@@ -179,7 +193,6 @@ const PORT =
 // Supports:
 // Local development:
 // CORS_ORIGINS=http://localhost:5173
-//
 //
 // Multiple origins:
 
@@ -542,6 +555,15 @@ app.use(
 );
 
 // ======================================
+// COMMUNICATION
+// ======================================
+
+app.use(
+    "/api/communication",
+    communicationRoutes
+);
+
+// ======================================
 // 404 HANDLER
 // ======================================
 
@@ -591,62 +613,237 @@ app.use(
 // START SERVER
 // ======================================
 
-app.listen(
-    PORT,
-    "0.0.0.0",
+const server =
+    app.listen(
+        PORT,
+        "0.0.0.0",
+        () => {
+
+            console.log("");
+            console.log("======================================");
+            console.log("🚀 SkillNova LMS Backend");
+            console.log("======================================");
+
+            console.log(
+                `🌐 Server: http://localhost:${PORT}`
+            );
+
+            console.log(
+                `👨‍🎓 Students: http://localhost:${PORT}/api/admin/students`
+            );
+
+            console.log(
+                `👨‍🏫 Mentors: http://localhost:${PORT}/api/admin/mentors`
+            );
+
+            console.log(
+                `📚 Admin Courses: http://localhost:${PORT}/api/admin/courses`
+            );
+
+            console.log(
+                `📦 Batches: http://localhost:${PORT}/api/batches`
+            );
+
+            console.log(
+                `📊 Analytics: http://localhost:${PORT}/api/admin/analytics`
+            );
+
+            console.log(
+                `📑 Reports: http://localhost:${PORT}/api/admin/reports`
+            );
+
+            console.log(
+                `⚙️ Settings: http://localhost:${PORT}/api/settings`
+            );
+
+            console.log(
+                `🔔 Notifications: http://localhost:${PORT}/api/notifications`
+            );
+
+            console.log(
+                `📤 Uploads: http://localhost:${PORT}/api/upload`
+            );
+
+            console.log(
+                `🖼️ Static Files: http://localhost:${PORT}/uploads`
+            );
+
+            console.log("======================================");
+            console.log("");
+
+            // ======================================
+            // COMMUNICATION RUNTIME
+            // ======================================
+
+            try {
+
+                communicationRuntime.start();
+
+                console.log(
+                    "📨 Communication runtime initialized"
+                );
+
+            } catch (
+                error
+            ) {
+
+                console.error(
+                    "❌ Communication runtime failed to start:",
+                    error
+                );
+
+            }
+
+        }
+    );
+
+// ======================================
+// GRACEFUL SHUTDOWN
+// ======================================
+
+let isShuttingDown =
+    false;
+
+const gracefulShutdown =
+    async (
+        signal
+    ) => {
+
+        if (
+            isShuttingDown
+        ) {
+
+            return;
+        }
+
+        isShuttingDown =
+            true;
+
+        console.log("");
+        console.log(
+            `🛑 Received ${signal}. Shutting down gracefully...`
+        );
+
+        // ======================================
+        // STOP COMMUNICATION SERVICES
+        // ======================================
+
+        try {
+
+            communicationRuntime.stop();
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                "❌ Communication runtime shutdown failed:",
+                error
+            );
+
+        }
+
+        // ======================================
+        // STOP HTTP SERVER
+        // ======================================
+
+        server.close(
+            () => {
+
+                console.log(
+                    "🌐 HTTP server stopped"
+                );
+
+                console.log(
+                    "✅ Backend shutdown complete"
+                );
+
+                process.exit(
+                    0
+                );
+
+            }
+        );
+
+        // ======================================
+        // SHUTDOWN TIMEOUT
+        // ======================================
+
+        setTimeout(
+            () => {
+
+                console.error(
+                    "⚠️ Graceful shutdown timed out"
+                );
+
+                process.exit(
+                    1
+                );
+
+            },
+            10000
+        ).unref();
+
+    };
+
+// ======================================
+// PROCESS SIGNALS
+// ======================================
+
+process.on(
+    "SIGINT",
     () => {
 
-        console.log("");
-        console.log("======================================");
-        console.log("🚀 SkillNova LMS Backend");
-        console.log("======================================");
-
-        console.log(
-            `🌐 Server: http://localhost:${PORT}`
+        gracefulShutdown(
+            "SIGINT"
         );
 
-        console.log(
-            `👨‍🎓 Students: http://localhost:${PORT}/api/admin/students`
+    }
+);
+
+process.on(
+    "SIGTERM",
+    () => {
+
+        gracefulShutdown(
+            "SIGTERM"
         );
 
-        console.log(
-            `👨‍🏫 Mentors: http://localhost:${PORT}/api/admin/mentors`
+    }
+);
+
+// ======================================
+// UNHANDLED ERRORS
+// ======================================
+
+process.on(
+    "uncaughtException",
+    (error) => {
+
+        console.error(
+            "❌ UNCAUGHT EXCEPTION:",
+            error
         );
 
-        console.log(
-            `📚 Admin Courses: http://localhost:${PORT}/api/admin/courses`
+        gracefulShutdown(
+            "uncaughtException"
         );
 
-        console.log(
-            `📦 Batches: http://localhost:${PORT}/api/batches`
+    }
+);
+
+process.on(
+    "unhandledRejection",
+    (reason) => {
+
+        console.error(
+            "❌ UNHANDLED REJECTION:",
+            reason
         );
 
-        console.log(
-            `📊 Analytics: http://localhost:${PORT}/api/admin/analytics`
+        gracefulShutdown(
+            "unhandledRejection"
         );
-
-        console.log(
-            `📑 Reports: http://localhost:${PORT}/api/admin/reports`
-        );
-
-        console.log(
-            `⚙️ Settings: http://localhost:${PORT}/api/settings`
-        );
-
-        console.log(
-            `🔔 Notifications: http://localhost:${PORT}/api/notifications`
-        );
-
-        console.log(
-            `📤 Uploads: http://localhost:${PORT}/api/upload`
-        );
-
-        console.log(
-            `🖼️ Static Files: http://localhost:${PORT}/uploads`
-        );
-
-        console.log("======================================");
-        console.log("");
 
     }
 );

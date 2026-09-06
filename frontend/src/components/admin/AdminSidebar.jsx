@@ -10,6 +10,7 @@ import {
   FaCertificate,
   FaHeadset,
   FaChartBar,
+  FaRobot,
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
@@ -96,6 +97,12 @@ const menuItems = [
     name: "Reports",
     icon: <FaChartBar />,
     path: "/admin/reports",
+  },
+
+  {
+    name: "Automation Center",
+    icon: <FaRobot />,
+    path: "/admin/automation",
   },
 
   {

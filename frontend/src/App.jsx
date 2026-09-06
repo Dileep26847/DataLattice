@@ -71,6 +71,13 @@ import Reports from "./pages/admin/Reports";
 
 
 // ============================================================
+// ADMIN AUTOMATION
+// ============================================================
+
+import AutomationCenter from "./pages/admin/AutomationCenter";
+
+
+// ============================================================
 // OTHER STUDENT PAGES
 // ============================================================
 
@@ -490,6 +497,16 @@ function App() {
           <Route
             path="reports"
             element={<Reports />}
+          />
+
+
+          {/* ======================================================
+              ADMIN AUTOMATION CENTER
+          ====================================================== */}
+
+          <Route
+            path="automation"
+            element={<AutomationCenter />}
           />
 
 

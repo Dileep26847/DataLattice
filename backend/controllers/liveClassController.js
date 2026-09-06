@@ -1,6 +1,10 @@
 const liveClassModel =
   require("../models/liveClassModel");
 
+const {
+  emitLiveClassScheduledEvent,
+} =
+  require("../services/communication/liveClassAutomationService");
 
 const {
   createZoomMeeting,
@@ -59,6 +63,7 @@ const calculateDuration = (
 // ============================================================
 // CREATE LIVE CLASS
 // + CREATE ZOOM MEETING
+// + CREATE AUTOMATION EVENT
 // ============================================================
 
 exports.createLiveClass =
@@ -260,7 +265,7 @@ exports.createLiveClass =
 
 
       // ======================================================
-      // SAVE LIVE CLASS TO MYSQL
+      // PREPARE LIVE CLASS
       // ======================================================
 
       const liveClass = {
@@ -301,11 +306,18 @@ exports.createLiveClass =
       };
 
 
+      // ======================================================
+      // SAVE LIVE CLASS TO MYSQL
+      // ======================================================
+
       liveClassModel.createLiveClass(
 
         liveClass,
 
-        (err, result) => {
+        async (
+          err,
+          result
+        ) => {
 
           if (err) {
 
@@ -345,6 +357,102 @@ exports.createLiveClass =
 
           }
 
+
+          // ==================================================
+          // CREATED LIVE CLASS OBJECT
+          // ==================================================
+
+          const createdLiveClass = {
+
+            id:
+              result.insertId,
+
+            batch_id:
+              liveClass.batch_id,
+
+            title:
+              liveClass.title,
+
+            description:
+              liveClass.description,
+
+            zoom_link:
+              liveClass.zoom_link,
+
+            meeting_id:
+              liveClass.meeting_id,
+
+            meeting_password:
+              liveClass.meeting_password,
+
+            recording_link:
+              liveClass.recording_link,
+
+            class_date:
+              liveClass.class_date,
+
+            start_time:
+              liveClass.start_time,
+
+            end_time:
+              liveClass.end_time,
+
+            status:
+              liveClass.status,
+
+            created_by:
+              req.user?.id
+                ? Number(
+                    req.user.id
+                  )
+                : null,
+
+          };
+
+
+          // ==================================================
+          // EMIT LIVE CLASS AUTOMATION EVENT
+          // ==================================================
+          //
+          // IMPORTANT:
+          // The live class has already been successfully
+          // persisted.
+          //
+          // Automation failure must NOT make the live-class
+          // creation API report failure.
+          //
+          // The automation event is durable and idempotent.
+          //
+          // ==================================================
+
+          try {
+
+            const automationResult =
+              await emitLiveClassScheduledEvent(
+                createdLiveClass
+              );
+
+
+            console.log(
+              "[LiveClassAutomation] LIVE_CLASS_SCHEDULED:",
+              automationResult
+            );
+
+          } catch (
+            automationError
+          ) {
+
+            console.error(
+              "LIVE CLASS AUTOMATION EVENT ERROR:",
+              automationError
+            );
+
+          }
+
+
+          // ==================================================
+          // SUCCESS RESPONSE
+          // ==================================================
 
           return res.status(201).json({
 

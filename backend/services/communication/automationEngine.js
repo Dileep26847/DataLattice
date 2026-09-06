@@ -57,6 +57,7 @@ function callbackToPromise(
           resolve(
             result
           );
+
         }
       );
 
@@ -220,6 +221,128 @@ function getNestedValue(
   }
 
   return current;
+
+}
+
+// ============================================================
+// BUILD TEMPLATE VARIABLES
+// ============================================================
+//
+// The communication templates use simple variables such as:
+//
+// {{student_name}}
+// {{title}}
+// {{class_date}}
+// {{start_time}}
+// {{batch_name}}
+// {{description}}
+// {{zoom_link}}
+//
+// The event payload supplies live-class values.
+// The recipient resolver supplies student values.
+//
+// Keep both the flattened variables and the nested objects so
+// templates can use either form:
+//
+// {{student_name}}
+// {{student.full_name}}
+// {{recipient.full_name}}
+// {{title}}
+// {{event.title}}
+//
+// ============================================================
+
+function buildTemplateVariables(
+  payload,
+  recipient
+) {
+
+  const safePayload =
+    payload &&
+    typeof payload === "object"
+      ? payload
+      : {};
+
+  const safeRecipient =
+    recipient &&
+    typeof recipient === "object"
+      ? recipient
+      : {};
+
+  const studentName =
+    safeRecipient.full_name ||
+    safeRecipient.name ||
+    safeRecipient.student_name ||
+    safeRecipient.recipient_name ||
+    safePayload.student_name ||
+    "";
+
+  const batchName =
+    safePayload.batch_name ||
+    safeRecipient.batch_name ||
+    safeRecipient.batchName ||
+    "";
+
+  return {
+
+    // --------------------------------------------------------
+    // Event payload
+    // --------------------------------------------------------
+
+    ...safePayload,
+
+    // --------------------------------------------------------
+    // Explicit template variables
+    // --------------------------------------------------------
+
+    student_name:
+      studentName,
+
+    title:
+      safePayload.title ||
+      safePayload.class_title ||
+      "",
+
+    class_date:
+      safePayload.class_date ||
+      "",
+
+    start_time:
+      safePayload.start_time ||
+      "",
+
+    batch_name:
+      batchName,
+
+    description:
+      safePayload.description ||
+      "",
+
+    zoom_link:
+      safePayload.zoom_link ||
+      "",
+
+    // --------------------------------------------------------
+    // Recipient context
+    // --------------------------------------------------------
+
+    recipient:
+      safeRecipient,
+
+    student:
+      safeRecipient,
+
+    user:
+      safeRecipient,
+
+    // --------------------------------------------------------
+    // Event context
+    // --------------------------------------------------------
+
+    event:
+      safePayload,
+
+  };
 
 }
 
@@ -415,7 +538,9 @@ function getRuleChannels(
         channel =>
           String(
             channel
-          ).trim().toUpperCase()
+          )
+            .trim()
+            .toUpperCase()
       )
       .filter(
         Boolean
@@ -435,7 +560,9 @@ function getRuleChannels(
         channel =>
           String(
             channel
-          ).trim().toUpperCase()
+          )
+            .trim()
+            .toUpperCase()
       )
       .filter(
         Boolean
@@ -453,7 +580,9 @@ function getRuleChannels(
         channel =>
           String(
             channel
-          ).trim().toUpperCase()
+          )
+            .trim()
+            .toUpperCase()
       )
       .filter(
         Boolean
@@ -542,6 +671,7 @@ function createJobIdempotencyKey(
       recipient.id ||
       recipient.recipient_user_id ||
       recipient.recipient_address ||
+      recipient.address ||
       "NO_RECIPIENT",
     channel,
   ].join(
@@ -626,6 +756,7 @@ async function emitEvent(
   }
 
   const event = {
+
     event_key:
       data.event_key,
 
@@ -643,6 +774,7 @@ async function emitEvent(
     payload_json:
       data.payload_json ||
       {},
+
   };
 
   try {
@@ -662,9 +794,15 @@ async function emitEvent(
     );
 
     return {
-      success: true,
-      duplicate: false,
+
+      success:
+        true,
+
+      duplicate:
+        false,
+
       result,
+
     };
 
   } catch (
@@ -683,8 +821,13 @@ async function emitEvent(
       );
 
       return {
-        success: true,
-        duplicate: true,
+
+        success:
+          true,
+
+        duplicate:
+          true,
+
       };
 
     }
@@ -736,8 +879,13 @@ async function processNextEvent() {
   ) {
 
     return {
-      processed: false,
-      reason: "NO_EVENT",
+
+      processed:
+        false,
+
+      reason:
+        "NO_EVENT",
+
     };
 
   }
@@ -745,6 +893,7 @@ async function processNextEvent() {
   console.log(
     "[AutomationEngine] Processing event:",
     {
+
       id:
         event.id,
 
@@ -753,6 +902,7 @@ async function processNextEvent() {
 
       event_type:
         event.event_type,
+
     }
   );
 
@@ -774,6 +924,7 @@ async function processNextEvent() {
     console.log(
       "[AutomationEngine] Event processed:",
       {
+
         id:
           event.id,
 
@@ -781,13 +932,19 @@ async function processNextEvent() {
           event.event_key,
 
         result,
+
       }
     );
 
     return {
-      processed: true,
+
+      processed:
+        true,
+
       event,
+
       result,
+
     };
 
   } catch (
@@ -797,6 +954,7 @@ async function processNextEvent() {
     console.error(
       "[AutomationEngine] Event processing failed:",
       {
+
         eventId:
           event.id,
 
@@ -805,6 +963,7 @@ async function processNextEvent() {
 
         error:
           error.message,
+
       }
     );
 
@@ -918,6 +1077,7 @@ async function processEventInternal(
   console.log(
     "[AutomationEngine] Matching active rules:",
     {
+
       eventType:
         event.event_type,
 
@@ -927,6 +1087,7 @@ async function processEventInternal(
         )
           ? rules.length
           : 0,
+
     }
   );
 
@@ -943,23 +1104,37 @@ async function processEventInternal(
     );
 
     return {
-      success: true,
+
+      success:
+        true,
+
       event_id:
         event.id,
 
       event_type:
         event.event_type,
 
-      matched_rules: 0,
-      executed_rules: 0,
-      created_jobs: 0,
+      matched_rules:
+        0,
+
+      executed_rules:
+        0,
+
+      created_jobs:
+        0,
+
     };
 
   }
 
-  let executedRules = 0;
-  let createdJobs = 0;
-  let skippedRules = 0;
+  let executedRules =
+    0;
+
+  let createdJobs =
+    0;
+
+  let skippedRules =
+    0;
 
   for (
     const rule of rules
@@ -968,6 +1143,7 @@ async function processEventInternal(
     console.log(
       "[AutomationEngine] Evaluating rule:",
       {
+
         id:
           rule.id,
 
@@ -985,6 +1161,7 @@ async function processEventInternal(
 
         enabled:
           rule.enabled,
+
       }
     );
 
@@ -998,7 +1175,8 @@ async function processEventInternal(
       !matches
     ) {
 
-      skippedRules += 1;
+      skippedRules +=
+        1;
 
       console.log(
         "[AutomationEngine] Rule skipped because conditions did not match:",
@@ -1015,7 +1193,8 @@ async function processEventInternal(
         event
       );
 
-    executedRules += 1;
+    executedRules +=
+      1;
 
     createdJobs +=
       Number(
@@ -1026,7 +1205,9 @@ async function processEventInternal(
   }
 
   return {
-    success: true,
+
+    success:
+      true,
 
     event_id:
       event.id,
@@ -1045,6 +1226,7 @@ async function processEventInternal(
 
     created_jobs:
       createdJobs,
+
   };
 
 }
@@ -1067,6 +1249,7 @@ async function executeRule(
   console.log(
     "[AutomationEngine] Executing rule:",
     {
+
       ruleId:
         rule.id,
 
@@ -1074,6 +1257,7 @@ async function executeRule(
         rule.automation_key,
 
       runKey,
+
     }
   );
 
@@ -1090,6 +1274,7 @@ async function executeRule(
         callback =>
           automationRunModel.createRun(
             {
+
               automation_rule_id:
                 rule.id,
 
@@ -1105,7 +1290,9 @@ async function executeRule(
 
               scheduled_at:
                 new Date(),
+
             },
+
             callback
           )
       );
@@ -1126,9 +1313,16 @@ async function executeRule(
       );
 
       return {
-        success: true,
-        duplicate: true,
-        created_jobs: 0,
+
+        success:
+          true,
+
+        duplicate:
+          true,
+
+        created_jobs:
+          0,
+
       };
 
     }
@@ -1136,6 +1330,7 @@ async function executeRule(
     console.error(
       "[AutomationEngine] Failed to create automation run:",
       {
+
         ruleId:
           rule.id,
 
@@ -1144,6 +1339,7 @@ async function executeRule(
 
         error:
           error.message,
+
       }
     );
 
@@ -1161,11 +1357,15 @@ async function executeRule(
   console.log(
     "[AutomationEngine] Automation run created:",
     {
+
       runId,
+
       ruleId:
         rule.id,
+
       eventId:
         event.id,
+
     }
   );
 
@@ -1230,7 +1430,7 @@ async function executeRule(
 
   }
 
-  const template =
+  const templateRows =
     await callbackToPromise(
       callback =>
         messageTemplateModel.getActiveTemplateByKey(
@@ -1238,6 +1438,15 @@ async function executeRule(
           callback
         )
     );
+
+  // messageTemplateModel returns the MySQL rows array.
+  // The automation engine needs the first matching template.
+  const template =
+    Array.isArray(
+      templateRows
+    )
+      ? templateRows[0]
+      : templateRows;
 
   if (
     !template
@@ -1266,6 +1475,7 @@ async function executeRule(
   console.log(
     "[AutomationEngine] Template loaded:",
     {
+
       templateId:
         template.id,
 
@@ -1274,17 +1484,33 @@ async function executeRule(
 
       channel:
         template.channel,
+
     }
   );
 
   // ----------------------------------------------------------
   // RESOLVE RECIPIENTS
+  //
+  // recipientResolver uses the callback pattern:
+  //
+  // resolveRecipientsFromEvent(
+  //   rule,
+  //   event,
+  //   callback
+  // )
+  //
+  // Keep the Promise boundary here so the rest of the
+  // automation engine remains asynchronous and consistent.
   // ----------------------------------------------------------
 
   const recipients =
-    await recipientResolver.resolveRecipientsFromEvent(
-      event,
-      rule
+    await callbackToPromise(
+      callback =>
+        recipientResolver.resolveRecipientsFromEvent(
+          rule,
+          event,
+          callback
+        )
     );
 
   const normalizedRecipients =
@@ -1297,11 +1523,13 @@ async function executeRule(
   console.log(
     "[AutomationEngine] Recipients resolved:",
     {
+
       rule:
         rule.automation_key,
 
       count:
         normalizedRecipients.length,
+
     }
   );
 
@@ -1323,8 +1551,11 @@ async function executeRule(
   // CREATE COMMUNICATION JOBS
   // ----------------------------------------------------------
 
-  let queuedJobs = 0;
-  let skippedJobs = 0;
+  let queuedJobs =
+    0;
+
+  let skippedJobs =
+    0;
 
   for (
     const recipient of normalizedRecipients
@@ -1337,14 +1568,13 @@ async function executeRule(
 
     const channels =
       ruleChannels.length > 0
-        ? ruleChannels
-            .filter(
-              channel =>
-                recipientChannels.length === 0 ||
-                recipientChannels.includes(
-                  channel
-                )
-            )
+        ? ruleChannels.filter(
+            channel =>
+              recipientChannels.length === 0 ||
+              recipientChannels.includes(
+                channel
+              )
+          )
         : recipientChannels;
 
     for (
@@ -1363,15 +1593,25 @@ async function executeRule(
             runId
           );
 
+        // ----------------------------------------------------
+        // SKIPPED OR DUPLICATE
+        //
+        // No recipient address, missing required data, or
+        // duplicate idempotency key means no new queued job.
+        // ----------------------------------------------------
+
         if (
-          jobResult.duplicate
+          jobResult.duplicate ||
+          jobResult.skipped
         ) {
 
-          skippedJobs += 1;
+          skippedJobs +=
+            1;
 
         } else {
 
-          queuedJobs += 1;
+          queuedJobs +=
+            1;
 
         }
 
@@ -1382,6 +1622,7 @@ async function executeRule(
         console.error(
           "[AutomationEngine] Failed to create communication job:",
           {
+
             rule:
               rule.automation_key,
 
@@ -1389,12 +1630,14 @@ async function executeRule(
               recipient.user_id ||
               recipient.id ||
               recipient.email ||
-              recipient.phone,
+              recipient.phone ||
+              recipient.address,
 
             channel,
 
             error:
               error.message,
+
           }
         );
 
@@ -1432,6 +1675,7 @@ async function executeRule(
           automationRunModel.updateRunCounters(
             runId,
             {
+
               total_jobs:
                 queuedJobs +
                 skippedJobs,
@@ -1444,7 +1688,9 @@ async function executeRule(
 
               skipped_jobs:
                 skippedJobs,
+
             },
+
             callback
           )
       );
@@ -1475,6 +1721,7 @@ async function executeRule(
   console.log(
     "[AutomationEngine] Rule execution completed:",
     {
+
       rule:
         rule.automation_key,
 
@@ -1483,11 +1730,14 @@ async function executeRule(
       queuedJobs,
 
       skippedJobs,
+
     }
   );
 
   return {
-    success: true,
+
+    success:
+      true,
 
     run_id:
       runId,
@@ -1497,6 +1747,7 @@ async function executeRule(
 
     skipped_jobs:
       skippedJobs,
+
   };
 
 }
@@ -1518,6 +1769,48 @@ function getRecipientChannels(
 
   }
 
+  // ----------------------------------------------------------
+  // EXPLICIT RESOLVER-PROVIDED CHANNEL
+  //
+  // recipientResolver returns:
+  //
+  // {
+  //   channel: "EMAIL",
+  //   address: "student@example.com"
+  // }
+  //
+  // Prefer this explicit channel because the resolver has
+  // already checked the recipient's contact information and
+  // communication consent.
+  // ----------------------------------------------------------
+
+  if (
+    recipient.channel
+  ) {
+
+    const normalizedChannel =
+      String(
+        recipient.channel
+      )
+        .trim()
+        .toUpperCase();
+
+    if (
+      normalizedChannel
+    ) {
+
+      return [
+        normalizedChannel,
+      ];
+
+    }
+
+  }
+
+  // ----------------------------------------------------------
+  // RESOLVER-PROVIDED CHANNEL ARRAY
+  // ----------------------------------------------------------
+
   if (
     Array.isArray(
       recipient.channels
@@ -1529,13 +1822,19 @@ function getRecipientChannels(
         channel =>
           String(
             channel
-          ).trim().toUpperCase()
+          )
+            .trim()
+            .toUpperCase()
       )
       .filter(
         Boolean
       );
 
   }
+
+  // ----------------------------------------------------------
+  // INFER FROM CONTACT FIELDS
+  // ----------------------------------------------------------
 
   const channels = [];
 
@@ -1596,21 +1895,42 @@ async function createCommunicationJob(
       event
     );
 
-  const templateVariables = {
-    ...payload,
+  // Build an explicit flattened + nested rendering context.
+  //
+  // This is important because the database templates use
+  // variables such as {{student_name}} and {{batch_name}},
+  // while recipientResolver naturally returns recipient
+  // information as object properties.
+  const templateVariables =
+    buildTemplateVariables(
+      payload,
+      recipient
+    );
 
-    recipient:
-      recipient || {},
+  console.log(
+    "[AutomationEngine] Template variables prepared:",
+    {
 
-    student:
-      recipient || {},
+      templateKey:
+        template.template_key,
 
-    user:
-      recipient || {},
+      student_name:
+        templateVariables.student_name,
 
-    event:
-      payload || {},
-  };
+      title:
+        templateVariables.title,
+
+      class_date:
+        templateVariables.class_date,
+
+      start_time:
+        templateVariables.start_time,
+
+      batch_name:
+        templateVariables.batch_name,
+
+    }
+  );
 
   const subjectTemplate =
     template.subject_template ||
@@ -1737,19 +2057,28 @@ async function createCommunicationJob(
     console.warn(
       "[AutomationEngine] Recipient has no address for channel:",
       {
+
         userId:
           recipient.user_id ||
           recipient.id,
 
         channel:
           normalizedChannel,
+
       }
     );
 
     return {
-      success: true,
-      skipped: true,
-      reason: "NO_RECIPIENT_ADDRESS",
+
+      success:
+        true,
+
+      skipped:
+        true,
+
+      reason:
+        "NO_RECIPIENT_ADDRESS",
+
     };
 
   }
@@ -1804,6 +2133,8 @@ async function createCommunicationJob(
     recipient_name:
       recipient.full_name ||
       recipient.name ||
+      recipient.student_name ||
+      recipient.recipient_name ||
       null,
 
     subject:
@@ -1815,14 +2146,19 @@ async function createCommunicationJob(
 
     payload_json:
       {
+
         event:
           payload,
 
         recipient:
           recipient,
 
+        template_variables:
+          templateVariables,
+
         template_key:
           template.template_key,
+
       },
 
     idempotency_key:
@@ -1842,6 +2178,7 @@ async function createCommunicationJob(
 
     max_attempts:
       maxAttempts,
+
   };
 
   try {
@@ -1858,6 +2195,7 @@ async function createCommunicationJob(
     console.log(
       "[AutomationEngine] Communication job queued:",
       {
+
         jobId:
           result &&
           result.insertId
@@ -1877,13 +2215,22 @@ async function createCommunicationJob(
           recipient.user_id ||
           recipient.id ||
           null,
+
+        recipientAddress,
+
       }
     );
 
     return {
-      success: true,
-      duplicate: false,
+
+      success:
+        true,
+
+      duplicate:
+        false,
+
       result,
+
     };
 
   } catch (
@@ -1902,8 +2249,13 @@ async function createCommunicationJob(
       );
 
       return {
-        success: true,
-        duplicate: true,
+
+        success:
+          true,
+
+        duplicate:
+          true,
+
       };
 
     }
@@ -1931,8 +2283,59 @@ function resolveRecipientAddress(
 
   }
 
+  const normalizedChannel =
+    String(
+      channel || ""
+    )
+      .trim()
+      .toUpperCase();
+
+  // ----------------------------------------------------------
+  // EXPLICIT RESOLVER ADDRESS
+  //
+  // recipientResolver returns:
+  //
+  // {
+  //   channel: "EMAIL",
+  //   address: "student@example.com"
+  // }
+  //
+  // Prefer that address when its channel matches the job
+  // channel.
+  // ----------------------------------------------------------
+
   if (
-    channel ===
+    recipient.address &&
+    recipient.channel &&
+    String(
+      recipient.channel
+    )
+      .trim()
+      .toUpperCase() ===
+      normalizedChannel
+  ) {
+
+    const address =
+      String(
+        recipient.address
+      ).trim();
+
+    if (
+      address
+    ) {
+
+      return address;
+
+    }
+
+  }
+
+  // ----------------------------------------------------------
+  // EMAIL
+  // ----------------------------------------------------------
+
+  if (
+    normalizedChannel ===
     "EMAIL"
   ) {
 
@@ -1945,8 +2348,12 @@ function resolveRecipientAddress(
 
   }
 
+  // ----------------------------------------------------------
+  // WHATSAPP
+  // ----------------------------------------------------------
+
   if (
-    channel ===
+    normalizedChannel ===
     "WHATSAPP"
   ) {
 
@@ -1961,8 +2368,13 @@ function resolveRecipientAddress(
 
   }
 
+  // ----------------------------------------------------------
+  // OTHER CHANNELS
+  // ----------------------------------------------------------
+
   return (
     recipient.recipient_address ||
+    recipient.address ||
     null
   );
 
@@ -2048,9 +2460,12 @@ async function safelyMarkRunFailed(
     console.error(
       "[AutomationEngine] Failed to mark automation run as failed:",
       {
+
         runId,
+
         error:
           error.message,
+
       }
     );
 
