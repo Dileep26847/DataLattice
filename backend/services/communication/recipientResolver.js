@@ -25,6 +25,7 @@ const {
 //    payload.batch_id
 //
 // Batch-based targeting is required for live-class reminders.
+//
 // The event aggregate_id represents the LIVE_CLASS id and must
 // NOT be interpreted as a student id.
 // ============================================================
@@ -74,6 +75,9 @@ const recipientResolver = {
   // Marketing communication requires both:
   // - base channel consent
   // - marketing channel consent
+  //
+  // IN_APP is an internal application channel. It does not
+  // require external communication consent.
   // ==========================================================
 
   hasChannelConsent(
@@ -82,14 +86,31 @@ const recipientResolver = {
     category = "TRANSACTIONAL"
   ) {
 
-    if (!preferences) {
-      return false;
-    }
-
     const normalizedChannel =
       this.normalizeChannel(
         channel
       );
+
+    // --------------------------------------------------------
+    // IN_APP
+    //
+    // In-app notifications are stored inside the DataLattice
+    // application and do not leave the platform.
+    //
+    // Therefore they do not depend on email/WhatsApp consent.
+    // --------------------------------------------------------
+
+    if (
+      normalizedChannel === "IN_APP"
+    ) {
+
+      return true;
+
+    }
+
+    if (!preferences) {
+      return false;
+    }
 
     const normalizedCategory =
       String(
@@ -97,6 +118,10 @@ const recipientResolver = {
       )
         .trim()
         .toUpperCase();
+
+    // --------------------------------------------------------
+    // EMAIL
+    // --------------------------------------------------------
 
     if (
       normalizedChannel === "EMAIL"
@@ -125,6 +150,10 @@ const recipientResolver = {
 
       return true;
     }
+
+    // --------------------------------------------------------
+    // WHATSAPP
+    // --------------------------------------------------------
 
     if (
       normalizedChannel === "WHATSAPP"
@@ -163,8 +192,9 @@ const recipientResolver = {
   // student_profiles and communication_preferences are
   // optional, therefore both use LEFT JOIN.
   //
-  // A student must not disappear from recipient resolution merely
-  // because a profile or communication-preference row is missing.
+  // A student must not disappear from recipient resolution
+  // merely because a profile or communication-preference row
+  // is missing.
   // ==========================================================
 
   getUserContact(
@@ -232,9 +262,12 @@ const recipientResolver = {
   // ==========================================================
   // RESOLVE CONTACT CHANNEL
   //
-  // Returns only channels for which:
+  // Returns external channels only when:
   // - a contact address exists
   // - consent exists
+  //
+  // IN_APP is handled separately because it does not require
+  // an external contact address.
   // ==========================================================
 
   resolveContactChannels(
@@ -243,6 +276,27 @@ const recipientResolver = {
   ) {
 
     const channels = [];
+
+    // --------------------------------------------------------
+    // IN_APP
+    //
+    // Every valid platform user has an in-app notification
+    // destination identified by user_id.
+    // --------------------------------------------------------
+
+    if (
+      contact &&
+      contact.id
+    ) {
+
+      channels.push({
+        channel: "IN_APP",
+
+        address:
+          null,
+      });
+
+    }
 
     // --------------------------------------------------------
     // EMAIL
@@ -301,8 +355,8 @@ const recipientResolver = {
   // RESOLVE PREFERRED CHANNEL
   //
   // If a preferred channel exists and is eligible, use it first.
-  // Other eligible channels remain available for automation rules
-  // that explicitly support multiple channels.
+  // Other eligible channels remain available for automation
+  // rules that explicitly support multiple channels.
   // ==========================================================
 
   prioritizeChannels(
@@ -1190,6 +1244,61 @@ const recipientResolver = {
     const category =
       options.category ||
       "TRANSACTIONAL";
+
+    // IN_APP is only valid for an existing platform user.
+    if (
+      channel ===
+      "IN_APP"
+    ) {
+
+      const userId =
+        Number(
+          recipient.user_id
+        );
+
+      if (
+        !Number.isInteger(
+          userId
+        ) ||
+        userId <= 0
+      ) {
+
+        return null;
+
+      }
+
+      return {
+
+        user_id:
+          userId,
+
+        recipient_type:
+          recipient.recipient_type ||
+          "USER",
+
+        recipient_name:
+          recipient.name ||
+          recipient.recipient_name ||
+          null,
+
+        channel,
+
+        address:
+          null,
+
+        category,
+
+        consent_source:
+          recipient.consent_source ||
+          null,
+
+        consent_at:
+          recipient.consent_at ||
+          null,
+
+      };
+
+    }
 
     const hasConsent =
       recipient.consent === true ||

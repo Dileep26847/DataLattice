@@ -250,6 +250,12 @@ function getNestedValue(
 // {{title}}
 // {{event.title}}
 //
+// IN_APP templates may additionally use:
+//
+// {{notification.title}}
+// {{notification.message}}
+// {{notification.action_url}}
+//
 // ============================================================
 
 function buildTemplateVariables(
@@ -275,6 +281,7 @@ function buildTemplateVariables(
     safeRecipient.student_name ||
     safeRecipient.recipient_name ||
     safePayload.student_name ||
+    safeRecipient.recipient_name ||
     "";
 
   const batchName =
@@ -282,6 +289,15 @@ function buildTemplateVariables(
     safeRecipient.batch_name ||
     safeRecipient.batchName ||
     "";
+
+  const notification =
+    safePayload.notification &&
+    typeof safePayload.notification === "object" &&
+    !Array.isArray(
+      safePayload.notification
+    )
+      ? safePayload.notification
+      : {};
 
   return {
 
@@ -321,6 +337,69 @@ function buildTemplateVariables(
     zoom_link:
       safePayload.zoom_link ||
       "",
+
+    // --------------------------------------------------------
+    // Notification context
+    //
+    // Used by IN_APP templates and retained as part of the
+    // communication job snapshot.
+    // --------------------------------------------------------
+
+    notification: {
+
+      title:
+        notification.title ||
+        safePayload.notification_title ||
+        safePayload.title ||
+        safePayload.class_title ||
+        "",
+
+      message:
+        notification.message ||
+        safePayload.notification_message ||
+        safePayload.message ||
+        safePayload.description ||
+        "",
+
+      action_url:
+        notification.action_url ||
+        notification.actionUrl ||
+        safePayload.action_url ||
+        safePayload.actionUrl ||
+        null,
+
+      type:
+        notification.type ||
+        safePayload.notification_type ||
+        "system",
+
+      source_type:
+        notification.source_type ||
+        notification.sourceType ||
+        safePayload.source_type ||
+        "automation",
+
+      source_id:
+        notification.source_id ||
+        notification.sourceId ||
+        safePayload.source_id ||
+        null,
+
+            metadata:
+        notification.metadata &&
+        typeof notification.metadata === "object" &&
+        !Array.isArray(
+          notification.metadata
+        )
+          ? notification.metadata
+          : safePayload.metadata &&
+            typeof safePayload.metadata === "object" &&
+            !Array.isArray(
+              safePayload.metadata
+            )
+            ? safePayload.metadata
+            : {},
+    },
 
     // --------------------------------------------------------
     // Recipient context
@@ -1568,14 +1647,14 @@ async function executeRule(
 
     const channels =
       ruleChannels.length > 0
-        ? ruleChannels.filter(
-            channel =>
-              recipientChannels.length === 0 ||
-              recipientChannels.includes(
-                channel
-              )
-          )
-        : recipientChannels;
+      ? ruleChannels.filter(
+          channel =>
+            recipientChannels.length === 0 ||
+            recipientChannels.includes(
+              channel
+            )
+        )
+      : recipientChannels;
 
     for (
       const channel of channels
@@ -1862,6 +1941,35 @@ function getRecipientChannels(
 
   }
 
+  // ----------------------------------------------------------
+  // IN_APP
+  //
+  // An authenticated platform recipient is addressable through
+  // recipient_user_id / user_id and therefore does not require
+  // an external address.
+  // ----------------------------------------------------------
+
+  if (
+    Number.isInteger(
+      Number(
+        recipient.user_id ||
+        recipient.id ||
+        recipient.recipient_user_id
+      )
+    ) &&
+    Number(
+      recipient.user_id ||
+      recipient.id ||
+      recipient.recipient_user_id
+    ) > 0
+  ) {
+
+    channels.push(
+      "IN_APP"
+    );
+
+  }
+
   return channels;
 
 }
@@ -2043,6 +2151,15 @@ async function createCommunicationJob(
   // ----------------------------------------------------------
   // RESOLVE ADDRESS
   // ----------------------------------------------------------
+  //
+  // External channels require a provider-specific address.
+  //
+  // IN_APP is different:
+  //
+  // - recipient_user_id identifies the platform user.
+  // - recipient_address intentionally remains NULL.
+  //
+  // ----------------------------------------------------------
 
   const recipientAddress =
     resolveRecipientAddress(
@@ -2050,7 +2167,56 @@ async function createCommunicationJob(
       normalizedChannel
     );
 
+  const recipientUserId =
+    Number(
+      recipient.user_id ||
+      recipient.id ||
+      recipient.recipient_user_id
+    );
+
   if (
+    normalizedChannel ===
+    "IN_APP"
+  ) {
+
+    if (
+      !Number.isInteger(
+        recipientUserId
+      ) ||
+      recipientUserId <= 0
+    ) {
+
+      console.warn(
+        "[AutomationEngine] IN_APP recipient has no valid user id:",
+        {
+
+          channel:
+            normalizedChannel,
+
+          userId:
+            recipient.user_id ||
+            recipient.id ||
+            recipient.recipient_user_id,
+
+        }
+      );
+
+      return {
+
+        success:
+          true,
+
+        skipped:
+          true,
+
+        reason:
+          "NO_RECIPIENT_USER_ID",
+
+      };
+
+    }
+
+  } else if (
     !recipientAddress
   ) {
 
@@ -2123,12 +2289,14 @@ async function createCommunicationJob(
       rule.recipient_type,
 
     recipient_user_id:
-      recipient.user_id ||
-      recipient.id ||
+      recipientUserId ||
       null,
 
     recipient_address:
-      recipientAddress,
+      normalizedChannel ===
+      "IN_APP"
+        ? null
+        : recipientAddress,
 
     recipient_name:
       recipient.full_name ||
@@ -2212,11 +2380,14 @@ async function createCommunicationJob(
           normalizedChannel,
 
         recipientUserId:
-          recipient.user_id ||
-          recipient.id ||
+          recipientUserId ||
           null,
 
-        recipientAddress,
+        recipientAddress:
+          normalizedChannel ===
+          "IN_APP"
+            ? null
+            : recipientAddress,
 
       }
     );
@@ -2289,6 +2460,22 @@ function resolveRecipientAddress(
     )
       .trim()
       .toUpperCase();
+
+  // ----------------------------------------------------------
+  // IN_APP
+  //
+  // IN_APP notifications do not have an external address.
+  // recipient_user_id is stored separately on the job.
+  // ----------------------------------------------------------
+
+  if (
+    normalizedChannel ===
+    "IN_APP"
+  ) {
+
+    return null;
+
+  }
 
   // ----------------------------------------------------------
   // EXPLICIT RESOLVER ADDRESS

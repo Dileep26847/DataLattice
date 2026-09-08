@@ -632,15 +632,14 @@ const sendInAppJob =
         }
 
         const notification =
-          payload &&
-          payload.notification &&
-          typeof payload.notification ===
-            "object" &&
-          !Array.isArray(
-            payload.notification
-          )
-            ? payload.notification
-            : {};
+  payload.notification &&
+  typeof payload.notification === "object"
+    ? payload.notification
+    : payload.template_variables &&
+        payload.template_variables.notification &&
+        typeof payload.template_variables.notification === "object"
+      ? payload.template_variables.notification
+      : {};
 
         const title =
           String(
