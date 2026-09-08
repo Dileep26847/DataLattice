@@ -7,6 +7,9 @@ const communicationJobModel =
 const communicationDeliveryModel =
   require("../../models/communicationDeliveryModel");
 
+const notificationModel =
+  require("../../models/notificationModel");
+
 const communicationService =
   require("./communicationService");
 
@@ -57,6 +60,16 @@ const {
 //
 // The worker MUST use that snapshot directly instead of
 // attempting to reconstruct recipient/template data.
+//
+// IN_APP:
+//
+// IN_APP notifications do not use an external provider.
+// They are persisted directly into the existing notifications
+// table using recipient_user_id.
+//
+// The communication job's idempotency_key is reused as the
+// notification idempotency key so a retried worker execution
+// cannot create duplicate in-app notifications.
 //
 // ============================================================
 
@@ -318,17 +331,20 @@ const markDeliveryAsSent =
             : {};
 
         communicationDeliveryModel
-          .markDeliveryAsSent(
-            deliveryId,
+           .markDeliveryAsSent(
+    deliveryId,
 
-            provider.providerMessageId,
+    provider.providerMessageId,
 
-            provider.response,
+    provider.response,
 
-            (
-              error,
-              result
-            ) => {
+    provider.provider ||
+      null,
+
+    (
+      error,
+      result
+    ) => {
 
               if (error) {
                 reject(error);
@@ -558,6 +574,231 @@ const getTemplateKey =
 
 
 // ============================================================
+// SEND IN-APP JOB
+// ============================================================
+//
+// IN_APP notifications do not use an external provider.
+//
+// The notification is written directly into the existing
+// notifications table.
+//
+// The communication job remains the source of delivery
+// tracking, while the notifications table becomes the
+// user-facing in-app notification store.
+//
+// Idempotency:
+//
+// communication_jobs.idempotency_key
+//          ↓
+// notifications.idempotency_key
+//
+// This ensures retries cannot create duplicate notifications.
+//
+// ============================================================
+
+const sendInAppJob =
+  (
+    job,
+    payload,
+    variables
+  ) => {
+
+    return new Promise(
+      (
+        resolve,
+        reject
+      ) => {
+
+        const recipientUserId =
+          Number(
+            job.recipient_user_id
+          );
+
+        if (
+          !Number.isInteger(
+            recipientUserId
+          ) ||
+          recipientUserId <= 0
+        ) {
+
+          reject(
+            new Error(
+              `IN_APP communication job ${job.id} does not contain a valid recipient user id`
+            )
+          );
+
+          return;
+
+        }
+
+        const notification =
+          payload &&
+          payload.notification &&
+          typeof payload.notification ===
+            "object" &&
+          !Array.isArray(
+            payload.notification
+          )
+            ? payload.notification
+            : {};
+
+        const title =
+          String(
+            notification.title ||
+            variables.title ||
+            "DataLattice Notification"
+          )
+            .trim()
+            .slice(
+              0,
+              150
+            );
+
+        const message =
+          String(
+            notification.message ||
+            variables.message ||
+            ""
+          )
+            .trim();
+
+        if (!title) {
+
+          reject(
+            new Error(
+              `IN_APP communication job ${job.id} has an empty notification title`
+            )
+          );
+
+          return;
+
+        }
+
+        if (!message) {
+
+          reject(
+            new Error(
+              `IN_APP communication job ${job.id} has an empty notification message`
+            )
+          );
+
+          return;
+
+        }
+
+        const metadata =
+          notification.metadata &&
+          typeof notification.metadata ===
+            "object" &&
+          !Array.isArray(
+            notification.metadata
+          )
+            ? notification.metadata
+            : {};
+
+        notificationModel
+          .createNotification(
+
+            recipientUserId,
+
+            title,
+
+            message,
+
+            notification.type ||
+              "system",
+
+            {
+
+              actionUrl:
+                notification.action_url ||
+                notification.actionUrl ||
+                null,
+
+              sourceType:
+                notification.source_type ||
+                notification.sourceType ||
+                "automation",
+
+              sourceId:
+                notification.source_id ||
+                notification.sourceId ||
+                null,
+
+              metadata,
+
+              idempotencyKey:
+                job.idempotency_key ||
+                null,
+
+            },
+
+            (
+              error,
+              result
+            ) => {
+
+              if (error) {
+
+                reject(
+                  error
+                );
+
+                return;
+
+              }
+
+              const notificationId =
+                result &&
+                result.insertId
+                  ? result.insertId
+                  : null;
+
+              resolve({
+
+                templateId:
+                  job.template_id ||
+                  null,
+
+                templateKey:
+                  job.template_key ||
+                  null,
+
+                channel:
+                  "IN_APP",
+
+                recipient:
+                  recipientUserId,
+
+                provider: {
+
+                  provider:
+                    "IN_APP",
+
+                  providerMessageId:
+                    notificationId,
+
+                  response: {
+
+                    notificationId,
+
+                  },
+
+                },
+
+              });
+
+            }
+
+          );
+
+      }
+    );
+
+  };
+
+
+// ============================================================
 // SEND JOB
 // ============================================================
 
@@ -589,6 +830,35 @@ const sendJob =
       getJobVariables(
         job
       );
+
+    // ----------------------------------------------------------
+    // IN_APP
+    // ----------------------------------------------------------
+    //
+    // IN_APP notifications are persisted directly into the
+    // notifications table and do not go through an external
+    // communication provider.
+    //
+
+    if (
+      String(
+        job.channel ||
+        ""
+      ).toUpperCase() ===
+      "IN_APP"
+    ) {
+
+      return sendInAppJob(
+        job,
+        payload,
+        variables
+      );
+
+    }
+
+    // ----------------------------------------------------------
+    // External communication channels
+    // ----------------------------------------------------------
 
     return communicationService.send({
 

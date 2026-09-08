@@ -11,9 +11,15 @@ const authorizeRoles =
 const notificationController =
   require("../controllers/notificationController");
 
+
 // ==========================================
 // GET ALL NOTIFICATIONS
 // AUTHENTICATED USERS
+// ==========================================
+//
+// The controller uses req.user.id and the
+// model enforces user ownership.
+//
 // ==========================================
 
 router.get(
@@ -21,6 +27,7 @@ router.get(
   verifyToken,
   notificationController.getNotifications
 );
+
 
 // ==========================================
 // GET UNREAD COUNT
@@ -33,21 +40,36 @@ router.get(
   notificationController.getUnreadCount
 );
 
+
 // ==========================================
 // CREATE NOTIFICATION
-// ADMIN ONLY
+// ADMIN + SUPER ADMIN ONLY
+// ==========================================
+//
+// Administrative creation remains separate
+// from automation-generated notifications.
+//
 // ==========================================
 
 router.post(
   "/",
   verifyToken,
-  authorizeRoles("admin"),
+  authorizeRoles(
+    "admin",
+    "super_admin"
+  ),
   notificationController.createNotification
 );
+
 
 // ==========================================
 // MARK ALL AS READ
 // AUTHENTICATED USERS
+// ==========================================
+//
+// Only notifications belonging to the
+// authenticated user are updated.
+//
 // ==========================================
 
 router.put(
@@ -56,9 +78,16 @@ router.put(
   notificationController.markAllAsRead
 );
 
+
 // ==========================================
 // MARK ONE AS READ
 // AUTHENTICATED USERS
+// ==========================================
+//
+// Ownership is enforced in the model using:
+//
+// notification ID + authenticated user ID
+//
 // ==========================================
 
 router.put(
@@ -67,10 +96,14 @@ router.put(
   notificationController.markAsRead
 );
 
+
 // ==========================================
 // DELETE NOTIFICATION
 // AUTHENTICATED USERS
-// CONTROLLER HANDLES OWNERSHIP
+// ==========================================
+//
+// Ownership is enforced in the model.
+//
 // ==========================================
 
 router.delete(
@@ -78,5 +111,6 @@ router.delete(
   verifyToken,
   notificationController.deleteNotification
 );
+
 
 module.exports = router;

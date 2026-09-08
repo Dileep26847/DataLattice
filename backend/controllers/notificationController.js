@@ -3,7 +3,59 @@ const notificationModel =
 
 
 // ==========================================
+// CONSTANTS
+// ==========================================
+
+const DEFAULT_PAGE_SIZE = 20;
+
+const MAX_PAGE_SIZE = 50;
+
+
+// ==========================================
+// NORMALIZE PAGE SIZE
+// ==========================================
+
+const normalizePageSize = (
+  value
+) => {
+
+  const parsed =
+    Number.parseInt(
+      value,
+      10
+    );
+
+  if (
+    Number.isNaN(parsed)
+  ) {
+
+    return DEFAULT_PAGE_SIZE;
+
+  }
+
+  return Math.min(
+    Math.max(
+      parsed,
+      1
+    ),
+    MAX_PAGE_SIZE
+  );
+
+};
+
+
+// ==========================================
 // GET NOTIFICATIONS
+// ==========================================
+//
+// Returns notifications belonging only to
+// the authenticated user.
+//
+// Supports cursor pagination:
+//
+// ?limit=20
+// ?cursor=<opaque-cursor>
+//
 // ==========================================
 
 exports.getNotifications = (
@@ -11,11 +63,39 @@ exports.getNotifications = (
   res
 ) => {
 
-  const userId = req.user.id;
+  const userId =
+    req.user.id;
+
+
+  const limit =
+    normalizePageSize(
+      req.query.limit
+    );
+
+
+  const cursor =
+    typeof req.query.cursor ===
+      "string" &&
+    req.query.cursor.trim()
+      ? req.query.cursor.trim()
+      : null;
+
 
   notificationModel.getUserNotifications(
+
     userId,
-    (err, notifications) => {
+
+    {
+      limit,
+
+      cursor,
+
+    },
+
+    (
+      err,
+      result
+    ) => {
 
       if (err) {
 
@@ -35,9 +115,15 @@ exports.getNotifications = (
 
       }
 
+
       notificationModel.getUnreadCount(
+
         userId,
-        (countError, countResult) => {
+
+        (
+          countError,
+          countResult
+        ) => {
 
           if (countError) {
 
@@ -57,21 +143,52 @@ exports.getNotifications = (
 
           }
 
+
+          const unreadCount =
+            Number(
+              countResult?.[0]?.unreadCount ||
+              0
+            );
+
+
           return res.status(200).json({
 
             success: true,
 
-            notifications,
+            notifications:
+              result?.notifications ||
+              [],
 
             unreadCount:
-              countResult[0]?.unreadCount || 0,
+
+              Math.max(
+                0,
+                unreadCount
+              ),
+
+            pagination: {
+
+              limit,
+
+              hasMore:
+                Boolean(
+                  result?.hasMore
+                ),
+
+              nextCursor:
+                result?.nextCursor ||
+                null,
+
+            },
 
           });
 
         }
+
       );
 
     }
+
   );
 
 };
@@ -86,11 +203,18 @@ exports.getUnreadCount = (
   res
 ) => {
 
-  const userId = req.user.id;
+  const userId =
+    req.user.id;
+
 
   notificationModel.getUnreadCount(
+
     userId,
-    (err, result) => {
+
+    (
+      err,
+      result
+    ) => {
 
       if (err) {
 
@@ -110,16 +234,29 @@ exports.getUnreadCount = (
 
       }
 
+
+      const unreadCount =
+        Number(
+          result?.[0]?.unreadCount ||
+          0
+        );
+
+
       return res.status(200).json({
 
         success: true,
 
         unreadCount:
-          result[0]?.unreadCount || 0,
+
+          Math.max(
+            0,
+            unreadCount
+          ),
 
       });
 
     }
+
   );
 
 };
@@ -127,6 +264,16 @@ exports.getUnreadCount = (
 
 // ==========================================
 // CREATE NOTIFICATION
+// ==========================================
+//
+// Admins can create notifications for a
+// specific user.
+//
+// Super Admin is also supported.
+//
+// The model performs the final database
+// insertion and idempotency handling.
+//
 // ==========================================
 
 exports.createNotification = (
@@ -139,8 +286,17 @@ exports.createNotification = (
     title,
     message,
     type,
+    actionUrl,
+    sourceType,
+    sourceId,
+    metadata,
+    idempotencyKey,
   } = req.body;
 
+
+  // ========================================
+  // REQUIRED VALUES
+  // ========================================
 
   if (
     !userId ||
@@ -170,7 +326,24 @@ exports.createNotification = (
 
     type,
 
-    (err, result) => {
+    {
+
+      actionUrl,
+
+      sourceType,
+
+      sourceId,
+
+      metadata,
+
+      idempotencyKey,
+
+    },
+
+    (
+      err,
+      result
+    ) => {
 
       if (err) {
 
@@ -189,6 +362,7 @@ exports.createNotification = (
         });
 
       }
+
 
       return res.status(201).json({
 
@@ -212,6 +386,12 @@ exports.createNotification = (
 // ==========================================
 // MARK AS READ
 // ==========================================
+//
+// Ownership is enforced by the model using:
+//
+// notification.id + authenticated user.id
+//
+// ==========================================
 
 exports.markAsRead = (
   req,
@@ -220,6 +400,7 @@ exports.markAsRead = (
 
   const notificationId =
     req.params.id;
+
 
   const userId =
     req.user.id;
@@ -231,7 +412,10 @@ exports.markAsRead = (
 
     userId,
 
-    (err, result) => {
+    (
+      err,
+      result
+    ) => {
 
       if (err) {
 
@@ -261,7 +445,7 @@ exports.markAsRead = (
           success: false,
 
           message:
-            "Notification not found.",
+            "Notification not found or already read.",
 
         });
 
@@ -301,7 +485,10 @@ exports.markAllAsRead = (
 
     userId,
 
-    (err) => {
+    (
+      err,
+      result
+    ) => {
 
       if (err) {
 
@@ -329,6 +516,12 @@ exports.markAllAsRead = (
         message:
           "All notifications marked as read.",
 
+        updatedCount:
+          Number(
+            result?.affectedRows ||
+            0
+          ),
+
       });
 
     }
@@ -341,6 +534,12 @@ exports.markAllAsRead = (
 // ==========================================
 // DELETE NOTIFICATION
 // ==========================================
+//
+// Ownership is enforced by:
+//
+// notification.id + authenticated user.id
+//
+// ==========================================
 
 exports.deleteNotification = (
   req,
@@ -349,6 +548,7 @@ exports.deleteNotification = (
 
   const notificationId =
     req.params.id;
+
 
   const userId =
     req.user.id;
@@ -360,7 +560,10 @@ exports.deleteNotification = (
 
     userId,
 
-    (err, result) => {
+    (
+      err,
+      result
+    ) => {
 
       if (err) {
 
@@ -411,3 +614,12 @@ exports.deleteNotification = (
   );
 
 };
+
+
+// ==========================================
+// EXPORTS
+// ==========================================
+//
+// Existing controller exports are preserved.
+//
+// ==========================================

@@ -16,6 +16,11 @@ const db = require("../services/communication/communicationDb").pool;
 // - provider responses
 // - failure reasons
 //
+// Provider names:
+// - EMAIL providers
+// - WHATSAPP providers
+// - IN_APP internal notification provider
+//
 // ============================================================
 
 
@@ -196,18 +201,78 @@ const markDeliveryAsProcessing = (
 // ============================================================
 // MARK DELIVERY AS SENT
 // ============================================================
+//
+// providerName is optional for backward compatibility.
+//
+// Existing callers that provide only:
+//
+// markDeliveryAsSent(
+//   deliveryId,
+//   providerMessageId,
+//   providerResponse,
+//   callback
+// )
+//
+// continue to work.
+//
+// IN_APP callers may provide:
+//
+// markDeliveryAsSent(
+//   deliveryId,
+//   providerMessageId,
+//   providerResponse,
+//   providerName,
+//   callback
+// )
+//
+// ============================================================
 
 const markDeliveryAsSent = (
   deliveryId,
   providerMessageId,
   providerResponse,
-  callback
+  providerNameOrCallback,
+  maybeCallback
 ) => {
+
+  let providerName = null;
+  let callback = maybeCallback;
+
+  // ----------------------------------------------------------
+  // Backward-compatible signature:
+  //
+  // markDeliveryAsSent(
+  //   deliveryId,
+  //   providerMessageId,
+  //   providerResponse,
+  //   callback
+  // )
+  // ----------------------------------------------------------
+
+  if (
+    typeof providerNameOrCallback ===
+    "function"
+  ) {
+
+    callback =
+      providerNameOrCallback;
+
+  } else {
+
+    providerName =
+      providerNameOrCallback ||
+      null;
+
+  }
 
   const sql = `
     UPDATE communication_deliveries
     SET
       status = 'SENT',
+      provider_name = COALESCE(
+        ?,
+        provider_name
+      ),
       provider_message_id = ?,
       sent_at = NOW(),
       provider_response = ?,
@@ -219,12 +284,17 @@ const markDeliveryAsSent = (
   db.query(
     sql,
     [
-      providerMessageId || null,
+      providerName,
+
+      providerMessageId ||
+        null,
+
       providerResponse
         ? JSON.stringify(
             providerResponse
           )
         : null,
+
       deliveryId,
     ],
     callback
