@@ -1215,6 +1215,34 @@ const stopWorker =
 
 
 // ============================================================
+// GET WORKER STATUS
+// ============================================================
+
+const getStatus =
+  () => {
+
+    return {
+
+      running:
+        workerRunning,
+
+      workerId:
+        WORKER_ID,
+
+      pollIntervalMs:
+        POLL_INTERVAL_MS,
+
+      timerActive:
+        Boolean(
+          workerTimer
+        ),
+
+    };
+
+  };
+
+
+// ============================================================
 // EXPORTS
 // ============================================================
 
@@ -1231,5 +1259,7 @@ module.exports = {
   startWorker,
 
   stopWorker,
+
+  getStatus,
 
 };
