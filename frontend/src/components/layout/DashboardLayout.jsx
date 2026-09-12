@@ -2,47 +2,78 @@ import Sidebar from "../dashboard/Sidebar";
 import Topbar from "../dashboard/Topbar";
 import { Outlet } from "react-router-dom";
 
+
+// ============================================================
+// DASHBOARD LAYOUT
+// ============================================================
+
 function DashboardLayout() {
 
     return (
 
-        <div className="
-            min-h-screen
-            bg-slate-100
-            flex
-            overflow-hidden
-        ">
+        <div
+            className="
+                h-screen
+                w-full
+                overflow-hidden
+                bg-[#F5F9FF]
+                flex
+            "
+        >
 
             {/* =====================================================
                 STUDENT SIDEBAR
+
+                The sidebar is locked to the viewport height.
+                Only the main content area is allowed to scroll.
             ===================================================== */}
 
-            <Sidebar />
+            <aside
+                className="
+                    h-screen
+                    shrink-0
+                    overflow-hidden
+                "
+            >
+
+                <Sidebar />
+
+            </aside>
 
 
             {/* =====================================================
-                MAIN AREA
+                MAIN APPLICATION AREA
             ===================================================== */}
 
-            <div className="
-                flex-1
-                min-w-0
-                flex
-                flex-col
-                overflow-hidden
-            ">
+            <div
+                className="
+                    flex
+                    h-screen
+                    min-w-0
+                    flex-1
+                    flex-col
+                    overflow-hidden
+                "
+            >
 
                 {/* =================================================
                     STUDENT TOPBAR
+
+                    The topbar stays fixed within the application
+                    shell while the page content scrolls below it.
                 ================================================= */}
 
-                <div className="
-                    shrink-0
-                    p-3
-                    sm:p-4
-                    lg:p-5
-                    pb-0
-                ">
+                <div
+                    className="
+                        shrink-0
+                        px-3
+                        pt-3
+                        sm:px-4
+                        sm:pt-4
+                        lg:px-5
+                        lg:pt-5
+                    "
+                >
 
                     <Topbar />
 
@@ -51,23 +82,34 @@ function DashboardLayout() {
 
                 {/* =================================================
                     PAGE CONTENT
+
+                    IMPORTANT:
+                    This is the ONLY scrolling area.
                 ================================================= */}
 
-                <main className="
-                    flex-1
-                    min-w-0
-                    overflow-y-auto
-                    overflow-x-hidden
-                    p-3
-                    sm:p-4
-                    lg:p-5
-                ">
+                <main
+                    className="
+                        min-h-0
+                        min-w-0
+                        flex-1
+                        overflow-x-hidden
+                        overflow-y-auto
+                        px-3
+                        pb-3
+                        sm:px-4
+                        sm:pb-4
+                        lg:px-5
+                        lg:pb-5
+                    "
+                >
 
-                    <div className="
-                        w-full
-                        max-w-[1700px]
-                        mx-auto
-                    ">
+                    <div
+                        className="
+                            mx-auto
+                            w-full
+                            max-w-[1700px]
+                        "
+                    >
 
                         <Outlet />
 
@@ -82,5 +124,6 @@ function DashboardLayout() {
     );
 
 }
+
 
 export default DashboardLayout;

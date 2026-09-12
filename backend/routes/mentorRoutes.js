@@ -11,6 +11,32 @@ const authorizeRoles =
 const mentorController =
   require("../controllers/mentorController");
 
+
+// ======================================
+// PUBLIC MENTOR DIRECTORY
+// READ ONLY
+// ======================================
+//
+// This endpoint is intentionally separate
+// from the admin mentor-management endpoint.
+//
+// Public pages must never use:
+//
+//   /api/admin/mentors
+//
+// because that endpoint is protected for
+// administrative operations.
+//
+// Only non-sensitive mentor profile fields
+// are returned by the public controller.
+//
+
+router.get(
+  "/public",
+  mentorController.getPublicMentors
+);
+
+
 // ======================================
 // CREATE MENTOR
 // ADMIN ONLY
@@ -22,6 +48,7 @@ router.post(
   authorizeRoles("admin"),
   mentorController.createMentor
 );
+
 
 // ======================================
 // GET ALL MENTORS
@@ -35,6 +62,7 @@ router.get(
   mentorController.getMentors
 );
 
+
 // ======================================
 // UPDATE MENTOR
 // ADMIN ONLY
@@ -47,6 +75,7 @@ router.put(
   mentorController.updateMentor
 );
 
+
 // ======================================
 // DELETE MENTOR
 // ADMIN ONLY
@@ -58,5 +87,6 @@ router.delete(
   authorizeRoles("admin"),
   mentorController.deleteMentor
 );
+
 
 module.exports = router;

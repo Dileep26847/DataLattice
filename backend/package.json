@@ -22,8 +22,11 @@
     "multer": "^2.2.0",
     "mysql2": "^3.23.2",
     "nodemailer": "^9.0.3",
+    "otplib": "^13.5.0",
+    "qrcode": "^1.5.4",
     "razorpay": "^2.9.8",
-    "react-player": "^3.4.0"
+    "react-player": "^3.4.0",
+    "twilio": "^6.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

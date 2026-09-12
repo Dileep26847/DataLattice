@@ -14,6 +14,11 @@ import {
 } from "../../services/studentDashboardService";
 
 
+// ============================================================
+// DATALATTICE STUDENT DASHBOARD
+// STATS CARDS
+// ============================================================
+
 function StatsCards() {
 
     const user = JSON.parse(
@@ -139,13 +144,34 @@ function StatsCards() {
 
 
     // ========================================================
-    // CARDS
+    // SAFE PROGRESS
+    // ========================================================
+
+    const progressValue =
+        Math.min(
+
+            100,
+
+            Math.max(
+
+                0,
+
+                Number(
+                    stats.overallProgress || 0
+                )
+
+            )
+
+        );
+
+
+    // ========================================================
+    // CARD CONFIGURATION
     // ========================================================
 
     const cards = [
 
         {
-
             title:
                 "Courses Enrolled",
 
@@ -158,13 +184,21 @@ function StatsCards() {
             icon:
                 <FaBookOpen />,
 
-            gradient:
-                "from-indigo-600 to-blue-500",
+            cardColor:
+                "#D2E4D4",
 
+            iconColor:
+                "#B8D1BA",
+
+            iconText:
+                "#0B1B3A",
+
+            accent:
+                "#7FAF84",
         },
 
-        {
 
+        {
             title:
                 "Completed Lessons",
 
@@ -172,18 +206,26 @@ function StatsCards() {
                 stats.completedLessons,
 
             subtitle:
-                "Keep Learning 🚀",
+                "Keep Learning",
 
             icon:
                 <FaClipboardCheck />,
 
-            gradient:
-                "from-green-600 to-emerald-500",
+            cardColor:
+                "#C8E2F2",
 
+            iconColor:
+                "#A7CDDF",
+
+            iconText:
+                "#1463FF",
+
+            accent:
+                "#06B6D4",
         },
 
-        {
 
+        {
             title:
                 "Pending Assignments",
 
@@ -196,18 +238,26 @@ function StatsCards() {
             icon:
                 <FaTasks />,
 
-            gradient:
-                "from-orange-500 to-red-500",
+            cardColor:
+                "#FCE2C8",
 
+            iconColor:
+                "#E7CDA7",
+
+            iconText:
+                "#0B1B3A",
+
+            accent:
+                "#D59A5B",
         },
 
-        {
 
+        {
             title:
                 "Overall Progress",
 
             value:
-                `${stats.overallProgress}%`,
+                `${progressValue}%`,
 
             subtitle:
                 "Course Progress",
@@ -215,9 +265,20 @@ function StatsCards() {
             icon:
                 <FaChartLine />,
 
-            gradient:
-                "from-purple-600 to-pink-500",
+            cardColor:
+                "#ECD9F5",
 
+            iconColor:
+                "#D9BEE8",
+
+            iconText:
+                "#1463FF",
+
+            accent:
+                "#9B70B5",
+
+            progress:
+                progressValue,
         },
 
     ];
@@ -231,14 +292,29 @@ function StatsCards() {
 
         return (
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div
+                className="
+                    grid
+                    grid-cols-1
+                    gap-4
+                    sm:grid-cols-2
+                    xl:grid-cols-4
+                "
+            >
 
                 {cards.map(
                     (_, index) => (
 
                         <div
                             key={index}
-                            className="h-40 rounded-3xl bg-slate-200 animate-pulse"
+                            className="
+                                h-[154px]
+                                animate-pulse
+                                rounded-2xl
+                                border
+                                border-[#E6EDF7]
+                                bg-white
+                            "
                         />
 
                     )
@@ -257,7 +333,15 @@ function StatsCards() {
 
     return (
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div
+            className="
+                grid
+                grid-cols-1
+                gap-4
+                sm:grid-cols-2
+                xl:grid-cols-4
+            "
+        >
 
             {cards.map(
                 (card, index) => (
@@ -268,7 +352,7 @@ function StatsCards() {
 
                         initial={{
                             opacity: 0,
-                            y: 40,
+                            y: 12,
                         }}
 
                         animate={{
@@ -278,62 +362,261 @@ function StatsCards() {
 
                         transition={{
                             delay:
-                                index * 0.1,
+                                index * 0.07,
 
                             duration:
                                 0.4,
+
+                            ease:
+                                [0.22, 1, 0.36, 1],
                         }}
 
                         whileHover={{
-                            y: -8,
-                            scale: 1.03,
+                            y: -3,
                         }}
 
-                        className={`
-                            bg-gradient-to-r
-                            ${card.gradient}
-                            rounded-3xl
-                            shadow-xl
-                            p-7
-                            text-white
-                        `}
+                        style={{
+                            backgroundColor:
+                                card.cardColor,
+                        }}
 
+                        className="
+                            group
+                            relative
+                            min-w-0
+                            overflow-hidden
+                            rounded-2xl
+                            border
+                            border-white/70
+                            p-5
+                            shadow-[0_7px_22px_rgba(11,27,58,0.055)]
+                            transition-all
+                            duration-300
+                            hover:shadow-[0_12px_30px_rgba(11,27,58,0.09)]
+                        "
                     >
 
-                        <div className="flex justify-between">
+                        {/* ==================================================
+                            TOP ACCENT
+                        ================================================== */}
 
-                            <div>
+                        <div
+                            className="
+                                absolute
+                                inset-x-0
+                                top-0
+                                h-[3px]
+                            "
+                            style={{
+                                backgroundColor:
+                                    card.accent,
+                            }}
+                        />
 
-                                <p className="text-white/80 text-sm">
+
+                        {/* ==================================================
+                            HEADER
+                        ================================================== */}
+
+                        <div
+                            className="
+                                flex
+                                items-start
+                                justify-between
+                                gap-4
+                            "
+                        >
+
+                            <div
+                                className="
+                                    min-w-0
+                                "
+                            >
+
+                                <p
+                                    className="
+                                        truncate
+                                        text-[12px]
+                                        font-medium
+                                        leading-5
+                                        text-[#334155]
+                                    "
+                                >
 
                                     {card.title}
 
                                 </p>
 
 
-                                <h2 className="text-4xl font-black mt-3">
+                                <p
+                                    className="
+                                        mt-2
+                                        text-[30px]
+                                        font-bold
+                                        leading-none
+                                        tracking-[-0.035em]
+                                        text-[#0B1B3A]
+                                    "
+                                >
 
                                     {card.value}
-
-                                </h2>
-
-
-                                <p className="mt-4 text-white/80">
-
-                                    {card.subtitle}
 
                                 </p>
 
                             </div>
 
 
-                            <div className="w-16 h-16 rounded-2xl bg-white/20 flex justify-center items-center text-3xl">
+                            {/* ==================================================
+                                ICON
+                            ================================================== */}
+
+                            <div
+                                className="
+                                    flex
+                                    h-11
+                                    w-11
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-xl
+                                    transition-transform
+                                    duration-300
+                                    group-hover:scale-105
+                                "
+                                style={{
+                                    backgroundColor:
+                                        card.iconColor,
+
+                                    color:
+                                        card.iconText,
+                                }}
+                            >
 
                                 {card.icon}
 
                             </div>
 
                         </div>
+
+
+                        {/* ==================================================
+                            FOOTER
+                        ================================================== */}
+
+                        <div
+                            className="
+                                mt-5
+                                flex
+                                min-h-[20px]
+                                items-center
+                                justify-between
+                                gap-3
+                            "
+                        >
+
+                            <p
+                                className="
+                                    text-[11px]
+                                    font-medium
+                                    text-[#475569]
+                                "
+                            >
+
+                                {card.subtitle}
+
+                            </p>
+
+
+                            {card.title ===
+                                "Completed Lessons" && (
+
+                                <span
+                                    className="
+                                        h-1.5
+                                        w-1.5
+                                        shrink-0
+                                        rounded-full
+                                        bg-[#06B6D4]
+                                    "
+                                />
+
+                            )}
+
+
+                            {card.title ===
+                                "Pending Assignments" && (
+
+                                <span
+                                    className="
+                                        rounded-full
+                                        bg-white/55
+                                        px-2
+                                        py-1
+                                        text-[9px]
+                                        font-semibold
+                                        text-[#0B1B3A]
+                                    "
+                                >
+
+                                    Action
+
+                                </span>
+
+                            )}
+
+                        </div>
+
+
+                        {/* ==================================================
+                            PROGRESS
+                        ================================================== */}
+
+                        {typeof card.progress ===
+                            "number" && (
+
+                            <div
+                                className="
+                                    mt-4
+                                    h-1.5
+                                    w-full
+                                    overflow-hidden
+                                    rounded-full
+                                    bg-white/60
+                                "
+                            >
+
+                                <motion.div
+                                    initial={{
+                                        width: 0,
+                                    }}
+
+                                    animate={{
+                                        width:
+                                            `${card.progress}%`,
+                                    }}
+
+                                    transition={{
+                                        delay:
+                                            0.3 +
+                                            index * 0.07,
+
+                                        duration:
+                                            0.8,
+
+                                        ease:
+                                            [0.22, 1, 0.36, 1],
+                                    }}
+
+                                    className="
+                                        h-full
+                                        rounded-full
+                                        bg-[#1463FF]
+                                    "
+                                />
+
+                            </div>
+
+                        )}
 
                     </motion.div>
 

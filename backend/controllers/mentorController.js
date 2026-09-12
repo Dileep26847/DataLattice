@@ -145,6 +145,68 @@ exports.getMentors = (req, res) => {
 };
 
 // ======================================
+// Get Public Mentors
+// PUBLIC READ ONLY
+// ======================================
+//
+// The public website must never expose:
+//
+// - email
+// - phone
+// - password
+// - internal profile identifiers
+// - account metadata
+//
+// Only information appropriate for the
+// public mentor directory is returned.
+//
+
+exports.getPublicMentors = (
+  req,
+  res
+) => {
+
+  mentorModel.getPublicMentors(
+
+    (
+      err,
+      mentors
+    ) => {
+
+      if (err) {
+
+        console.log(err);
+
+        return res.status(500).json({
+
+          success: false,
+
+          message:
+            "Unable to load mentors.",
+
+        });
+
+      }
+
+
+      res.json({
+
+        success: true,
+
+        total:
+          mentors.length,
+
+        mentors,
+
+      });
+
+    }
+
+  );
+
+};
+
+// ======================================
 // Update Mentor
 // ======================================
 

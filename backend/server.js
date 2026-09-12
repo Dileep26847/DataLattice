@@ -21,6 +21,13 @@ const communicationRuntime =
     require("./services/communication/communicationRuntime");
 
 // ======================================
+// CONTROLLER IMPORTS
+// ======================================
+
+const mentorController =
+    require("./controllers/mentorController");
+
+// ======================================
 // ROUTE IMPORTS
 // ======================================
 
@@ -172,6 +179,13 @@ const uploadRoutes =
 
 const communicationRoutes =
     require("./routes/communicationRoutes");
+
+// ======================================
+// AUTHENTICATOR / TOTP ROUTES
+// ======================================
+
+const totpRoutes =
+    require("./routes/totpRoutes");
 
 // ======================================
 // EXPRESS APP
@@ -519,6 +533,16 @@ app.use(
 );
 
 // ======================================
+// PUBLIC MENTORS
+// READ ONLY
+// ======================================
+
+app.get(
+    "/api/mentors/public",
+    mentorController.getPublicMentors
+);
+
+// ======================================
 // ADMIN MENTORS
 // ======================================
 
@@ -561,6 +585,15 @@ app.use(
 app.use(
     "/api/communication",
     communicationRoutes
+);
+
+// ======================================
+// AUTHENTICATOR / TOTP
+// ======================================
+
+app.use(
+    "/api/totp",
+    totpRoutes
 );
 
 // ======================================
@@ -637,6 +670,10 @@ const server =
             );
 
             console.log(
+                `🌐 Public Mentors: http://localhost:${PORT}/api/mentors/public`
+            );
+
+            console.log(
                 `📚 Admin Courses: http://localhost:${PORT}/api/admin/courses`
             );
 
@@ -670,7 +707,7 @@ const server =
 
             console.log("======================================");
             console.log("");
-
+            
             // ======================================
             // COMMUNICATION RUNTIME
             // ======================================

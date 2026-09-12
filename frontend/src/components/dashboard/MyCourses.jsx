@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+
+import {
+    motion,
+} from "framer-motion";
+
+import {
+    useNavigate,
+} from "react-router-dom";
 
 import {
     FaPlay,
@@ -15,9 +21,14 @@ import {
 } from "../../services/studentDashboardService";
 
 
+// ============================================================
+// MY COURSES
+// ============================================================
+
 function MyCourses() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
 
     // ============================================================
@@ -43,7 +54,8 @@ function MyCourses() {
     };
 
 
-    const user = getStoredUser();
+    const user =
+        getStoredUser();
 
 
     // ============================================================
@@ -87,7 +99,9 @@ function MyCourses() {
             setLoading(true);
 
             const data =
-                await getMyCourses(user.id);
+                await getMyCourses(
+                    user.id
+                );
 
 
             setCourses(
@@ -171,44 +185,61 @@ function MyCourses() {
 
             <section>
 
-                <div className="
-                    flex
-                    items-end
-                    justify-between
-                    mb-5
-                ">
+                {/* ==================================================
+                    HEADER SKELETON
+                ================================================== */}
+
+                <div
+                    className="
+                        mb-5
+                        flex
+                        items-end
+                        justify-between
+                    "
+                >
 
                     <div>
 
-                        <div className="
-                            h-4
-                            w-28
-                            bg-slate-200
-                            rounded
-                            animate-pulse
-                        " />
+                        <div
+                            className="
+                                h-3
+                                w-24
+                                animate-pulse
+                                rounded
+                                bg-[#E6EDF7]
+                            "
+                        />
 
-                        <div className="
-                            h-8
-                            w-44
-                            bg-slate-200
-                            rounded
-                            mt-2
-                            animate-pulse
-                        " />
+
+                        <div
+                            className="
+                                mt-2
+                                h-7
+                                w-40
+                                animate-pulse
+                                rounded-lg
+                                bg-[#E6EDF7]
+                            "
+                        />
 
                     </div>
 
                 </div>
 
 
-                <div className="
-                    grid
-                    grid-cols-1
-                    sm:grid-cols-2
-                    xl:grid-cols-3
-                    gap-5
-                ">
+                {/* ==================================================
+                    COURSE SKELETONS
+                ================================================== */}
+
+                <div
+                    className="
+                        grid
+                        grid-cols-1
+                        gap-5
+                        sm:grid-cols-2
+                        xl:grid-cols-3
+                    "
+                >
 
                     {[1, 2, 3].map(
                         (item) => (
@@ -216,60 +247,82 @@ function MyCourses() {
                             <div
                                 key={item}
                                 className="
-                                    bg-white
-                                    rounded-2xl
-                                    border
-                                    border-slate-200
                                     overflow-hidden
+                                    rounded-[22px]
+                                    border
+                                    border-[#E6EDF7]
+                                    bg-white
+                                    shadow-[0_8px_24px_rgba(11,27,58,0.04)]
                                     animate-pulse
                                 "
                             >
 
-                                <div className="
-                                    h-40
-                                    bg-slate-200
-                                " />
+                                <div
+                                    className="
+                                        h-40
+                                        bg-[#EAF2FF]
+                                    "
+                                />
 
-                                <div className="p-5">
 
-                                    <div className="
-                                        h-4
-                                        w-24
-                                        bg-slate-200
-                                        rounded
-                                    " />
+                                <div
+                                    className="
+                                        p-5
+                                    "
+                                >
 
-                                    <div className="
-                                        h-6
-                                        w-full
-                                        bg-slate-200
-                                        rounded
-                                        mt-4
-                                    " />
+                                    <div
+                                        className="
+                                            h-3
+                                            w-24
+                                            rounded
+                                            bg-[#E6EDF7]
+                                        "
+                                    />
 
-                                    <div className="
-                                        h-3
-                                        w-2/3
-                                        bg-slate-200
-                                        rounded
-                                        mt-3
-                                    " />
 
-                                    <div className="
-                                        h-2
-                                        w-full
-                                        bg-slate-200
-                                        rounded
-                                        mt-6
-                                    " />
+                                    <div
+                                        className="
+                                            mt-4
+                                            h-5
+                                            w-full
+                                            rounded
+                                            bg-[#E6EDF7]
+                                        "
+                                    />
 
-                                    <div className="
-                                        h-11
-                                        w-full
-                                        bg-slate-200
-                                        rounded-xl
-                                        mt-5
-                                    " />
+
+                                    <div
+                                        className="
+                                            mt-2
+                                            h-3
+                                            w-2/3
+                                            rounded
+                                            bg-[#E6EDF7]
+                                        "
+                                    />
+
+
+                                    <div
+                                        className="
+                                            mt-6
+                                            h-2
+                                            w-full
+                                            rounded-full
+                                            bg-[#E6EDF7]
+                                        "
+                                    />
+
+
+                                    <div
+                                        className="
+                                            mt-5
+                                            h-10
+                                            w-full
+                                            rounded-xl
+                                            bg-[#E6EDF7]
+                                        "
+                                    />
 
                                 </div>
 
@@ -297,33 +350,45 @@ function MyCourses() {
 
             <section>
 
-                <div className="
-                    flex
-                    items-end
-                    justify-between
-                    mb-5
-                ">
+                {/* ==================================================
+                    HEADER
+                ================================================== */}
+
+                <div
+                    className="
+                        mb-5
+                        flex
+                        items-end
+                        justify-between
+                    "
+                >
 
                     <div>
 
-                        <p className="
-                            text-indigo-600
-                            text-sm
-                            font-bold
-                        ">
+                        <p
+                            className="
+                                text-xs
+                                font-bold
+                                uppercase
+                                tracking-[0.12em]
+                                text-[#1463FF]
+                            "
+                        >
 
                             Continue Learning
 
                         </p>
 
 
-                        <h2 className="
-                            text-2xl
-                            sm:text-3xl
-                            font-black
-                            text-slate-900
-                            mt-1
-                        ">
+                        <h2
+                            className="
+                                mt-1
+                                text-2xl
+                                font-bold
+                                tracking-[-0.03em]
+                                text-[#0B1B3A]
+                            "
+                        >
 
                             My Courses
 
@@ -334,52 +399,68 @@ function MyCourses() {
                 </div>
 
 
-                <div className="
-                    rounded-2xl
-                    bg-white
-                    border
-                    border-slate-200
-                    p-8
-                    text-center
-                ">
+                {/* ==================================================
+                    EMPTY CARD
+                ================================================== */}
 
-                    <div className="
-                        w-14
-                        h-14
-                        mx-auto
-                        rounded-2xl
-                        bg-indigo-50
-                        text-indigo-600
-                        flex
-                        items-center
-                        justify-center
-                        text-xl
-                    ">
+                <div
+                    className="
+                        rounded-[22px]
+                        border
+                        border-[#E6EDF7]
+                        bg-white
+                        px-6
+                        py-9
+                        text-center
+                        shadow-[0_8px_24px_rgba(11,27,58,0.04)]
+                    "
+                >
 
-                        <FaBookOpen />
+                    <div
+                        className="
+                            mx-auto
+                            flex
+                            h-14
+                            w-14
+                            items-center
+                            justify-center
+                            rounded-2xl
+                            bg-[#EAF2FF]
+                            text-[#1463FF]
+                        "
+                    >
+
+                        <FaBookOpen
+                            size={20}
+                        />
 
                     </div>
 
 
-                    <h3 className="
-                        mt-4
-                        text-xl
-                        font-black
-                        text-slate-900
-                    ">
+                    <h3
+                        className="
+                            mt-4
+                            text-lg
+                            font-bold
+                            text-[#0B1B3A]
+                        "
+                    >
 
                         No Courses Yet
 
                     </h3>
 
 
-                    <p className="
-                        mt-2
-                        text-sm
-                        text-slate-500
-                    ">
+                    <p
+                        className="
+                            mt-2
+                            text-sm
+                            text-[#64748B]
+                        "
+                    >
 
-                        You haven't enrolled in any courses yet.
+                        You haven't enrolled in any
+                        courses yet.
 
                     </p>
 
@@ -404,34 +485,43 @@ function MyCourses() {
                 HEADER
             ==================================================== */}
 
-            <div className="
-                flex
-                items-end
-                justify-between
-                gap-4
-                mb-5
-            ">
+            <div
+                className="
+                    mb-5
+                    flex
+                    items-end
+                    justify-between
+                    gap-4
+                "
+            >
 
                 <div>
 
-                    <p className="
-                        text-indigo-600
-                        text-sm
-                        font-bold
-                    ">
+                    <p
+                        className="
+                            text-xs
+                            font-bold
+                            uppercase
+                            tracking-[0.12em]
+                            text-[#1463FF]
+                        "
+                    >
 
                         Continue Learning
 
                     </p>
 
 
-                    <h2 className="
-                        text-2xl
-                        sm:text-3xl
-                        font-black
-                        text-slate-900
-                        mt-1
-                    ">
+                    <h2
+                        className="
+                            mt-1
+                            text-2xl
+                            font-bold
+                            tracking-[-0.03em]
+                            text-[#0B1B3A]
+                            sm:text-[26px]
+                        "
+                    >
 
                         My Courses
 
@@ -440,20 +530,31 @@ function MyCourses() {
                 </div>
 
 
-                <span className="
-                    shrink-0
-                    text-xs
-                    sm:text-sm
-                    font-semibold
-                    text-slate-500
-                ">
+                {/* ==================================================
+                    COURSE COUNT
+                ================================================== */}
+
+                <div
+                    className="
+                        shrink-0
+                        rounded-full
+                        border
+                        border-[#DCEAFF]
+                        bg-[#F5F9FF]
+                        px-3
+                        py-1.5
+                        text-[11px]
+                        font-bold
+                        text-[#1463FF]
+                    "
+                >
 
                     {courses.length}{" "}
                     {courses.length === 1
                         ? "course"
                         : "courses"}
 
-                </span>
+                </div>
 
             </div>
 
@@ -462,14 +563,16 @@ function MyCourses() {
                 COURSE GRID
             ==================================================== */}
 
-            <div className="
-                grid
-                grid-cols-1
-                sm:grid-cols-2
-                xl:grid-cols-3
-                gap-5
-                items-stretch
-            ">
+            <div
+                className="
+                    grid
+                    grid-cols-1
+                    items-stretch
+                    gap-5
+                    sm:grid-cols-2
+                    xl:grid-cols-3
+                "
+            >
 
                 {courses.map(
                     (course) => {
@@ -527,130 +630,156 @@ function MyCourses() {
                         return (
 
                             <motion.article
-
                                 key={
                                     courseId ||
                                     course.enrollment_id
                                 }
-
+                                initial={{
+                                    opacity: 0,
+                                    y: 10,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                    y: 0,
+                                }}
                                 whileHover={{
                                     y: -3,
                                 }}
-
                                 transition={{
-                                    duration: 0.18,
+                                    duration: 0.22,
                                 }}
-
                                 className="
                                     group
-                                    h-full
-                                    overflow-hidden
-                                    rounded-2xl
-                                    bg-white
-                                    border
-                                    border-slate-200
-                                    shadow-sm
-                                    hover:shadow-lg
-                                    hover:border-indigo-100
                                     flex
+                                    h-full
+                                    min-w-0
                                     flex-col
+                                    overflow-hidden
+                                    rounded-[22px]
+                                    border
+                                    border-[#E6EDF7]
+                                    bg-white
+                                    shadow-[0_8px_24px_rgba(11,27,58,0.045)]
+                                    transition-shadow
+                                    duration-300
+                                    hover:border-[#D5E5F7]
+                                    hover:shadow-[0_14px_34px_rgba(11,27,58,0.08)]
                                 "
                             >
 
                                 {/* =========================================
-                                    IMAGE
+                                    COURSE IMAGE
                                 ========================================= */}
 
-                                <div className="
-                                    relative
-                                    h-40
-                                    shrink-0
-                                    overflow-hidden
-                                    bg-slate-100
-                                ">
+                                <div
+                                    className="
+                                        relative
+                                        h-[170px]
+                                        shrink-0
+                                        overflow-hidden
+                                        bg-[#EAF2FF]
+                                    "
+                                >
 
                                     <img
                                         src={
                                             course.thumbnail ||
-                                            "https://placehold.co/800x450?text=Data Lattice"
+                                            "https://placehold.co/800x450?text=Data%20Lattice"
                                         }
                                         alt={
                                             course.title ||
                                             "Course"
                                         }
                                         className="
-                                            w-full
                                             h-full
+                                            w-full
                                             object-cover
                                             transition-transform
                                             duration-500
-                                            group-hover:scale-105
+                                            group-hover:scale-[1.035]
                                         "
                                         onError={(
                                             event
                                         ) => {
 
                                             event.currentTarget.src =
-                                                "https://placehold.co/800x450?text=Data Lattice";
+                                                "https://placehold.co/800x450?text=Data%20Lattice";
 
                                         }}
                                     />
 
 
-                                    {/* Overlay */}
+                                    {/* =====================================
+                                        IMAGE OVERLAY
+                                    ===================================== */}
 
-                                    <div className="
-                                        absolute
-                                        inset-0
-                                        bg-gradient-to-t
-                                        from-black/35
-                                        via-transparent
-                                        to-transparent
-                                    " />
+                                    <div
+                                        className="
+                                            pointer-events-none
+                                            absolute
+                                            inset-0
+                                            bg-gradient-to-t
+                                            from-[#0B1B3A]/30
+                                            via-transparent
+                                            to-transparent
+                                        "
+                                    />
 
 
-                                    {/* Progress */}
+                                    {/* =====================================
+                                        PROGRESS BADGE
+                                    ===================================== */}
 
-                                    <div className="
-                                        absolute
-                                        top-3
-                                        right-3
-                                        px-2.5
-                                        py-1
-                                        rounded-full
-                                        bg-white/95
-                                        text-indigo-600
-                                        text-xs
-                                        font-black
-                                        shadow-sm
-                                    ">
+                                    <div
+                                        className="
+                                            absolute
+                                            right-3
+                                            top-3
+                                            rounded-full
+                                            border
+                                            border-white/70
+                                            bg-white/95
+                                            px-2.5
+                                            py-1
+                                            text-[10px]
+                                            font-bold
+                                            text-[#1463FF]
+                                            shadow-sm
+                                        "
+                                    >
 
                                         {progress}%
 
                                     </div>
 
 
-                                    {/* Completed */}
+                                    {/* =====================================
+                                        COMPLETED BADGE
+                                    ===================================== */}
 
                                     {completed && (
 
-                                        <div className="
-                                            absolute
-                                            top-3
-                                            left-3
-                                            inline-flex
-                                            items-center
-                                            gap-1.5
-                                            px-2.5
-                                            py-1
-                                            rounded-full
-                                            bg-green-600
-                                            text-white
-                                            text-[11px]
-                                            font-bold
-                                        ">
+                                        <div
+                                            className="
+                                                absolute
+                                                left-3
+                                                top-3
+                                                inline-flex
+                                                items-center
+                                                gap-1.5
+                                                rounded-full
+                                                bg-[#D2E4D4]
+                                                px-2.5
+                                                py-1
+                                                text-[10px]
+                                                font-bold
+                                                text-[#315B3A]
+                                            "
+                                        >
 
-                                            <FaCheckCircle />
+                                            <FaCheckCircle
+                                                size={10}
+                                            />
 
                                             Completed
 
@@ -662,41 +791,69 @@ function MyCourses() {
 
 
                                 {/* =========================================
-                                    CONTENT
+                                    COURSE CONTENT
                                 ========================================= */}
 
-                                <div className="
-                                    flex
-                                    flex-col
-                                    flex-1
-                                    p-5
-                                ">
-
-                                    {/* Meta */}
-
-                                    <div className="
+                                <div
+                                    className="
                                         flex
-                                        items-center
-                                        justify-between
-                                        gap-3
-                                        text-xs
-                                        text-slate-500
-                                    ">
+                                        flex-1
+                                        flex-col
+                                        p-5
+                                    "
+                                >
 
-                                        <span className="
-                                            inline-flex
+                                    {/* =====================================
+                                        META
+                                    ===================================== */}
+
+                                    <div
+                                        className="
+                                            flex
                                             items-center
-                                            gap-1.5
-                                            min-w-0
-                                        ">
+                                            justify-between
+                                            gap-3
+                                        "
+                                    >
 
-                                            <FaClock
-                                                className="shrink-0"
-                                            />
+                                        <span
+                                            className="
+                                                inline-flex
+                                                min-w-0
+                                                items-center
+                                                gap-1.5
+                                                text-[11px]
+                                                font-medium
+                                                text-[#64748B]
+                                            "
+                                        >
 
-                                            <span className="
-                                                truncate
-                                            ">
+                                            <span
+                                                className="
+                                                    flex
+                                                    h-6
+                                                    w-6
+                                                    shrink-0
+                                                    items-center
+                                                    justify-center
+                                                    rounded-lg
+                                                    bg-[#F5F9FF]
+                                                    text-[#1463FF]
+                                                "
+                                            >
+
+                                                <FaClock
+                                                    size={9}
+                                                />
+
+                                            </span>
+
+
+                                            <span
+                                                className="
+                                                    truncate
+                                                "
+                                            >
 
                                                 {course.duration ||
                                                     "Self paced"}
@@ -706,10 +863,19 @@ function MyCourses() {
                                         </span>
 
 
-                                        <span className="
-                                            shrink-0
-                                            capitalize
-                                        ">
+                                        <span
+                                            className="
+                                                shrink-0
+                                                rounded-full
+                                                bg-[#F5F9FF]
+                                                px-2.5
+                                                py-1
+                                                text-[10px]
+                                                font-semibold
+                                                capitalize
+                                                text-[#64748B]
+                                            "
+                                        >
 
                                             {course.level ||
                                                 "All Levels"}
@@ -719,17 +885,22 @@ function MyCourses() {
                                     </div>
 
 
-                                    {/* Title */}
+                                    {/* =====================================
+                                        TITLE
+                                    ===================================== */}
 
-                                    <h3 className="
-                                        mt-3
-                                        text-lg
-                                        font-black
-                                        leading-6
-                                        text-slate-900
-                                        line-clamp-2
-                                        min-h-[48px]
-                                    ">
+                                    <h3
+                                        className="
+                                            mt-3
+                                            min-h-[48px]
+                                            line-clamp-2
+                                            text-[17px]
+                                            font-bold
+                                            leading-6
+                                            tracking-[-0.02em]
+                                            text-[#0B1B3A]
+                                        "
+                                    >
 
                                         {course.title ||
                                             "Untitled Course"}
@@ -737,16 +908,20 @@ function MyCourses() {
                                     </h3>
 
 
-                                    {/* Description */}
+                                    {/* =====================================
+                                        DESCRIPTION
+                                    ===================================== */}
 
-                                    <p className="
-                                        mt-2
-                                        text-xs
-                                        leading-5
-                                        text-slate-500
-                                        line-clamp-2
-                                        min-h-[40px]
-                                    ">
+                                    <p
+                                        className="
+                                            mt-2
+                                            min-h-[40px]
+                                            line-clamp-2
+                                            text-xs
+                                            leading-5
+                                            text-[#64748B]
+                                        "
+                                    >
 
                                         {course.description ||
                                             "Continue your learning journey and build your skills."}
@@ -758,31 +933,42 @@ function MyCourses() {
                                         PROGRESS
                                     ===================================== */}
 
-                                    <div className="mt-5">
+                                    <div
+                                        className="
+                                            mt-5
+                                        "
+                                    >
 
-                                        <div className="
-                                            flex
-                                            items-center
-                                            justify-between
-                                            mb-2
-                                        ">
+                                        <div
+                                            className="
+                                                mb-2
+                                                flex
+                                                items-center
+                                                justify-between
+                                                gap-3
+                                            "
+                                        >
 
-                                            <span className="
-                                                text-xs
-                                                font-semibold
-                                                text-slate-600
-                                            ">
+                                            <span
+                                                className="
+                                                    text-[11px]
+                                                    font-semibold
+                                                    text-[#64748B]
+                                                "
+                                            >
 
                                                 Progress
 
                                             </span>
 
 
-                                            <span className="
-                                                text-xs
-                                                font-black
-                                                text-indigo-600
-                                            ">
+                                            <span
+                                                className="
+                                                    text-[11px]
+                                                    font-bold
+                                                    text-[#1463FF]
+                                                "
+                                            >
 
                                                 {progress}%
 
@@ -791,13 +977,15 @@ function MyCourses() {
                                         </div>
 
 
-                                        <div className="
-                                            h-2
-                                            w-full
-                                            rounded-full
-                                            bg-slate-100
-                                            overflow-hidden
-                                        ">
+                                        <div
+                                            className="
+                                                h-1.5
+                                                w-full
+                                                overflow-hidden
+                                                rounded-full
+                                                bg-[#EAF2FF]
+                                            "
+                                        >
 
                                             <motion.div
                                                 initial={{
@@ -809,22 +997,25 @@ function MyCourses() {
                                                 }}
                                                 transition={{
                                                     duration: 0.7,
+                                                    ease: "easeOut",
                                                 }}
                                                 className="
                                                     h-full
                                                     rounded-full
-                                                    bg-indigo-600
+                                                    bg-[#1463FF]
                                                 "
                                             />
 
                                         </div>
 
 
-                                        <p className="
-                                            mt-2
-                                            text-[11px]
-                                            text-slate-400
-                                        ">
+                                        <p
+                                            className="
+                                                mt-2
+                                                text-[10px]
+                                                text-[#64748B]
+                                            "
+                                        >
 
                                             {totalLessons > 0
                                                 ? `${completedLessons} of ${totalLessons} lessons completed`
@@ -836,10 +1027,11 @@ function MyCourses() {
 
 
                                     {/* =====================================
-                                        BUTTON
+                                        ACTION
                                     ===================================== */}
 
                                     <button
+                                        type="button"
                                         onClick={() =>
                                             openCourse(
                                                 course
@@ -850,43 +1042,44 @@ function MyCourses() {
                                         }
                                         className="
                                             mt-5
-                                            w-full
-                                            rounded-xl
-                                            bg-indigo-600
-                                            px-4
-                                            py-3
-                                            text-sm
-                                            font-bold
-                                            text-white
                                             flex
+                                            w-full
                                             items-center
                                             justify-center
                                             gap-2
-                                            transition
-                                            hover:bg-indigo-700
-                                            disabled:opacity-50
+                                            rounded-xl
+                                            bg-[#1463FF]
+                                            px-4
+                                            py-3
+                                            text-xs
+                                            font-bold
+                                            text-white
+                                            shadow-[0_7px_18px_rgba(20,99,255,0.14)]
+                                            transition-all
+                                            duration-200
+                                            hover:bg-[#0B1B3A]
+                                            hover:shadow-[0_9px_22px_rgba(11,27,58,0.14)]
                                             disabled:cursor-not-allowed
+                                            disabled:opacity-50
                                         "
                                     >
 
                                         <FaPlay
-                                            className="text-xs"
+                                            size={9}
                                         />
 
 
                                         <span>
-
                                             {completed
                                                 ? "Review Course"
                                                 : "Continue Learning"}
-
                                         </span>
 
 
                                         <FaArrowRight
                                             className="
                                                 ml-auto
-                                                text-[10px]
+                                                text-[9px]
                                             "
                                         />
 

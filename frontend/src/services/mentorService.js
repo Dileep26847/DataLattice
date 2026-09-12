@@ -29,6 +29,21 @@ export const getMentors = async () => {
 
 };
 
+// ======================================
+// GET PUBLIC MENTORS
+// PUBLIC WEBSITE
+// ======================================
+
+export const getPublicMentors = async () => {
+
+  const response = await axios.get(
+    `${API_BASE_URL}/mentors/public`
+  );
+
+  return response.data;
+
+};
+
 // ===============================
 // Create Mentor
 // ===============================

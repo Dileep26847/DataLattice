@@ -16,7 +16,7 @@ exports.getDashboardStats = (
 
 
     // ========================================================
-    // VALIDATE STUDENT ID
+    // VALIDATE REQUESTED STUDENT ID
     // ========================================================
 
     if (!requestedStudentId) {
@@ -34,28 +34,46 @@ exports.getDashboardStats = (
 
 
     // ========================================================
+    // DETERMINE TARGET STUDENT
+    // ========================================================
+
+    let targetStudentId =
+        requestedStudentId;
+
+
+    // ========================================================
     // STUDENT OWNERSHIP CHECK
     // ========================================================
 
     if (
-
         req.user.role === "student"
-
-        &&
-
-        Number(req.user.id) !==
-        requestedStudentId
-
     ) {
 
-        return res.status(403).json({
+        targetStudentId =
+            Number(req.user.id);
 
-            success: false,
 
-            message:
-                "You are not authorized to access this dashboard"
+        // ====================================================
+        // PREVENT CROSS-STUDENT ACCESS
+        // ====================================================
 
-        });
+        if (
+            !targetStudentId
+            ||
+            targetStudentId !==
+            requestedStudentId
+        ) {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message:
+                    "You are not authorized to access this dashboard"
+
+            });
+
+        }
 
     }
 
@@ -66,7 +84,7 @@ exports.getDashboardStats = (
 
     studentDashboardModel.getDashboardStats(
 
-        requestedStudentId,
+        targetStudentId,
 
         (err, result) => {
 
@@ -163,7 +181,7 @@ exports.getMyCourses = (
 
 
     // ========================================================
-    // VALIDATE STUDENT ID
+    // VALIDATE REQUESTED STUDENT ID
     // ========================================================
 
     if (!requestedStudentId) {
@@ -181,28 +199,46 @@ exports.getMyCourses = (
 
 
     // ========================================================
+    // DETERMINE TARGET STUDENT
+    // ========================================================
+
+    let targetStudentId =
+        requestedStudentId;
+
+
+    // ========================================================
     // OWNERSHIP CHECK
     // ========================================================
 
     if (
-
         req.user.role === "student"
-
-        &&
-
-        Number(req.user.id) !==
-        requestedStudentId
-
     ) {
 
-        return res.status(403).json({
+        targetStudentId =
+            Number(req.user.id);
 
-            success: false,
 
-            message:
-                "You are not authorized to access these courses"
+        // ====================================================
+        // PREVENT CROSS-STUDENT ACCESS
+        // ====================================================
 
-        });
+        if (
+            !targetStudentId
+            ||
+            targetStudentId !==
+            requestedStudentId
+        ) {
+
+            return res.status(403).json({
+
+                success: false,
+
+                message:
+                    "You are not authorized to access these courses"
+
+            });
+
+        }
 
     }
 
@@ -213,7 +249,7 @@ exports.getMyCourses = (
 
     studentDashboardModel.getMyCourses(
 
-        requestedStudentId,
+        targetStudentId,
 
         (err, courses) => {
 

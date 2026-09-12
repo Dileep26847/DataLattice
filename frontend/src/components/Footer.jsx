@@ -1,176 +1,649 @@
 import {
-  FaFacebook,
+  FaArrowUp,
+  FaChartLine,
+  FaDatabase,
+  FaGithub,
   FaInstagram,
   FaLinkedin,
-  FaGithub,
-  FaArrowUp,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+
+import {
+  Link,
+} from "react-router-dom";
+
+import dataLatticeLogo from "../assets/datalattice-logo.png";
+
 
 function Footer() {
+
+  const handleBackToTop = () => {
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
+  };
+
+
   return (
-    <footer className="bg-slate-950 text-white">
 
-      <div className="max-w-7xl mx-auto px-8 py-20">
+    <footer
+      id="footer"
+      className="
+        border-t
+        border-slate-800
+        bg-slate-950
+        text-white
+      "
+    >
 
-        <div className="grid md:grid-cols-4 gap-12">
+      <div
+        className="
+          mx-auto
+          max-w-7xl
+          px-6
+          py-16
+          sm:px-8
+          lg:px-12
+        "
+      >
 
-          {/* Logo */}
+        {/* ==================================================
+            MAIN FOOTER
+        ================================================== */}
+
+        <div
+          className="
+            grid
+            gap-12
+            md:grid-cols-2
+            lg:grid-cols-[1.4fr_0.7fr_0.8fr_0.9fr]
+          "
+        >
+
+          {/* ==================================================
+              BRAND
+          ================================================== */}
 
           <div>
 
-            <h2 className="text-4xl font-bold text-blue-500">
-              Data Lattice
-            </h2>
+            <Link
+              to="/"
+              className="
+                inline-flex
+                items-center
+                rounded-xl
+                focus:outline-none
+                focus:ring-2
+                focus:ring-cyan-400
+                focus:ring-offset-2
+                focus:ring-offset-slate-950
+              "
+              aria-label="DataLattice home"
+            >
 
-            <p className="mt-5 text-gray-400 leading-7">
-              Data Lattice is a modern Learning Management System helping students
-              master industry-ready skills through high-quality online courses.
+              <img
+                src={dataLatticeLogo}
+                alt="DataLattice"
+                className="
+                  w-[190px]
+                  max-w-full
+                  object-contain
+                  brightness-0
+                  invert
+                "
+              />
+
+            </Link>
+
+
+            <p
+              className="
+                mt-5
+                max-w-md
+                text-sm
+                leading-7
+                text-slate-400
+              "
+            >
+
+              DataLattice helps learners develop practical
+              Data Science and Data Analytics capability through
+              structured learning, hands-on practice, projects,
+              progress tracking and mentorship.
+
             </p>
 
-          </div>
 
-          {/* Links */}
+            {/* ==================================================
+                PROGRAM SIGNALS
+            ================================================== */}
 
-          <div>
+            <div
+              className="
+                mt-7
+                flex
+                flex-wrap
+                gap-2
+              "
+            >
 
-            <h3 className="text-xl font-bold mb-6">
-              Quick Links
-            </h3>
-
-            <ul className="space-y-3 text-gray-400">
-
-              <li>
-                <Link to="/" className="hover:text-white">
-                  Home
-                </Link>
-              </li>
-
-              <li>
-                <Link to="/courses" className="hover:text-white">
-                  Courses
-                </Link>
-              </li>
-
-              <li>
-                <Link to="/login" className="hover:text-white">
-                  Login
-                </Link>
-              </li>
-
-              <li>
-                <Link to="/register" className="hover:text-white">
-                  Register
-                </Link>
-              </li>
-
-            </ul>
-
-          </div>
-
-          {/* Support */}
-
-          <div>
-
-            <h3 className="text-xl font-bold mb-6">
-              Support
-            </h3>
-
-            <ul className="space-y-3 text-gray-400">
-
-              <li className="hover:text-white cursor-pointer">
-                Help Center
-              </li>
-
-              <li className="hover:text-white cursor-pointer">
-                Privacy Policy
-              </li>
-
-              <li className="hover:text-white cursor-pointer">
-                Terms & Conditions
-              </li>
-
-              <li className="hover:text-white cursor-pointer">
-                Contact Us
-              </li>
-
-            </ul>
-
-          </div>
-
-          {/* Social */}
-
-          <div>
-
-            <h3 className="text-xl font-bold mb-6">
-              Connect
-            </h3>
-
-            <div className="flex gap-4">
-
-              <a
-                href="#"
-                className="bg-slate-800 p-3 rounded-xl hover:bg-blue-600 transition"
+              <span
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  px-3
+                  py-2
+                  text-xs
+                  font-medium
+                  text-slate-300
+                "
               >
-                <FaFacebook />
-              </a>
 
-              <a
-                href="#"
-                className="bg-slate-800 p-3 rounded-xl hover:bg-pink-600 transition"
-              >
-                <FaInstagram />
-              </a>
+                <FaChartLine
+                  className="
+                    text-cyan-300
+                  "
+                />
 
-              <a
-                href="#"
-                className="bg-slate-800 p-3 rounded-xl hover:bg-sky-600 transition"
-              >
-                <FaLinkedin />
-              </a>
+                Data Science
 
-              <a
-                href="#"
-                className="bg-slate-800 p-3 rounded-xl hover:bg-gray-600 transition"
+              </span>
+
+
+              <span
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  px-3
+                  py-2
+                  text-xs
+                  font-medium
+                  text-slate-300
+                "
               >
-                <FaGithub />
-              </a>
+
+                <FaDatabase
+                  className="
+                    text-indigo-300
+                  "
+                />
+
+                Data Analytics
+
+              </span>
 
             </div>
 
-            <button
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                })
-              }
-              className="mt-8 bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-xl flex items-center gap-2"
+          </div>
+
+
+          {/* ==================================================
+              EXPLORE
+          ================================================== */}
+
+          <div>
+
+            <h3
+              className="
+                mb-5
+                text-xs
+                font-bold
+                uppercase
+                tracking-[0.2em]
+                text-white
+              "
             >
-              <FaArrowUp />
+              Explore
+            </h3>
+
+
+            <ul
+              className="
+                space-y-3
+                text-sm
+                text-slate-400
+              "
+            >
+
+              <li>
+
+                <Link
+                  to="/"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Home
+                </Link>
+
+              </li>
+
+
+              <li>
+
+                <Link
+                  to="/courses"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Programs
+                </Link>
+
+              </li>
+
+
+              <li>
+
+                <a
+                  href="/#why-datalattice"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Why DataLattice
+                </a>
+
+              </li>
+
+
+              <li>
+
+                <a
+                  href="/#programs"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Learning Journey
+                </a>
+
+              </li>
+
+
+              <li>
+
+                <a
+                  href="/#mentors"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Mentors
+                </a>
+
+              </li>
+
+            </ul>
+
+          </div>
+
+
+          {/* ==================================================
+              LEARNING
+          ================================================== */}
+
+          <div>
+
+            <h3
+              className="
+                mb-5
+                text-xs
+                font-bold
+                uppercase
+                tracking-[0.2em]
+                text-white
+              "
+            >
+              Learning
+            </h3>
+
+
+            <ul
+              className="
+                space-y-3
+                text-sm
+                text-slate-400
+              "
+            >
+
+              <li>
+
+                <a
+                  href="/#success-stories"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Learning Outcomes
+                </a>
+
+              </li>
+
+
+              <li>
+
+                <a
+                  href="/#faq-section"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  FAQ
+                </a>
+
+              </li>
+
+
+              <li>
+
+                <Link
+                  to="/login"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Student Login
+                </Link>
+
+              </li>
+
+
+              <li>
+
+                <Link
+                  to="/register"
+                  className="
+                    transition-colors
+                    hover:text-white
+                  "
+                >
+                  Create Account
+                </Link>
+
+              </li>
+
+            </ul>
+
+          </div>
+
+
+          {/* ==================================================
+              CONNECT
+          ================================================== */}
+
+          <div>
+
+            <h3
+              className="
+                mb-5
+                text-xs
+                font-bold
+                uppercase
+                tracking-[0.2em]
+                text-white
+              "
+            >
+              Connect
+            </h3>
+
+
+            <p
+              className="
+                text-sm
+                leading-6
+                text-slate-400
+              "
+            >
+
+              Follow DataLattice as the platform grows,
+              or use the available support channels when
+              you need assistance.
+
+            </p>
+
+
+            {/* ==================================================
+                SOCIAL ICONS
+            ================================================== */}
+
+            <div
+              className="
+                mt-6
+                flex
+                gap-3
+              "
+            >
+
+              <span
+                aria-label="LinkedIn coming soon"
+                title="LinkedIn"
+                className="
+                  flex
+                  h-10
+                  w-10
+                  cursor-default
+                  items-center
+                  justify-center
+                  rounded-xl
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  text-slate-500
+                "
+              >
+
+                <FaLinkedin />
+
+              </span>
+
+
+              <span
+                aria-label="Instagram coming soon"
+                title="Instagram"
+                className="
+                  flex
+                  h-10
+                  w-10
+                  cursor-default
+                  items-center
+                  justify-center
+                  rounded-xl
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  text-slate-500
+                "
+              >
+
+                <FaInstagram />
+
+              </span>
+
+
+              <span
+                aria-label="GitHub coming soon"
+                title="GitHub"
+                className="
+                  flex
+                  h-10
+                  w-10
+                  cursor-default
+                  items-center
+                  justify-center
+                  rounded-xl
+                  border
+                  border-white/10
+                  bg-white/[0.04]
+                  text-slate-500
+                "
+              >
+
+                <FaGithub />
+
+              </span>
+
+            </div>
+
+
+            {/* ==================================================
+                BACK TO TOP
+            ================================================== */}
+
+            <button
+              type="button"
+              onClick={handleBackToTop}
+              className="
+                mt-7
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                border
+                border-white/10
+                bg-white/[0.05]
+                px-5
+                py-3
+                text-sm
+                font-semibold
+                text-white
+                transition-all
+                duration-300
+                hover:-translate-y-0.5
+                hover:bg-white/[0.1]
+                focus:outline-none
+                focus:ring-2
+                focus:ring-cyan-400
+                focus:ring-offset-2
+                focus:ring-offset-slate-950
+              "
+            >
+
+              <FaArrowUp
+                className="
+                  text-cyan-300
+                "
+              />
+
               Back to Top
+
             </button>
 
           </div>
 
         </div>
 
-        <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center">
 
-          <p className="text-gray-500">
-            © 2026 Data Lattice LMS. All Rights Reserved.
-          </p>
+        {/* ======================================================
+            FOOTER DIVIDER
+        ====================================================== */}
 
-          <p className="text-gray-500 mt-4 md:mt-0">
-            Built with ❤️ using React, Node.js & MySQL
-          </p>
+        <div
+          className="
+            mt-14
+            border-t
+            border-slate-800
+            pt-7
+          "
+        >
+
+          <div
+            className="
+              flex
+              flex-col
+              gap-5
+              md:flex-row
+              md:items-center
+              md:justify-between
+            "
+          >
+
+            <p
+              className="
+                text-xs
+                leading-5
+                text-slate-500
+              "
+            >
+
+              © 2026 DataLattice. All Rights Reserved.
+
+            </p>
+
+
+            <div
+              className="
+                flex
+                flex-wrap
+                items-center
+                gap-x-5
+                gap-y-2
+                text-xs
+                text-slate-500
+              "
+            >
+
+              <span>
+                Learn
+              </span>
+
+              <span
+                className="
+                  text-slate-700
+                "
+              >
+                •
+              </span>
+
+              <span>
+                Build
+              </span>
+
+              <span
+                className="
+                  text-slate-700
+                "
+              >
+                •
+              </span>
+
+              <span>
+                Grow
+              </span>
+
+            </div>
+
+          </div>
 
         </div>
 
       </div>
 
     </footer>
+
   );
+
 }
+
 
 export default Footer;

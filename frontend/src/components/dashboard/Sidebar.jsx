@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import {
     FaHome,
     FaBookOpen,
@@ -10,7 +8,6 @@ import {
     FaCalendarAlt,
     FaCog,
     FaSignOutAlt,
-    FaFire,
     FaChevronRight,
 } from "react-icons/fa";
 
@@ -21,8 +18,6 @@ import {
 
 import { motion } from "framer-motion";
 
-import { getProfile } from "../../services/profileService";
-
 
 // ============================================================
 // STUDENT SIDEBAR
@@ -31,79 +26,6 @@ import { getProfile } from "../../services/profileService";
 function Sidebar() {
 
     const navigate = useNavigate();
-
-    // ============================================================
-    // USER
-    // ============================================================
-
-    const getStoredUser = () => {
-
-        try {
-
-            return (
-                JSON.parse(
-                    localStorage.getItem("user")
-                ) || {}
-            );
-
-        } catch {
-
-            return {};
-
-        }
-
-    };
-
-    const [user, setUser] = useState(
-        getStoredUser()
-    );
-
-
-    // ============================================================
-    // LOAD PROFILE
-    // ============================================================
-
-    useEffect(() => {
-
-        const loadProfile = async () => {
-
-            try {
-
-                const data =
-                    await getProfile();
-
-                if (
-                    data?.success &&
-                    data?.profile
-                ) {
-
-                    setUser(
-                        data.profile
-                    );
-
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify(
-                            data.profile
-                        )
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "Failed to load student profile:",
-                    error
-                );
-
-            }
-
-        };
-
-        loadProfile();
-
-    }, []);
 
 
     // ============================================================
@@ -125,7 +47,7 @@ function Sidebar() {
 
 
     // ============================================================
-    // MENU
+    // MAIN MENU
     // ============================================================
 
     const mainMenu = [
@@ -163,6 +85,10 @@ function Sidebar() {
     ];
 
 
+    // ============================================================
+    // SUPPORT MENU
+    // ============================================================
+
     const supportMenu = [
 
         {
@@ -180,6 +106,10 @@ function Sidebar() {
     ];
 
 
+    // ============================================================
+    // SYSTEM MENU
+    // ============================================================
+
     const systemMenu = [
 
         {
@@ -189,26 +119,6 @@ function Sidebar() {
         },
 
     ];
-
-
-    // ============================================================
-    // PROFILE DATA
-    // ============================================================
-
-    const studentName =
-        user?.full_name || "Student";
-
-    const studentRole =
-        user?.role || "student";
-
-    const defaultAvatar =
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(
-            studentName
-        )}&background=4f46e5&color=fff&size=200`;
-
-    const profileImage =
-        user?.profile_image ||
-        defaultAvatar;
 
 
     // ============================================================
@@ -226,17 +136,17 @@ function Sidebar() {
                     group
                     relative
                     flex
+                    h-[44px]
                     items-center
                     gap-3
-                    px-3
-                    py-3
                     rounded-xl
+                    px-3
                     transition-all
                     duration-200
                     ${
                         isActive
-                            ? "bg-indigo-600 text-white shadow-sm"
-                            : "text-slate-600 hover:bg-indigo-50 hover:text-indigo-600"
+                            ? "bg-[#1463FF] text-white shadow-[0_7px_18px_rgba(20,99,255,0.16)]"
+                            : "text-[#64748B] hover:bg-[#EAF2FF] hover:text-[#1463FF]"
                     }
                 `;
 
@@ -247,7 +157,9 @@ function Sidebar() {
 
                 <>
 
-                    {/* Active indicator */}
+                    {/* ==================================================
+                        ACTIVE INDICATOR
+                    ================================================== */}
 
                     {isActive && (
 
@@ -256,9 +168,9 @@ function Sidebar() {
                                 absolute
                                 left-0
                                 top-1/2
-                                -translate-y-1/2
+                                h-5
                                 w-1
-                                h-6
+                                -translate-y-1/2
                                 rounded-r-full
                                 bg-white
                             "
@@ -267,23 +179,26 @@ function Sidebar() {
                     )}
 
 
-                    {/* Icon */}
+                    {/* ==================================================
+                        ICON
+                    ================================================== */}
 
                     <span
                         className={`
-                            w-9
-                            h-9
-                            rounded-lg
                             flex
+                            h-[34px]
+                            w-[34px]
+                            shrink-0
                             items-center
                             justify-center
-                            text-base
-                            shrink-0
+                            rounded-lg
+                            text-[15px]
                             transition-all
+                            duration-200
                             ${
                                 isActive
                                     ? "bg-white/15 text-white"
-                                    : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-indigo-600"
+                                    : "bg-white text-[#64748B] shadow-[0_2px_8px_rgba(11,27,58,0.035)] group-hover:bg-[#F5F9FF] group-hover:text-[#1463FF]"
                             }
                         `}
                     >
@@ -293,14 +208,19 @@ function Sidebar() {
                     </span>
 
 
-                    {/* Label */}
+                    {/* ==================================================
+                        LABEL
+                    ================================================== */}
 
                     <span
                         className="
+                            min-w-0
                             flex-1
-                            text-sm
-                            font-semibold
                             truncate
+                            text-[15px]
+                            font-semibold
+                            leading-none
+                            tracking-[-0.01em]
                         "
                     >
 
@@ -309,16 +229,20 @@ function Sidebar() {
                     </span>
 
 
-                    {/* Arrow */}
+                    {/* ==================================================
+                        ARROW
+                    ================================================== */}
 
                     <FaChevronRight
                         className={`
-                            text-[10px]
+                            shrink-0
+                            text-[9px]
                             transition-all
+                            duration-200
                             ${
                                 isActive
-                                    ? "opacity-100"
-                                    : "opacity-0 group-hover:opacity-100"
+                                    ? "translate-x-0 opacity-100"
+                                    : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                             }
                         `}
                     />
@@ -340,16 +264,17 @@ function Sidebar() {
 
         <aside
             className="
-                w-[260px]
-                shrink-0
-                h-screen
                 sticky
                 top-0
-                bg-white
-                border-r
-                border-slate-200
                 flex
+                h-screen
+                w-[250px]
+                shrink-0
                 flex-col
+                overflow-hidden
+                border-r
+                border-[#E6EDF7]
+                bg-[#F5F9FF]
             "
         >
 
@@ -359,30 +284,41 @@ function Sidebar() {
 
             <div
                 className="
-                    px-5
-                    pt-5
-                    pb-4
-                    border-b
-                    border-slate-100
+                    flex
+                    h-[76px]
+                    shrink-0
+                    items-center
+                    bg-white/75
+                    px-4
                 "
             >
 
-                <div className="flex items-center gap-3">
+                <div
+                    className="
+                        flex
+                        items-center
+                        gap-3
+                    "
+                >
+
+                    {/* ==================================================
+                        LOGO MARK
+                    ================================================== */}
 
                     <div
                         className="
-                            w-10
-                            h-10
-                            rounded-xl
-                            bg-indigo-600
-                            text-white
                             flex
+                            h-10
+                            w-10
+                            shrink-0
                             items-center
                             justify-center
-                            text-lg
-                            font-black
-                            shadow-md
-                            shadow-indigo-100
+                            rounded-xl
+                            bg-[#1463FF]
+                            text-[18px]
+                            font-extrabold
+                            text-white
+                            shadow-[0_7px_18px_rgba(20,99,255,0.16)]
                         "
                     >
 
@@ -391,14 +327,24 @@ function Sidebar() {
                     </div>
 
 
-                    <div className="min-w-0">
+                    {/* ==================================================
+                        BRAND TEXT
+                    ================================================== */}
+
+                    <div
+                        className="
+                            min-w-0
+                        "
+                    >
 
                         <h1
                             className="
-                                text-xl
-                                font-black
-                                tracking-tight
-                                text-slate-900
+                                truncate
+                                text-[18px]
+                                font-extrabold
+                                leading-none
+                                tracking-[-0.04em]
+                                text-[#0B1B3A]
                             "
                         >
 
@@ -406,219 +352,23 @@ function Sidebar() {
 
                         </h1>
 
+
                         <p
                             className="
-                                text-[9px]
+                                mt-1
+                                truncate
+                                text-[8px]
                                 font-bold
-                                tracking-[0.12em]
-                                text-slate-400
+                                uppercase
+                                leading-none
+                                tracking-[0.14em]
+                                text-[#64748B]
                             "
                         >
 
-                            LEARN • BUILD • GET HIRED
+                            Learn • Build • Get Hired
 
                         </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            {/* ====================================================
-                PROFILE
-            ==================================================== */}
-
-            <div className="px-4 pt-4">
-
-                <button
-                    type="button"
-                    onClick={() =>
-                        navigate(
-                            "/student/profile"
-                        )
-                    }
-                    className="
-                        w-full
-                        rounded-xl
-                        bg-slate-50
-                        border
-                        border-slate-100
-                        p-3
-                        text-left
-                        hover:bg-indigo-50
-                        hover:border-indigo-100
-                        transition-all
-                    "
-                >
-
-                    <div className="flex items-center gap-3">
-
-                        <img
-                            src={profileImage}
-                            alt="Student profile"
-                            className="
-                                w-10
-                                h-10
-                                rounded-lg
-                                object-cover
-                                shrink-0
-                            "
-                            onError={(event) => {
-
-                                event.currentTarget.src =
-                                    defaultAvatar;
-
-                            }}
-                        />
-
-
-                        <div className="min-w-0 flex-1">
-
-                            <h2
-                                className="
-                                    text-sm
-                                    font-bold
-                                    text-slate-800
-                                    truncate
-                                "
-                            >
-
-                                {studentName}
-
-                            </h2>
-
-                            <p
-                                className="
-                                    text-xs
-                                    text-slate-500
-                                    capitalize
-                                    mt-0.5
-                                "
-                            >
-
-                                {studentRole}
-
-                            </p>
-
-                        </div>
-
-
-                        <FaChevronRight
-                            className="
-                                text-[10px]
-                                text-slate-400
-                            "
-                        />
-
-                    </div>
-
-                </button>
-
-
-                {/* ==================================================
-                    STREAK
-                ================================================== */}
-
-                <div
-                    className="
-                        mt-3
-                        rounded-xl
-                        bg-indigo-50
-                        border
-                        border-indigo-100
-                        px-3
-                        py-3
-                    "
-                >
-
-                    <div className="flex items-center justify-between">
-
-                        <div className="flex items-center gap-2.5">
-
-                            <div
-                                className="
-                                    w-8
-                                    h-8
-                                    rounded-lg
-                                    bg-white
-                                    flex
-                                    items-center
-                                    justify-center
-                                    text-orange-500
-                                    shadow-sm
-                                "
-                            >
-
-                                <FaFire />
-
-                            </div>
-
-
-                            <div>
-
-                                <p
-                                    className="
-                                        text-[10px]
-                                        text-slate-500
-                                    "
-                                >
-
-                                    Learning Streak
-
-                                </p>
-
-                                <p
-                                    className="
-                                        text-sm
-                                        font-bold
-                                        text-slate-800
-                                    "
-                                >
-
-                                    12 Days
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <span
-                            className="
-                                text-xs
-                                font-bold
-                                text-indigo-600
-                            "
-                        >
-
-                            82%
-
-                        </span>
-
-                    </div>
-
-
-                    <div
-                        className="
-                            mt-2
-                            h-1.5
-                            rounded-full
-                            bg-white
-                            overflow-hidden
-                        "
-                    >
-
-                        <div
-                            className="
-                                h-full
-                                w-[82%]
-                                rounded-full
-                                bg-indigo-600
-                            "
-                        />
 
                     </div>
 
@@ -633,27 +383,29 @@ function Sidebar() {
 
             <div
                 className="
+                    min-h-0
                     flex-1
-                    overflow-y-auto
-                    px-4
-                    py-5
-                    scrollbar-thin
+                    overflow-hidden
+                    px-3
+                    py-4
                 "
             >
 
-                {/* MAIN */}
+                {/* ==================================================
+                    MAIN MENU
+                ================================================== */}
 
                 <section>
 
                     <p
                         className="
-                            px-2
                             mb-2
+                            px-2
                             text-[10px]
                             font-bold
                             uppercase
-                            tracking-widest
-                            text-slate-400
+                            tracking-[0.14em]
+                            text-[#64748B]
                         "
                     >
 
@@ -661,7 +413,12 @@ function Sidebar() {
 
                     </p>
 
-                    <nav className="space-y-1">
+
+                    <nav
+                        className="
+                            space-y-1
+                        "
+                    >
 
                         {mainMenu.map(
                             renderMenuItem
@@ -672,19 +429,25 @@ function Sidebar() {
                 </section>
 
 
-                {/* SUPPORT */}
+                {/* ==================================================
+                    SUPPORT
+                ================================================== */}
 
-                <section className="mt-6">
+                <section
+                    className="
+                        mt-4
+                    "
+                >
 
                     <p
                         className="
-                            px-2
                             mb-2
+                            px-2
                             text-[10px]
                             font-bold
                             uppercase
-                            tracking-widest
-                            text-slate-400
+                            tracking-[0.14em]
+                            text-[#64748B]
                         "
                     >
 
@@ -692,7 +455,12 @@ function Sidebar() {
 
                     </p>
 
-                    <nav className="space-y-1">
+
+                    <nav
+                        className="
+                            space-y-1
+                        "
+                    >
 
                         {supportMenu.map(
                             renderMenuItem
@@ -703,19 +471,25 @@ function Sidebar() {
                 </section>
 
 
-                {/* SYSTEM */}
+                {/* ==================================================
+                    SYSTEM
+                ================================================== */}
 
-                <section className="mt-6">
+                <section
+                    className="
+                        mt-4
+                    "
+                >
 
                     <p
                         className="
-                            px-2
                             mb-2
+                            px-2
                             text-[10px]
                             font-bold
                             uppercase
-                            tracking-widest
-                            text-slate-400
+                            tracking-[0.14em]
+                            text-[#64748B]
                         "
                     >
 
@@ -723,7 +497,12 @@ function Sidebar() {
 
                     </p>
 
-                    <nav className="space-y-1">
+
+                    <nav
+                        className="
+                            space-y-1
+                        "
+                    >
 
                         {systemMenu.map(
                             renderMenuItem
@@ -742,42 +521,48 @@ function Sidebar() {
 
             <div
                 className="
-                    px-4
-                    py-4
-                    border-t
-                    border-slate-100
+                    shrink-0
+                    bg-white/65
+                    px-3
+                    py-3
                 "
             >
 
                 <motion.button
                     type="button"
                     whileHover={{
-                        scale: 1.01,
+                        y: -1,
                     }}
                     whileTap={{
                         scale: 0.98,
                     }}
                     onClick={logout}
                     className="
-                        w-full
                         flex
+                        h-10
+                        w-full
                         items-center
                         justify-center
                         gap-2.5
                         rounded-xl
                         border
-                        border-red-100
-                        bg-red-50
-                        py-3
-                        text-sm
-                        text-red-600
+                        border-[#E6EDF7]
+                        bg-white
+                        text-[14px]
                         font-semibold
-                        hover:bg-red-100
+                        text-[#64748B]
+                        shadow-[0_3px_12px_rgba(11,27,58,0.03)]
                         transition-all
+                        duration-200
+                        hover:border-red-100
+                        hover:bg-red-50
+                        hover:text-red-600
                     "
                 >
 
-                    <FaSignOutAlt />
+                    <FaSignOutAlt
+                        size={14}
+                    />
 
                     Logout
 
@@ -790,5 +575,6 @@ function Sidebar() {
     );
 
 }
+
 
 export default Sidebar;

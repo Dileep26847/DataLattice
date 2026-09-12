@@ -5,6 +5,7 @@ import Hero from "../components/landing/Hero";
 import Stats from "../components/landing/Stats";
 import WhyDataWave from "../components/landing/WhyDataWave";
 import LearningJourney from "../components/landing/LearningJourney";
+import Mentors from "../components/landing/Mentors";
 import SuccessStories from "../components/landing/SuccessStories";
 import FAQ from "../components/landing/FAQ";
 import CTA from "../components/landing/CTA";
@@ -29,11 +30,30 @@ function Home() {
 
       <main>
 
-        <Hero />
+        {/* ==================================================
+            HERO
+        ================================================== */}
 
+        <div
+          id="home"
+          className="scroll-mt-24"
+        >
+
+          <Hero />
+
+        </div>
+
+
+        {/* ==================================================
+            LEARNING SIGNALS
+        ================================================== */}
 
         <Stats />
 
+
+        {/* ==================================================
+            PROGRAMS
+        ================================================== */}
 
         <div
           id="courses"
@@ -45,8 +65,12 @@ function Home() {
         </div>
 
 
+        {/* ==================================================
+            WHY DATALATTICE
+        ================================================== */}
+
         <div
-          id="why-Data Lattice"
+          id="why-datalattice"
           className="scroll-mt-24"
         >
 
@@ -54,6 +78,10 @@ function Home() {
 
         </div>
 
+
+        {/* ==================================================
+            LEARNING JOURNEY
+        ================================================== */}
 
         <div
           id="programs"
@@ -65,8 +93,26 @@ function Home() {
         </div>
 
 
+        {/* ==================================================
+            MENTORS
+        ================================================== */}
+
         <div
-          id="success"
+          id="mentors"
+          className="scroll-mt-24"
+        >
+
+          <Mentors />
+
+        </div>
+
+
+        {/* ==================================================
+            LEARNING OUTCOMES
+        ================================================== */}
+
+        <div
+          id="success-stories"
           className="scroll-mt-24"
         >
 
@@ -75,8 +121,12 @@ function Home() {
         </div>
 
 
+        {/* ==================================================
+            FAQ
+        ================================================== */}
+
         <div
-          id="faq"
+          id="faq-section"
           className="scroll-mt-24"
         >
 
@@ -84,6 +134,10 @@ function Home() {
 
         </div>
 
+
+        {/* ==================================================
+            FINAL CTA
+        ================================================== */}
 
         <CTA />
 

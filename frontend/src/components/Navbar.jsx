@@ -16,52 +16,31 @@ import {
 } from "framer-motion";
 
 import {
-  FaGraduationCap,
   FaBars,
   FaXmark,
-  FaArrowRight,
-  FaBookOpen,
-  FaLayerGroup,
-  FaStar,
-  FaCircleQuestion,
-  FaChartLine,
 } from "react-icons/fa6";
 
 
 // ============================================================
-// NAVIGATION DATA
+// DATALATTICE PUBLIC NAVIGATION
 // ============================================================
 
 const publicNavigation = [
   {
-    label: "Home",
-    href: "#home",
-    icon: FaGraduationCap,
-  },
-  {
-    label: "Courses",
-    href: "#courses",
-    icon: FaBookOpen,
-  },
-  {
     label: "Programs",
     href: "#programs",
-    icon: FaLayerGroup,
   },
   {
-    label: "Why Us",
-    href: "#why-Data Lattice",
-    icon: FaChartLine,
+    label: "Journey",
+    href: "#journey",
   },
   {
-    label: "Success",
-    href: "#success",
-    icon: FaStar,
+    label: "Mentors",
+    href: "#mentors",
   },
   {
-    label: "FAQ",
-    href: "#faq",
-    icon: FaCircleQuestion,
+    label: "Outcomes",
+    href: "#outcomes",
   },
 ];
 
@@ -75,9 +54,6 @@ function Navbar() {
   const navigate = useNavigate();
 
   const location = useLocation();
-
-  const [scrolled, setScrolled] =
-    useState(false);
 
   const [mobileOpen, setMobileOpen] =
     useState(false);
@@ -112,42 +88,6 @@ function Navbar() {
 
   const user =
     getStoredUser();
-
-
-  // ==========================================================
-  // SCROLL DETECTION
-  // ==========================================================
-
-  useEffect(() => {
-
-    const handleScroll = () => {
-
-      setScrolled(
-        window.scrollY > 24
-      );
-
-    };
-
-
-    handleScroll();
-
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true }
-    );
-
-
-    return () => {
-
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-
-    };
-
-  }, []);
 
 
   // ==========================================================
@@ -224,9 +164,7 @@ function Navbar() {
       location.pathname !== "/"
     ) {
 
-      navigate(
-        `/${href}`
-      );
+      navigate(`/${href}`);
 
       return;
 
@@ -240,11 +178,8 @@ function Navbar() {
     if (element) {
 
       element.scrollIntoView({
-
         behavior: "smooth",
-
         block: "start",
-
       });
 
     }
@@ -253,7 +188,7 @@ function Navbar() {
 
 
   // ==========================================================
-  // NAV LINK CLASS
+  // LOGGED-IN NAVIGATION
   // ==========================================================
 
   const dashboardLinkClass =
@@ -261,16 +196,18 @@ function Navbar() {
 
       return `
         relative
+        rounded-xl
         px-3
         py-2
         text-sm
         font-semibold
+        tracking-[-0.01em]
         transition-all
-        duration-300
+        duration-200
         ${
           isActive
-            ? "text-indigo-600"
-            : "text-slate-600 hover:text-indigo-600"
+            ? "bg-white/70 text-[#1463FF] shadow-sm"
+            : "text-[#0B1B3A]/75 hover:bg-white/45 hover:text-[#1463FF]"
         }
       `;
 
@@ -286,71 +223,67 @@ function Navbar() {
     <>
 
       {/* ======================================================
-          DESKTOP / MAIN NAVBAR
+          GLASSMORPHISM NAVBAR
       ====================================================== */}
 
       <motion.header
-
         initial={{
-          y: -30,
+          y: -20,
           opacity: 0,
         }}
-
         animate={{
           y: 0,
           opacity: 1,
         }}
-
         transition={{
-          duration: 0.65,
+          duration: 0.55,
           ease: [0.22, 1, 0.36, 1],
         }}
-
-        className={`
+        className="
           fixed
+          inset-x-0
           top-0
-          left-0
-          right-0
           z-[100]
-          transition-all
-          duration-500
-          ${
-            scrolled
-              ? `
-                bg-white/85
-                backdrop-blur-2xl
-                border-b
-                border-slate-200/70
-                shadow-[0_10px_40px_rgba(15,23,42,0.08)]
-              `
-              : `
-                bg-white/95
-                backdrop-blur-xl
-                border-b
-                border-slate-100
-              `
-          }
-        `}
+          border-b
+          border-white/65
+          bg-white/45
+          shadow-[0_8px_32px_rgba(11,27,58,0.06)]
+          backdrop-blur-xl
+          backdrop-saturate-150
+        "
       >
 
+        {/* ====================================================
+            SUBTLE GLASS HIGHLIGHT
+        ==================================================== */}
+
         <div
-          className={`
-            mx-auto
-            max-w-7xl
+          className="
+            pointer-events-none
+            absolute
+            inset-x-0
+            bottom-0
+            h-px
+            bg-gradient-to-r
+            from-transparent
+            via-white/90
+            to-transparent
+          "
+        />
+
+
+        <div
+          className="
+            relative
+            flex
+            h-[76px]
+            w-full
+            items-center
+            justify-between
             px-5
             sm:px-7
             lg:px-8
-            flex
-            items-center
-            justify-between
-            transition-all
-            duration-500
-            ${
-              scrolled
-                ? "h-[68px]"
-                : "h-[78px]"
-            }
-          `}
+          "
         >
 
           {/* ==================================================
@@ -365,92 +298,120 @@ function Navbar() {
             className="
               group
               flex
-              items-center
-              gap-3
               shrink-0
+              items-center
+              gap-2.5
+              -translate-y-1
             "
           >
 
-            <motion.div
-              whileHover={{
-                rotate: -5,
-                scale: 1.05,
-              }}
+            {/* Logo mark */}
 
-              whileTap={{
-                scale: 0.95,
-              }}
-
+            <div
               className="
                 relative
                 flex
-                h-11
-                w-11
+                h-10
+                w-10
                 items-center
                 justify-center
                 overflow-hidden
-                rounded-2xl
-                bg-gradient-to-br
-                from-indigo-600
-                via-violet-600
-                to-purple-600
-                text-white
-                shadow-[0_8px_25px_rgba(79,70,229,0.28)]
+                rounded-xl
+                border
+                border-white/75
+                bg-white/60
+                shadow-[0_8px_24px_rgba(11,27,58,0.08)]
+                backdrop-blur-md
+                transition-all
+                duration-300
+                group-hover:bg-white/80
+                group-hover:shadow-[0_10px_28px_rgba(20,99,255,0.12)]
               "
             >
 
-              <FaGraduationCap
-                size={21}
+              <div
+                className="
+                  absolute
+                  h-5
+                  w-5
+                  rounded-full
+                  border-[2px]
+                  border-[#1463FF]
+                "
               />
+
+
+              <div
+                className="
+                  absolute
+                  h-2
+                  w-2
+                  rounded-full
+                  bg-[#06B6D4]
+                "
+              />
+
 
               <span
                 className="
                   absolute
-                  inset-0
-                  bg-white/20
-                  opacity-0
-                  transition-opacity
-                  duration-300
-                  group-hover:opacity-100
+                  left-[7px]
+                  top-[8px]
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#1463FF]
                 "
               />
 
-            </motion.div>
+
+              <span
+                className="
+                  absolute
+                  bottom-[8px]
+                  right-[7px]
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#1463FF]
+                "
+              />
+
+            </div>
 
 
-            <div className="hidden sm:block">
+            {/* Wordmark */}
+
+            <div>
 
               <div
                 className="
-                  bg-gradient-to-r
-                  from-indigo-600
-                  via-violet-600
-                  to-purple-600
-                  bg-clip-text
-                  text-2xl
-                  font-black
-                  tracking-tight
-                  text-transparent
+                  text-[20px]
+                  font-extrabold
+                  leading-none
+                  tracking-[-0.045em]
+                  text-[#0B1B3A]
                 "
               >
 
-                Data Lattice
+                DataLattice
 
               </div>
 
 
               <div
                 className="
-                  -mt-1
-                  text-[10px]
-                  font-semibold
-                  tracking-[0.16em]
-                  text-slate-400
+                  mt-1
+                  text-[8px]
+                  font-bold
                   uppercase
+                  leading-none
+                  tracking-[0.18em]
+                  text-[#64748B]
                 "
               >
 
-                Learn Without Limits
+                Learn • Build • Grow
 
               </div>
 
@@ -460,7 +421,7 @@ function Navbar() {
 
 
           {/* ==================================================
-              PUBLIC DESKTOP NAVIGATION
+              DESKTOP PUBLIC NAVIGATION
           ================================================== */}
 
           {!token && (
@@ -468,14 +429,21 @@ function Navbar() {
             <nav
               className="
                 hidden
-                lg:flex
                 items-center
                 gap-1
-                rounded-full
+                rounded-2xl
                 border
-                border-slate-200/70
-                bg-slate-50/70
-                p-1.5
+                border-white/55
+                bg-white/25
+                p-1
+                shadow-[0_6px_22px_rgba(11,27,58,0.035)]
+                backdrop-blur-md
+                lg:absolute
+                lg:left-1/2
+                lg:top-1/2
+                lg:flex
+                lg:-translate-x-1/2
+                lg:-translate-y-1/2
               "
             >
 
@@ -491,18 +459,17 @@ function Navbar() {
                       )
                     }
                     className="
-                      relative
-                      rounded-full
+                      rounded-xl
                       px-4
-                      py-2.5
-                      text-sm
+                      py-2
+                      text-[14px]
                       font-semibold
-                      text-slate-600
+                      tracking-[-0.01em]
+                      text-[#0B1B3A]/70
                       transition-all
-                      duration-300
-                      hover:bg-white
-                      hover:text-indigo-600
-                      hover:shadow-sm
+                      duration-200
+                      hover:bg-white/60
+                      hover:text-[#1463FF]
                     "
                   >
 
@@ -519,7 +486,7 @@ function Navbar() {
 
 
           {/* ==================================================
-              LOGGED-IN NAVIGATION
+              LOGGED-IN DESKTOP NAVIGATION
           ================================================== */}
 
           {token && (
@@ -527,9 +494,21 @@ function Navbar() {
             <nav
               className="
                 hidden
-                lg:flex
                 items-center
                 gap-1
+                rounded-2xl
+                border
+                border-white/55
+                bg-white/25
+                p-1
+                shadow-[0_6px_22px_rgba(11,27,58,0.035)]
+                backdrop-blur-md
+                lg:absolute
+                lg:left-1/2
+                lg:top-1/2
+                lg:flex
+                lg:-translate-x-1/2
+                lg:-translate-y-1/2
               "
             >
 
@@ -625,109 +604,76 @@ function Navbar() {
 
 
           {/* ==================================================
-              RIGHT SIDE
+              DESKTOP RIGHT SIDE
           ================================================== */}
 
           <div
             className="
+              ml-auto
               hidden
-              lg:flex
               items-center
-              gap-3
+              lg:flex
             "
           >
 
             {!token ? (
 
-              <>
+              <Link
+                to="/login"
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  rounded-xl
+                  border
+                  border-white/25
+                  bg-[#1463FF]
+                  px-5
+                  py-2.5
+                  text-[14px]
+                  font-bold
+                  tracking-[-0.01em]
+                  text-white
+                  shadow-[0_8px_24px_rgba(20,99,255,0.20)]
+                  transition-all
+                  duration-200
+                  hover:-translate-y-0.5
+                  hover:bg-[#0B1B3A]
+                  hover:shadow-[0_12px_30px_rgba(11,27,58,0.20)]
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-[#1463FF]
+                  focus-visible:ring-offset-2
+                "
+              >
 
-                <Link
-                  to="/login"
-                  className="
-                    rounded-full
-                    px-5
-                    py-2.5
-                    text-sm
-                    font-bold
-                    text-slate-700
-                    transition-all
-                    duration-300
-                    hover:bg-slate-100
-                    hover:text-indigo-600
-                  "
-                >
+                Login
 
-                  Login
-
-                </Link>
-
-
-                <Link
-                  to="/register"
-                  className="
-                    group
-                    relative
-                    overflow-hidden
-                    rounded-full
-                    bg-gradient-to-r
-                    from-indigo-600
-                    via-violet-600
-                    to-purple-600
-                    px-6
-                    py-3
-                    text-sm
-                    font-bold
-                    text-white
-                    shadow-[0_8px_25px_rgba(79,70,229,0.25)]
-                    transition-all
-                    duration-300
-                    hover:-translate-y-0.5
-                    hover:shadow-[0_12px_35px_rgba(79,70,229,0.35)]
-                  "
-                >
-
-                  <span
-                    className="
-                      relative
-                      z-10
-                      flex
-                      items-center
-                      gap-2
-                    "
-                  >
-
-                    Get Started
-
-                    <FaArrowRight
-                      className="
-                        transition-transform
-                        duration-300
-                        group-hover:translate-x-1
-                      "
-                    />
-
-                  </span>
-
-                </Link>
-
-              </>
+              </Link>
 
             ) : (
 
-              <>
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-3
+                  rounded-2xl
+                  border
+                  border-white/55
+                  bg-white/35
+                  px-2
+                  py-1.5
+                  shadow-[0_6px_22px_rgba(11,27,58,0.04)]
+                  backdrop-blur-md
+                "
+              >
 
                 <div
                   className="
-                    hidden
-                    xl:flex
+                    flex
                     items-center
-                    gap-3
-                    rounded-full
-                    border
-                    border-slate-200
-                    bg-white
-                    px-3
-                    py-1.5
+                    gap-2.5
                   "
                 >
 
@@ -735,19 +681,22 @@ function Navbar() {
                     src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                       user?.full_name ||
                         "User"
-                    )}&background=4f46e5&color=fff`}
+                    )}&background=1463FF&color=fff`}
                     alt="Profile"
                     className="
-                      h-9
-                      w-9
+                      h-8
+                      w-8
                       rounded-full
+                      ring-2
+                      ring-white/80
                     "
                   />
 
 
                   <div
                     className="
-                      pr-2
+                      hidden
+                      xl:block
                     "
                   >
 
@@ -755,7 +704,8 @@ function Navbar() {
                       className="
                         text-xs
                         font-bold
-                        text-slate-800
+                        leading-tight
+                        text-[#0B1B3A]
                       "
                     >
 
@@ -764,12 +714,15 @@ function Navbar() {
 
                     </p>
 
+
                     <p
                       className="
+                        mt-0.5
                         text-[10px]
                         font-medium
                         capitalize
-                        text-slate-400
+                        leading-tight
+                        text-[#64748B]
                       "
                     >
 
@@ -783,37 +736,28 @@ function Navbar() {
                 </div>
 
 
-                <motion.button
+                <button
                   type="button"
                   onClick={logout}
-                  whileHover={{
-                    y: -1,
-                  }}
-                  whileTap={{
-                    scale: 0.96,
-                  }}
                   className="
-                    rounded-full
-                    border
-                    border-red-100
-                    bg-red-50
-                    px-5
-                    py-2.5
+                    rounded-xl
+                    px-3
+                    py-2
                     text-sm
-                    font-bold
-                    text-red-600
-                    transition-colors
-                    duration-300
-                    hover:bg-red-600
-                    hover:text-white
+                    font-semibold
+                    text-[#64748B]
+                    transition-all
+                    duration-200
+                    hover:bg-white/60
+                    hover:text-red-600
                   "
                 >
 
                   Logout
 
-                </motion.button>
+                </button>
 
-              </>
+              </div>
 
             )}
 
@@ -831,35 +775,39 @@ function Navbar() {
                 ? "Close menu"
                 : "Open menu"
             }
+            aria-expanded={mobileOpen}
             onClick={() =>
               setMobileOpen(
-                !mobileOpen
+                (previous) =>
+                  !previous
               )
             }
             className="
+              ml-2
               flex
-              h-11
-              w-11
+              h-10
+              w-10
               items-center
               justify-center
               rounded-xl
               border
-              border-slate-200
-              bg-white
-              text-slate-700
-              shadow-sm
+              border-white/70
+              bg-white/55
+              text-[#0B1B3A]
+              shadow-[0_6px_20px_rgba(11,27,58,0.06)]
+              backdrop-blur-md
               transition-all
-              duration-300
-              hover:border-indigo-200
-              hover:text-indigo-600
+              duration-200
+              hover:bg-white/75
+              hover:text-[#1463FF]
               lg:hidden
             "
           >
 
             {mobileOpen ? (
-              <FaTimes size={19} />
+              <FaXmark size={18} />
             ) : (
-              <FaBars size={19} />
+              <FaBars size={18} />
             )}
 
           </button>
@@ -879,147 +827,181 @@ function Navbar() {
 
           <>
 
-            <motion.div
+            {/* Backdrop */}
 
+            <motion.div
               initial={{
                 opacity: 0,
               }}
-
               animate={{
                 opacity: 1,
               }}
-
               exit={{
                 opacity: 0,
               }}
-
               onClick={() =>
                 setMobileOpen(false)
               }
-
               className="
                 fixed
                 inset-0
                 z-[90]
-                bg-slate-950/30
-                backdrop-blur-sm
+                bg-[#0B1B3A]/10
+                backdrop-blur-md
                 lg:hidden
               "
             />
 
 
-            <motion.div
+            {/* Glass Menu */}
 
+            <motion.div
               initial={{
                 opacity: 0,
-                y: -20,
-                scale: 0.98,
+                y: -12,
               }}
-
               animate={{
                 opacity: 1,
                 y: 0,
-                scale: 1,
               }}
-
               exit={{
                 opacity: 0,
-                y: -20,
-                scale: 0.98,
+                y: -12,
               }}
-
               transition={{
-                duration: 0.25,
+                duration: 0.22,
               }}
-
               className="
                 fixed
                 left-4
                 right-4
                 top-[84px]
                 z-[95]
-                max-h-[calc(100vh-105px)]
-                overflow-y-auto
-                rounded-3xl
+                overflow-hidden
+                rounded-2xl
                 border
-                border-slate-200
-                bg-white
-                p-4
-                shadow-[0_25px_80px_rgba(15,23,42,0.18)]
+                border-white/70
+                bg-white/65
+                p-3
+                shadow-[0_24px_70px_rgba(11,27,58,0.14)]
+                backdrop-blur-2xl
+                backdrop-saturate-150
                 lg:hidden
               "
             >
 
+              {/* Glass highlight */}
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  inset-x-0
+                  top-0
+                  h-px
+                  bg-white/90
+                "
+              />
+
+
               {!token ? (
 
-                <div
-                  className="
-                    space-y-1
-                  "
-                >
+                <>
 
-                  {publicNavigation.map(
-                    (item) => (
+                  <div
+                    className="
+                      space-y-1
+                    "
+                  >
 
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() =>
-                          handleSectionNavigation(
-                            item.href
-                          )
-                        }
-                        className="
-                          flex
-                          w-full
-                          items-center
-                          gap-4
-                          rounded-2xl
-                          px-4
-                          py-3.5
-                          text-left
-                          font-semibold
-                          text-slate-700
-                          transition-all
-                          hover:bg-indigo-50
-                          hover:text-indigo-600
-                        "
-                      >
+                    {publicNavigation.map(
+                      (item) => (
 
-                        <item.icon />
+                        <button
+                          key={
+                            item.label
+                          }
+                          type="button"
+                          onClick={() =>
+                            handleSectionNavigation(
+                              item.href
+                            )
+                          }
+                          className="
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            rounded-xl
+                            border
+                            border-transparent
+                            px-4
+                            py-3
+                            text-left
+                            text-sm
+                            font-semibold
+                            text-[#0B1B3A]
+                            transition-all
+                            duration-200
+                            hover:border-white/70
+                            hover:bg-white/60
+                            hover:text-[#1463FF]
+                          "
+                        >
 
-                        {item.label}
+                          <span>
+                            {item.label}
+                          </span>
 
-                      </button>
 
-                    )
-                  )}
+                          <span
+                            className="
+                              text-[#1463FF]
+                            "
+                          >
+                            →
+                          </span>
+
+                        </button>
+
+                      )
+                    )}
+
+                  </div>
 
 
                   <div
                     className="
-                      mt-3
-                      grid
-                      grid-cols-2
-                      gap-3
+                      mt-2
                       border-t
-                      border-slate-100
-                      pt-4
+                      border-white/70
+                      pt-3
                     "
                   >
 
                     <Link
                       to="/login"
+                      onClick={() =>
+                        setMobileOpen(
+                          false
+                        )
+                      }
                       className="
-                        rounded-2xl
-                        border
-                        border-slate-200
+                        flex
+                        w-full
+                        items-center
+                        justify-center
+                        rounded-xl
+                        bg-[#1463FF]
                         px-4
                         py-3
-                        text-center
                         text-sm
                         font-bold
-                        text-slate-700
+                        text-white
+                        shadow-[0_10px_24px_rgba(20,99,255,0.18)]
+                        transition-all
+                        duration-200
+                        hover:bg-[#0B1B3A]
                       "
                     >
 
@@ -1027,28 +1009,9 @@ function Navbar() {
 
                     </Link>
 
-
-                    <Link
-                      to="/register"
-                      className="
-                        rounded-2xl
-                        bg-indigo-600
-                        px-4
-                        py-3
-                        text-center
-                        text-sm
-                        font-bold
-                        text-white
-                      "
-                    >
-
-                      Get Started
-
-                    </Link>
-
                   </div>
 
-                </div>
+                </>
 
               ) : (
 
@@ -1058,15 +1021,21 @@ function Navbar() {
                   "
                 >
 
+                  {/* User */}
+
                   <div
                     className="
-                      mb-3
+                      mb-2
                       flex
                       items-center
                       gap-3
-                      rounded-2xl
-                      bg-slate-50
-                      p-4
+                      rounded-xl
+                      border
+                      border-white/70
+                      bg-white/50
+                      p-3
+                      shadow-sm
+                      backdrop-blur-md
                     "
                   >
 
@@ -1074,21 +1043,25 @@ function Navbar() {
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                         user?.full_name ||
                           "User"
-                      )}&background=4f46e5&color=fff`}
+                      )}&background=1463FF&color=fff`}
                       alt="Profile"
                       className="
-                        h-11
-                        w-11
+                        h-10
+                        w-10
                         rounded-full
+                        ring-2
+                        ring-white/80
                       "
                     />
+
 
                     <div>
 
                       <p
                         className="
+                          text-sm
                           font-bold
-                          text-slate-800
+                          text-[#0B1B3A]
                         "
                       >
 
@@ -1097,11 +1070,13 @@ function Navbar() {
 
                       </p>
 
+
                       <p
                         className="
-                          text-xs
+                          mt-0.5
+                          text-[11px]
                           capitalize
-                          text-slate-400
+                          text-[#64748B]
                         "
                       >
 
@@ -1206,15 +1181,21 @@ function Navbar() {
                     type="button"
                     onClick={logout}
                     className="
-                      mt-3
+                      mt-2
                       w-full
-                      rounded-2xl
-                      bg-red-50
+                      rounded-xl
+                      border
+                      border-transparent
                       px-4
-                      py-3.5
+                      py-3
+                      text-left
                       text-sm
-                      font-bold
+                      font-semibold
                       text-red-600
+                      transition-all
+                      duration-200
+                      hover:border-red-100
+                      hover:bg-red-50/70
                     "
                   >
 

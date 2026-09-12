@@ -233,6 +233,72 @@ const getMentors = (
 
 };
 
+// ============================================================
+// GET PUBLIC MENTORS
+// PUBLIC WEBSITE
+// ============================================================
+//
+// IMPORTANT:
+//
+// This query intentionally does NOT return:
+//
+// - email
+// - phone
+// - password
+// - user role
+// - created_at
+// - internal mentor profile IDs
+//
+// The homepage only needs information that can
+// safely be displayed publicly.
+//
+
+const getPublicMentors = (
+  callback
+) => {
+
+  const sql = `
+
+    SELECT
+
+      u.id,
+
+      u.full_name,
+
+      mp.designation,
+
+      mp.specialization,
+
+      mp.experience
+
+    FROM users u
+
+    INNER JOIN mentor_profiles mp
+
+      ON u.id = mp.user_id
+
+    WHERE
+
+      u.role = 'mentor'
+
+      AND u.full_name IS NOT NULL
+
+    ORDER BY
+
+      u.id DESC
+
+  `;
+
+
+  db.query(
+
+    sql,
+
+    callback
+
+  );
+
+};
 
 // ============================================================
 // GET MENTOR BY ID
@@ -751,6 +817,8 @@ module.exports = {
   createMentor,
 
   getMentors,
+
+  getPublicMentors,
 
   getMentorById,
 

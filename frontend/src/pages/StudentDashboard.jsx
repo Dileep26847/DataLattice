@@ -1,96 +1,109 @@
 import StatsCards from "../components/dashboard/StatsCards";
 import ContinueLearning from "../components/dashboard/ContinueLearning";
-import MyCourses from "../components/dashboard/MyCourses";
-import ProgressChart from "../components/dashboard/ProgressChart";
-import UpcomingClasses from "../components/dashboard/UpcomingClasses";
-import Activity from "../components/dashboard/Activity";
-import Assignments from "../components/dashboard/Assignments";
+
+
+// ============================================================
+// DATALATTICE STUDENT DASHBOARD
+// ============================================================
 
 function StudentDashboard() {
 
     return (
 
-        <div className="
-            w-full
-            max-w-[1700px]
-            mx-auto
-            px-4
-            sm:px-6
-            lg:px-8
-            xl:px-10
-            py-5
-            sm:py-6
-            lg:py-8
-        ">
+        <main
+            className="
+                min-h-full
+                w-full
+                bg-[#F5F9FF]
+            "
+        >
 
-            <section>
-                <StatsCards />
-            </section>
+            {/* ==================================================
+                MAIN DASHBOARD CONTENT
+            ================================================== */}
 
-            <section className="mt-6">
-                <ContinueLearning />
-            </section>
+            <div
+                className="
+                    mx-auto
+                    w-full
+                    max-w-[1440px]
+                    px-4
+                    pb-8
+                    pt-5
+                    sm:px-5
+                    sm:pb-10
+                    sm:pt-6
+                    lg:px-6
+                    lg:pb-12
+                    lg:pt-7
+                    xl:px-8
+                "
+            >
 
-            <section className="mt-7">
-                <MyCourses />
-            </section>
+                {/* ==================================================
+                    LEARNING OVERVIEW
+                ================================================== */}
 
-            <section className="
-                mt-7
-                grid
-                grid-cols-1
-                xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.8fr)]
-                gap-6
-                items-stretch
-            ">
+                <section
+                    aria-label="Learning overview"
+                    className="
+                        w-full
+                    "
+                >
 
-                <div className="
-                    min-w-0
-                    h-full
-                ">
-                    <ProgressChart />
-                </div>
+                    <StatsCards />
 
-                <div className="
-                    min-w-0
-                    h-full
-                ">
-                    <UpcomingClasses />
-                </div>
+                </section>
 
-            </section>
 
-            <section className="
-                mt-6
-                grid
-                grid-cols-1
-                xl:grid-cols-2
-                gap-6
-                items-stretch
-            ">
+                {/* ==================================================
+                    CONTINUE LEARNING
+                ================================================== */}
 
-                <div className="
-                    min-w-0
-                    h-full
-                ">
-                    <Assignments />
-                </div>
+                <section
+                    aria-label="Continue learning"
+                    className="
+                        mt-5
+                        w-full
+                        min-w-0
+                    "
+                >
 
-                <div className="
-                    min-w-0
-                    h-full
-                ">
-                    <Activity />
-                </div>
+                    <ContinueLearning />
 
-            </section>
+                </section>
 
-            <div className="h-6" />
 
-        </div>
+                {/* ==================================================
+                    RESERVED DASHBOARD SPACE
+                   
+                    Other dashboard modules such as:
+                    - My Courses
+                    - Progress Chart
+                    - Upcoming Classes
+                    - Assignments
+                    - Activity
+
+                    are intentionally not rendered here.
+                   
+                    Their existing files remain untouched so their
+                    functionality can be reused in future screens.
+                ================================================== */}
+
+                <div
+                    className="
+                        h-5
+                        sm:h-6
+                    "
+                />
+
+            </div>
+
+        </main>
 
     );
 
 }
+
 
 export default StudentDashboard;

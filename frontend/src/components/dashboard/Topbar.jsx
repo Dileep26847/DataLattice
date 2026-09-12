@@ -52,8 +52,10 @@ function Topbar() {
         getStoredUser
     );
 
+
     const [profileOpen, setProfileOpen] =
         useState(false);
+
 
     const [search, setSearch] =
         useState("");
@@ -73,10 +75,12 @@ function Topbar() {
 
         };
 
+
         window.addEventListener(
             "storage",
             handleStorage
         );
+
 
         return () => {
 
@@ -91,28 +95,13 @@ function Topbar() {
 
 
     // ============================================================
-    // DATE
-    // ============================================================
-
-    const today =
-        new Date().toLocaleDateString(
-            "en-US",
-            {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-            }
-        );
-
-
-    // ============================================================
     // USER INFORMATION
     // ============================================================
 
     const fullName =
         user?.full_name ||
         "Student";
+
 
     const firstName =
         fullName
@@ -125,7 +114,7 @@ function Topbar() {
         user?.profile_image ||
         `https://ui-avatars.com/api/?name=${encodeURIComponent(
             fullName
-        )}&background=4f46e5&color=fff&size=200`;
+        )}&background=1463FF&color=fff&size=200`;
 
 
     // ============================================================
@@ -154,12 +143,17 @@ function Topbar() {
 
         event.preventDefault();
 
+
         const query =
             search.trim();
 
+
         if (!query) {
+
             return;
+
         }
+
 
         console.log(
             "Student search:",
@@ -191,634 +185,852 @@ function Topbar() {
                 relative
                 z-30
                 w-full
-                rounded-2xl
-                bg-white
-                border
-                border-slate-200
-                shadow-sm
             "
         >
 
+            {/* ====================================================
+                PROFESSIONAL GLASS CONTAINER
+            ==================================================== */}
+
             <div
                 className="
-                    px-5
-                    sm:px-6
-                    lg:px-7
-                    py-4
+                    relative
+                    overflow-visible
+                    rounded-[18px]
+                    border
+                    border-white/75
+                    bg-white/48
+                    shadow-[0_8px_30px_rgba(11,27,58,0.06)]
+                    backdrop-blur-[24px]
+                    backdrop-saturate-150
                 "
             >
 
+                {/* ==================================================
+                    GLASS TOP HIGHLIGHT
+                ================================================== */}
+
                 <div
                     className="
-                        flex
-                        flex-col
-                        xl:flex-row
-                        xl:items-center
-                        xl:justify-between
-                        gap-5
+                        pointer-events-none
+                        absolute
+                        inset-x-0
+                        top-0
+                        h-px
+                        rounded-full
+                        bg-white/95
+                    "
+                />
+
+
+                {/* ==================================================
+                    GLASS INNER LIGHT
+                ================================================== */}
+
+                <div
+                    className="
+                        pointer-events-none
+                        absolute
+                        inset-0
+                        rounded-[18px]
+                        bg-gradient-to-br
+                        from-white/55
+                        via-transparent
+                        to-[#EAF2FF]/25
+                    "
+                />
+
+
+                {/* ==================================================
+                    VERY SUBTLE GLASS EDGE
+                ================================================== */}
+
+                <div
+                    className="
+                        pointer-events-none
+                        absolute
+                        inset-[1px]
+                        rounded-[17px]
+                        border
+                        border-white/25
+                    "
+                />
+
+
+                {/* ==================================================
+                    TOPBAR CONTENT
+                ================================================== */}
+
+                <div
+                    className="
+                        relative
+                        px-4
+                        py-2.5
+                        sm:px-5
+                        lg:px-6
                     "
                 >
-
-                    {/* ==================================================
-                        LEFT SIDE
-                    ================================================== */}
-
-                    <div className="min-w-0">
-
-                        <div className="flex items-center gap-2">
-
-                            <span
-                                className="
-                                    inline-flex
-                                    items-center
-                                    gap-2
-                                    rounded-full
-                                    bg-indigo-50
-                                    px-2.5
-                                    py-1
-                                    text-[10px]
-                                    font-bold
-                                    uppercase
-                                    tracking-wider
-                                    text-indigo-600
-                                "
-                            >
-
-                                <span
-                                    className="
-                                        w-1.5
-                                        h-1.5
-                                        rounded-full
-                                        bg-indigo-600
-                                    "
-                                />
-
-                                Student Portal
-
-                            </span>
-
-                        </div>
-
-
-                        <h1
-                            className="
-                                mt-2
-                                text-2xl
-                                sm:text-3xl
-                                font-black
-                                tracking-tight
-                                text-slate-900
-                            "
-                        >
-
-                            Welcome back, {firstName} 👋
-
-                        </h1>
-
-
-                        <p
-                            className="
-                                mt-1
-                                text-sm
-                                text-slate-500
-                            "
-                        >
-
-                            Let's continue your learning
-                            journey today.
-
-                        </p>
-
-
-                        <div
-                            className="
-                                mt-3
-                                flex
-                                items-center
-                                gap-2
-                                text-xs
-                                sm:text-sm
-                                text-slate-500
-                            "
-                        >
-
-                            <FaCalendarAlt
-                                className="text-indigo-600"
-                            />
-
-                            <span>
-                                {today}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    {/* ==================================================
-                        RIGHT SIDE
-                    ================================================== */}
 
                     <div
                         className="
                             flex
-                            flex-wrap
-                            items-center
+                            flex-col
                             gap-2.5
+                            xl:flex-row
+                            xl:items-center
+                            xl:justify-between
+                            xl:gap-5
                         "
                     >
 
                         {/* ==================================================
-                            SEARCH
+                            LEFT SIDE
                         ================================================== */}
 
-                        <form
-                            onSubmit={
-                                handleSearch
-                            }
+                        <div
                             className="
-                                relative
-                                w-full
-                                sm:w-64
-                                lg:w-72
+                                min-w-0
+                                flex-1
                             "
                         >
 
-                            <FaSearch
+                            {/* ==================================================
+                                WELCOME
+                            ================================================== */}
+
+                            <h1
                                 className="
-                                    absolute
-                                    left-3.5
-                                    top-1/2
-                                    -translate-y-1/2
-                                    text-slate-400
-                                    text-sm
-                                "
-                            />
-
-                            <input
-                                type="text"
-                                value={search}
-                                onChange={(event) =>
-                                    setSearch(
-                                        event.target.value
-                                    )
-                                }
-                                placeholder="Search courses..."
-                                className="
-                                    w-full
-                                    h-11
-                                    rounded-xl
-                                    bg-slate-100
-                                    border
-                                    border-transparent
-                                    pl-10
-                                    pr-4
-                                    text-sm
-                                    text-slate-700
-                                    placeholder:text-slate-400
-                                    outline-none
-                                    transition-all
-                                    focus:bg-white
-                                    focus:border-indigo-200
-                                    focus:ring-4
-                                    focus:ring-indigo-50
-                                "
-                            />
-
-                        </form>
-
-
-                        {/* ==================================================
-                            CALENDAR
-                        ================================================== */}
-
-                        <button
-                            type="button"
-                            onClick={() =>
-                                navigate(
-                                    "/student/calendar"
-                                )
-                            }
-                            title="Calendar"
-                            className="
-                                w-11
-                                h-11
-                                shrink-0
-                                rounded-xl
-                                bg-slate-100
-                                text-slate-600
-                                flex
-                                items-center
-                                justify-center
-                                hover:bg-indigo-50
-                                hover:text-indigo-600
-                                transition-all
-                            "
-                        >
-
-                            <FaCalendarAlt />
-
-                        </button>
-
-
-                        {/* ==================================================
-                            DARK MODE
-                        ================================================== */}
-
-                        <button
-                            type="button"
-                            title="Dark mode"
-                            className="
-                                w-11
-                                h-11
-                                shrink-0
-                                rounded-xl
-                                bg-slate-100
-                                text-slate-600
-                                flex
-                                items-center
-                                justify-center
-                                hover:bg-slate-200
-                                transition-all
-                            "
-                        >
-
-                            <FaMoon />
-
-                        </button>
-
-
-                        {/* ==================================================
-                            NOTIFICATIONS
-                        ================================================== */}
-
-                        <button
-                            type="button"
-                            onClick={() =>
-                                navigate(
-                                    "/student/settings"
-                                )
-                            }
-                            title="Notifications"
-                            className="
-                                relative
-                                w-11
-                                h-11
-                                shrink-0
-                                rounded-xl
-                                bg-slate-100
-                                text-slate-600
-                                flex
-                                items-center
-                                justify-center
-                                hover:bg-indigo-50
-                                hover:text-indigo-600
-                                transition-all
-                            "
-                        >
-
-                            <FaBell />
-
-                            <span
-                                className="
-                                    absolute
-                                    -top-1
-                                    -right-1
-                                    min-w-4.5
-                                    h-4.5
-                                    px-1
-                                    rounded-full
-                                    bg-red-500
-                                    text-white
-                                    text-[9px]
-                                    font-bold
-                                    flex
-                                    items-center
-                                    justify-center
-                                    border-2
-                                    border-white
+                                    text-[20px]
+                                    font-extrabold
+                                    leading-tight
+                                    tracking-[-0.03em]
+                                    text-[#0B1B3A]
+                                    sm:text-[22px]
+                                    lg:text-[24px]
                                 "
                             >
 
-                                3
+                                Welcome back, {firstName} 👋
 
-                            </span>
+                            </h1>
 
-                        </button>
+
+                            {/* ==================================================
+                                DESCRIPTION
+                            ================================================== */}
+
+                            <p
+                                className="
+                                    mt-0.5
+                                    text-[12px]
+                                    leading-4
+                                    text-[#64748B]
+                                    sm:text-[13px]
+                                "
+                            >
+
+                                Let's continue your learning
+                                journey today.
+
+                            </p>
+
+                        </div>
 
 
                         {/* ==================================================
-                            PROFILE
+                            RIGHT SIDE
                         ================================================== */}
 
-                        <div className="relative">
+                        <div
+                            className="
+                                flex
+                                w-full
+                                flex-wrap
+                                items-center
+                                gap-1.5
+                                xl:w-auto
+                                xl:shrink-0
+                                xl:justify-end
+                            "
+                        >
+
+                            {/* ==================================================
+                                SEARCH
+                            ================================================== */}
+
+                            <form
+                                onSubmit={
+                                    handleSearch
+                                }
+                                className="
+                                    relative
+                                    min-w-0
+                                    w-full
+                                    sm:w-[220px]
+                                    lg:w-[250px]
+                                    xl:w-[240px]
+                                "
+                            >
+
+                                <FaSearch
+                                    className="
+                                        pointer-events-none
+                                        absolute
+                                        left-3
+                                        top-1/2
+                                        -translate-y-1/2
+                                        text-[#94A3B8]
+                                        text-[12px]
+                                    "
+                                />
+
+
+                                <input
+                                    type="text"
+                                    value={search}
+                                    onChange={(event) =>
+                                        setSearch(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Search courses..."
+                                    className="
+                                        h-9
+                                        w-full
+                                        rounded-lg
+                                        border
+                                        border-white/75
+                                        bg-white/42
+                                        pl-9
+                                        pr-3
+                                        text-[13px]
+                                        text-[#0B1B3A]
+                                        placeholder:text-[#94A3B8]
+                                        shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_3px_12px_rgba(11,27,58,0.02)]
+                                        outline-none
+                                        backdrop-blur-xl
+                                        transition-all
+                                        duration-200
+                                        focus:border-[#1463FF]/25
+                                        focus:bg-white/70
+                                        focus:shadow-[0_5px_16px_rgba(20,99,255,0.06)]
+                                        focus:ring-4
+                                        focus:ring-[#1463FF]/8
+                                    "
+                                />
+
+                            </form>
+
+
+                            {/* ==================================================
+                                CALENDAR
+                            ================================================== */}
 
                             <button
                                 type="button"
                                 onClick={() =>
-                                    setProfileOpen(
-                                        (previous) =>
-                                            !previous
+                                    navigate(
+                                        "/student/calendar"
                                     )
                                 }
+                                title="Calendar"
                                 className="
+                                    group
                                     flex
+                                    h-9
+                                    w-9
+                                    shrink-0
                                     items-center
-                                    gap-2.5
-                                    rounded-xl
-                                    px-1.5
-                                    py-1
-                                    hover:bg-slate-50
+                                    justify-center
+                                    rounded-lg
+                                    border
+                                    border-white/75
+                                    bg-white/42
+                                    text-[#64748B]
+                                    shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_3px_12px_rgba(11,27,58,0.02)]
+                                    backdrop-blur-xl
                                     transition-all
+                                    duration-200
+                                    hover:-translate-y-0.5
+                                    hover:border-white
+                                    hover:bg-[#EAF2FF]/75
+                                    hover:text-[#1463FF]
+                                    hover:shadow-[0_6px_16px_rgba(20,99,255,0.07)]
                                 "
                             >
 
-                                <img
-                                    src={avatar}
-                                    alt="Student profile"
+                                <FaCalendarAlt
+                                    size={12}
                                     className="
-                                        w-10
-                                        h-10
-                                        rounded-xl
-                                        object-cover
-                                        shadow-sm
-                                    "
-                                    onError={(event) => {
-
-                                        event.currentTarget.src =
-                                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                                fullName
-                                            )}&background=4f46e5&color=fff&size=200`;
-
-                                    }}
-                                />
-
-
-                                <div
-                                    className="
-                                        hidden
-                                        md:block
-                                        text-left
-                                        max-w-32
-                                    "
-                                >
-
-                                    <p
-                                        className="
-                                            text-sm
-                                            font-bold
-                                            text-slate-800
-                                            truncate
-                                        "
-                                    >
-
-                                        {fullName}
-
-                                    </p>
-
-                                    <p
-                                        className="
-                                            text-[11px]
-                                            text-slate-500
-                                            capitalize
-                                        "
-                                    >
-
-                                        {user?.role ||
-                                            "student"}
-
-                                    </p>
-
-                                </div>
-
-
-                                <FaChevronDown
-                                    className={`
-                                        hidden
-                                        sm:block
-                                        text-[10px]
-                                        text-slate-400
                                         transition-transform
-                                        ${
-                                            profileOpen
-                                                ? "rotate-180"
-                                                : ""
-                                        }
-                                    `}
+                                        duration-200
+                                        group-hover:scale-105
+                                    "
                                 />
 
                             </button>
 
 
                             {/* ==================================================
-                                PROFILE DROPDOWN
+                                DARK MODE
                             ================================================== */}
 
-                            {profileOpen && (
+                            <button
+                                type="button"
+                                title="Dark mode"
+                                className="
+                                    group
+                                    flex
+                                    h-9
+                                    w-9
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    border
+                                    border-white/75
+                                    bg-white/42
+                                    text-[#64748B]
+                                    shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_3px_12px_rgba(11,27,58,0.02)]
+                                    backdrop-blur-xl
+                                    transition-all
+                                    duration-200
+                                    hover:-translate-y-0.5
+                                    hover:border-white
+                                    hover:bg-[#EAF2FF]/75
+                                    hover:text-[#1463FF]
+                                "
+                            >
 
-                                <>
+                                <FaMoon
+                                    size={12}
+                                    className="
+                                        transition-transform
+                                        duration-200
+                                        group-hover:rotate-12
+                                    "
+                                />
 
-                                    {/* Backdrop */}
+                            </button>
 
-                                    <button
-                                        type="button"
-                                        aria-label="Close profile menu"
-                                        onClick={
-                                            closeProfile
-                                        }
+
+                            {/* ==================================================
+                                NOTIFICATIONS
+                            ================================================== */}
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    navigate(
+                                        "/student/settings"
+                                    )
+                                }
+                                title="Notifications"
+                                className="
+                                    group
+                                    relative
+                                    flex
+                                    h-9
+                                    w-9
+                                    shrink-0
+                                    items-center
+                                    justify-center
+                                    rounded-lg
+                                    border
+                                    border-white/75
+                                    bg-white/42
+                                    text-[#64748B]
+                                    shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_3px_12px_rgba(11,27,58,0.02)]
+                                    backdrop-blur-xl
+                                    transition-all
+                                    duration-200
+                                    hover:-translate-y-0.5
+                                    hover:border-white
+                                    hover:bg-[#EAF2FF]/75
+                                    hover:text-[#1463FF]
+                                "
+                            >
+
+                                <FaBell
+                                    size={12}
+                                    className="
+                                        transition-transform
+                                        duration-200
+                                        group-hover:scale-105
+                                    "
+                                />
+
+
+                                <span
+                                    className="
+                                        absolute
+                                        -right-1
+                                        -top-1
+                                        flex
+                                        h-4
+                                        min-w-4
+                                        items-center
+                                        justify-center
+                                        rounded-full
+                                        border-2
+                                        border-white
+                                        bg-[#1463FF]
+                                        px-0.5
+                                        text-[7px]
+                                        font-bold
+                                        leading-none
+                                        text-white
+                                        shadow-[0_2px_8px_rgba(20,99,255,0.22)]
+                                    "
+                                >
+
+                                    3
+
+                                </span>
+
+                            </button>
+
+
+                            {/* ==================================================
+                                PROFILE
+                            ================================================== */}
+
+                            <div
+                                className="
+                                    relative
+                                    shrink-0
+                                "
+                            >
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setProfileOpen(
+                                            (previous) =>
+                                                !previous
+                                        )
+                                    }
+                                    className="
+                                        group
+                                        flex
+                                        items-center
+                                        gap-1.5
+                                        rounded-lg
+                                        border
+                                        border-transparent
+                                        bg-white/18
+                                        px-1
+                                        py-0.5
+                                        transition-all
+                                        duration-200
+                                        hover:border-white/75
+                                        hover:bg-white/45
+                                        hover:shadow-[0_5px_15px_rgba(11,27,58,0.035)]
+                                    "
+                                >
+
+                                    {/* Avatar */}
+
+                                    <img
+                                        src={avatar}
+                                        alt="Student profile"
                                         className="
-                                            fixed
-                                            inset-0
-                                            z-40
-                                            cursor-default
+                                            h-8
+                                            w-8
+                                            rounded-lg
+                                            border-2
+                                            border-white/90
+                                            object-cover
+                                            shadow-[0_4px_12px_rgba(11,27,58,0.08)]
                                         "
+                                        onError={(event) => {
+
+                                            event.currentTarget.src =
+                                                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                                    fullName
+                                                )}&background=1463FF&color=fff&size=200`;
+
+                                        }}
                                     />
 
 
-                                    {/* Menu */}
+                                    {/* User Details */}
 
                                     <div
                                         className="
-                                            absolute
-                                            right-0
-                                            top-full
-                                            mt-2
-                                            z-50
-                                            w-60
-                                            rounded-2xl
-                                            bg-white
-                                            border
-                                            border-slate-200
-                                            shadow-xl
-                                            p-2
+                                            hidden
+                                            min-w-0
+                                            max-w-[110px]
+                                            text-left
+                                            md:block
                                         "
                                     >
 
-                                        {/* Account */}
-
-                                        <div
+                                        <p
                                             className="
-                                                px-3
-                                                py-2.5
-                                                mb-1
-                                                border-b
-                                                border-slate-100
+                                                truncate
+                                                text-[12px]
+                                                font-bold
+                                                leading-tight
+                                                text-[#0B1B3A]
                                             "
                                         >
 
-                                            <p
-                                                className="
-                                                    text-[10px]
-                                                    font-bold
-                                                    uppercase
-                                                    tracking-wider
-                                                    text-slate-400
-                                                "
-                                            >
+                                            {fullName}
 
-                                                Signed in as
-
-                                            </p>
-
-                                            <p
-                                                className="
-                                                    mt-1
-                                                    text-sm
-                                                    font-bold
-                                                    text-slate-800
-                                                    truncate
-                                                "
-                                            >
-
-                                                {fullName}
-
-                                            </p>
-
-                                        </div>
+                                        </p>
 
 
-                                        {/* Profile */}
+                                        <p
+                                            className="
+                                                mt-0.5
+                                                text-[9px]
+                                                font-medium
+                                                capitalize
+                                                leading-tight
+                                                text-[#64748B]
+                                            "
+                                        >
+
+                                            {user?.role ||
+                                                "student"}
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <FaChevronDown
+                                        className={`
+                                            hidden
+                                            text-[8px]
+                                            text-[#64748B]
+                                            transition-transform
+                                            duration-200
+                                            sm:block
+                                            ${
+                                                profileOpen
+                                                    ? "rotate-180"
+                                                    : ""
+                                            }
+                                        `}
+                                    />
+
+                                </button>
+
+
+                                {/* ==================================================
+                                    PROFILE DROPDOWN
+                                ================================================== */}
+
+                                {profileOpen && (
+
+                                    <>
+
+                                        {/* Backdrop */}
 
                                         <button
                                             type="button"
-                                            onClick={() => {
-
-                                                closeProfile();
-
-                                                navigate(
-                                                    "/student/profile"
-                                                );
-
-                                            }}
+                                            aria-label="Close profile menu"
+                                            onClick={
+                                                closeProfile
+                                            }
                                             className="
-                                                w-full
-                                                flex
-                                                items-center
-                                                gap-3
-                                                px-3
-                                                py-2.5
-                                                rounded-xl
-                                                text-sm
-                                                text-slate-600
-                                                hover:bg-indigo-50
-                                                hover:text-indigo-600
-                                                transition
+                                                fixed
+                                                inset-0
+                                                z-40
+                                                cursor-default
                                             "
-                                        >
-
-                                            <FaUser />
-
-                                            <span>
-                                                My Profile
-                                            </span>
-
-                                        </button>
+                                        />
 
 
-                                        {/* Settings */}
-
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-
-                                                closeProfile();
-
-                                                navigate(
-                                                    "/student/settings"
-                                                );
-
-                                            }}
-                                            className="
-                                                w-full
-                                                flex
-                                                items-center
-                                                gap-3
-                                                px-3
-                                                py-2.5
-                                                rounded-xl
-                                                text-sm
-                                                text-slate-600
-                                                hover:bg-indigo-50
-                                                hover:text-indigo-600
-                                                transition
-                                            "
-                                        >
-
-                                            <FaCog />
-
-                                            <span>
-                                                Settings
-                                            </span>
-
-                                        </button>
-
-
-                                        {/* Logout */}
+                                        {/* ==================================================
+                                            GLASS DROPDOWN
+                                        ================================================== */}
 
                                         <div
                                             className="
-                                                mt-1
-                                                pt-1
-                                                border-t
-                                                border-slate-100
+                                                absolute
+                                                right-0
+                                                top-full
+                                                z-50
+                                                mt-2
+                                                w-[230px]
+                                                overflow-hidden
+                                                rounded-2xl
+                                                border
+                                                border-white/80
+                                                bg-white/75
+                                                p-2
+                                                shadow-[0_24px_65px_rgba(11,27,58,0.15)]
+                                                backdrop-blur-[26px]
+                                                backdrop-saturate-150
                                             "
                                         >
+
+                                            {/* Glass Highlight */}
+
+                                            <div
+                                                className="
+                                                    pointer-events-none
+                                                    absolute
+                                                    inset-x-0
+                                                    top-0
+                                                    h-px
+                                                    bg-white
+                                                "
+                                            />
+
+
+                                            {/* ==================================================
+                                                ACCOUNT
+                                            ================================================== */}
+
+                                            <div
+                                                className="
+                                                    relative
+                                                    mb-1
+                                                    rounded-xl
+                                                    border
+                                                    border-white/70
+                                                    bg-[#F5F9FF]/70
+                                                    px-3
+                                                    py-2.5
+                                                "
+                                            >
+
+                                                <p
+                                                    className="
+                                                        text-[9px]
+                                                        font-bold
+                                                        uppercase
+                                                        tracking-[0.1em]
+                                                        text-[#94A3B8]
+                                                    "
+                                                >
+
+                                                    Signed in as
+
+                                                </p>
+
+
+                                                <p
+                                                    className="
+                                                        mt-1
+                                                        truncate
+                                                        text-sm
+                                                        font-bold
+                                                        text-[#0B1B3A]
+                                                    "
+                                                >
+
+                                                    {fullName}
+
+                                                </p>
+
+                                            </div>
+
+
+                                            {/* ==================================================
+                                                PROFILE
+                                            ================================================== */}
 
                                             <button
                                                 type="button"
-                                                onClick={
-                                                    logout
-                                                }
+                                                onClick={() => {
+
+                                                    closeProfile();
+
+                                                    navigate(
+                                                        "/student/profile"
+                                                    );
+
+                                                }}
                                                 className="
-                                                    w-full
                                                     flex
+                                                    w-full
                                                     items-center
                                                     gap-3
+                                                    rounded-xl
                                                     px-3
                                                     py-2.5
-                                                    rounded-xl
+                                                    text-left
                                                     text-sm
-                                                    text-red-600
-                                                    hover:bg-red-50
-                                                    transition
+                                                    font-medium
+                                                    text-[#64748B]
+                                                    transition-all
+                                                    duration-200
+                                                    hover:bg-[#EAF2FF]/80
+                                                    hover:text-[#1463FF]
                                                 "
                                             >
 
-                                                <FaSignOutAlt />
+                                                <span
+                                                    className="
+                                                        flex
+                                                        h-8
+                                                        w-8
+                                                        items-center
+                                                        justify-center
+                                                        rounded-lg
+                                                        border
+                                                        border-white/80
+                                                        bg-[#EAF2FF]/75
+                                                        text-[#1463FF]
+                                                        shadow-sm
+                                                    "
+                                                >
+
+                                                    <FaUser
+                                                        size={12}
+                                                    />
+
+                                                </span>
+
 
                                                 <span>
-                                                    Logout
+                                                    My Profile
                                                 </span>
 
                                             </button>
 
+
+                                            {/* ==================================================
+                                                SETTINGS
+                                            ================================================== */}
+
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+
+                                                    closeProfile();
+
+                                                    navigate(
+                                                        "/student/settings"
+                                                    );
+
+                                                }}
+                                                className="
+                                                    flex
+                                                    w-full
+                                                    items-center
+                                                    gap-3
+                                                    rounded-xl
+                                                    px-3
+                                                    py-2.5
+                                                    text-left
+                                                    text-sm
+                                                    font-medium
+                                                    text-[#64748B]
+                                                    transition-all
+                                                    duration-200
+                                                    hover:bg-[#EAF2FF]/80
+                                                    hover:text-[#1463FF]
+                                                "
+                                            >
+
+                                                <span
+                                                    className="
+                                                        flex
+                                                        h-8
+                                                        w-8
+                                                        items-center
+                                                        justify-center
+                                                        rounded-lg
+                                                        border
+                                                        border-white/80
+                                                        bg-white/50
+                                                        text-[#64748B]
+                                                    "
+                                                >
+
+                                                    <FaCog
+                                                        size={12}
+                                                    />
+
+                                                </span>
+
+
+                                                <span>
+                                                    Settings
+                                                </span>
+
+                                            </button>
+
+
+                                            {/* ==================================================
+                                                LOGOUT
+                                            ================================================== */}
+
+                                            <div
+                                                className="
+                                                    mt-1
+                                                    border-t
+                                                    border-white/70
+                                                    pt-1
+                                                "
+                                            >
+
+                                                <button
+                                                    type="button"
+                                                    onClick={
+                                                        logout
+                                                    }
+                                                    className="
+                                                        flex
+                                                        w-full
+                                                        items-center
+                                                        gap-3
+                                                        rounded-xl
+                                                        px-3
+                                                        py-2.5
+                                                        text-left
+                                                        text-sm
+                                                        font-medium
+                                                        text-red-600
+                                                        transition-all
+                                                        duration-200
+                                                        hover:bg-red-50/80
+                                                    "
+                                                >
+
+                                                    <span
+                                                        className="
+                                                            flex
+                                                            h-8
+                                                            w-8
+                                                            items-center
+                                                            justify-center
+                                                            rounded-lg
+                                                            border
+                                                            border-red-100/70
+                                                            bg-red-50/70
+                                                            text-red-500
+                                                        "
+                                                    >
+
+                                                        <FaSignOutAlt
+                                                            size={12}
+                                                        />
+
+                                                    </span>
+
+
+                                                    <span>
+                                                        Logout
+                                                    </span>
+
+                                                </button>
+
+                                            </div>
+
                                         </div>
 
-                                    </div>
+                                    </>
 
-                                </>
+                                )}
 
-                            )}
+                            </div>
 
                         </div>
 
@@ -833,5 +1045,6 @@ function Topbar() {
     );
 
 }
+
 
 export default Topbar;

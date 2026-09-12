@@ -21,6 +21,50 @@ export const registerUser = async (
 
 
 // ============================================================
+// REQUEST SIGNUP OTP
+// ============================================================
+
+export const requestSignupOtp = async (
+  phone
+) => {
+
+  const response =
+    await api.post(
+      "/auth/otp/request",
+      {
+        phone,
+      }
+    );
+
+  return response.data;
+
+};
+
+
+// ============================================================
+// VERIFY SIGNUP OTP
+// ============================================================
+
+export const verifySignupOtp = async (
+  phone,
+  otp
+) => {
+
+  const response =
+    await api.post(
+      "/auth/otp/verify",
+      {
+        phone,
+        otp,
+      }
+    );
+
+  return response.data;
+
+};
+
+
+// ============================================================
 // LOGIN
 // ============================================================
 
