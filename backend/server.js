@@ -210,14 +210,20 @@ const PORT =
 // ======================================
 // CORS
 // ======================================
-
+//
 // Supports:
 // Local development:
-// CORS_ORIGINS=http://localhost:5173
+// http://localhost:5173
 //
-// Multiple origins:
+// Production:
+// https://datalattice.in
+// https://www.datalattice.in
+//
+// Additional origins can still be supplied
+// through CORS_ORIGINS as a comma-separated list.
+//
 
-const allowedOrigins = (
+const configuredOrigins = (
     process.env.CORS_ORIGINS ||
     "http://localhost:5173"
 )
@@ -225,19 +231,46 @@ const allowedOrigins = (
     .map((origin) => origin.trim())
     .filter(Boolean);
 
+const allowedOrigins = new Set([
+    ...configuredOrigins,
+
+    // ======================================
+    // DATAlattice PRODUCTION FRONTEND
+    // ======================================
+
+    "https://datalattice.in",
+    "https://www.datalattice.in",
+]);
+
 app.use(
     cors({
         origin: (origin, callback) => {
 
-            // Allow requests with no origin
-            // such as Postman/server-to-server requests.
+            // ======================================
+            // ALLOW REQUESTS WITHOUT ORIGIN
+            // ======================================
+            //
+            // Examples:
+            // Postman
+            // Server-to-server requests
+            // Some backend integrations
+            //
+
             if (!origin) {
                 return callback(null, true);
             }
 
-            if (allowedOrigins.includes(origin)) {
+            // ======================================
+            // ALLOWED ORIGIN
+            // ======================================
+
+            if (allowedOrigins.has(origin)) {
                 return callback(null, true);
             }
+
+            // ======================================
+            // BLOCK UNKNOWN ORIGIN
+            // ======================================
 
             console.warn(
                 `CORS blocked origin: ${origin}`
