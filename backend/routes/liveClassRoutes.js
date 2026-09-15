@@ -11,8 +11,9 @@ const authorizeRoles =
 const liveClassController =
   require("../controllers/liveClassController");
 
-  const zoomWebhookController =
+const zoomWebhookController =
   require("../controllers/zoomWebhookController");
+
 
 // ======================================
 // Create Live Class
@@ -26,6 +27,7 @@ router.post(
   liveClassController.createLiveClass
 );
 
+
 // ======================================
 // Get All Live Classes
 // Admin / Mentor / Student
@@ -37,9 +39,14 @@ router.post(
 router.get(
   "/",
   verifyToken,
-  authorizeRoles("admin", "mentor", "student"),
+  authorizeRoles(
+    "admin",
+    "mentor",
+    "student"
+  ),
   liveClassController.getAllLiveClasses
 );
+
 
 // ======================================
 // Get Classes By Batch
@@ -54,9 +61,66 @@ router.get(
 router.get(
   "/batch/:batchId",
   verifyToken,
-  authorizeRoles("admin", "mentor", "student"),
+  authorizeRoles(
+    "admin",
+    "mentor",
+    "student"
+  ),
   liveClassController.getClassesByBatch
 );
+
+
+// ======================================
+// JOIN LIVE CLASS
+//
+// Student only.
+//
+// Flow:
+//
+// Student clicks Join
+//       ↓
+// Backend verifies student
+//       ↓
+// Attendance recorded
+//       ↓
+// Frontend opens Zoom
+//
+// Current attendance status:
+// Present
+//
+// Future:
+// Zoom join/leave events will be
+// used for actual duration tracking.
+// ======================================
+
+router.post(
+  "/:id/join",
+  verifyToken,
+  authorizeRoles("student"),
+  liveClassController.joinLiveClass
+);
+
+
+// ======================================
+// ZOOM WEBHOOK
+//
+// Public endpoint.
+// Zoom calls this endpoint directly.
+//
+// IMPORTANT:
+// Keep this route public because Zoom
+// does not send our JWT token.
+//
+// Future attendance integration:
+// meeting.participant_joined
+// meeting.participant_left
+// ======================================
+
+router.post(
+  "/webhook/zoom",
+  zoomWebhookController.handleZoomWebhook
+);
+
 
 // ======================================
 // Get Live Class By ID
@@ -68,23 +132,17 @@ router.get(
 //   Allowed.
 // ======================================
 
-// ======================================
-// ZOOM WEBHOOK
-// Public endpoint
-// Zoom calls this endpoint directly.
-// ======================================
-
-router.post(
-  "/webhook/zoom",
-  zoomWebhookController.handleZoomWebhook
-);
-
 router.get(
   "/:id",
   verifyToken,
-  authorizeRoles("admin", "mentor", "student"),
+  authorizeRoles(
+    "admin",
+    "mentor",
+    "student"
+  ),
   liveClassController.getLiveClassById
 );
+
 
 // ======================================
 // Update Live Class
@@ -98,6 +156,7 @@ router.put(
   liveClassController.updateLiveClass
 );
 
+
 // ======================================
 // Delete Live Class
 // ADMIN ONLY
@@ -109,5 +168,10 @@ router.delete(
   authorizeRoles("admin"),
   liveClassController.deleteLiveClass
 );
+
+
+// ======================================
+// EXPORT
+// ======================================
 
 module.exports = router;

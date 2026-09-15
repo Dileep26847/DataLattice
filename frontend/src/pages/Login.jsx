@@ -241,6 +241,87 @@ function Login() {
         "Login successful."
       );
 
+      // ========================================================
+// PENDING ENROLLMENT REDIRECT
+// ========================================================
+
+const pendingEnrollment =
+  localStorage.getItem(
+    "datalattice_pending_enrollment"
+  );
+
+
+if (
+  pendingEnrollment &&
+  data.user.role === "student"
+) {
+
+  navigate(
+    "/enroll/payment",
+    {
+      replace: true,
+    }
+  );
+
+  return;
+
+}
+
+
+// ========================================================
+// ROLE REDIRECT
+// ========================================================
+
+if (
+  data.user.role === "admin"
+) {
+
+  navigate(
+    "/admin/dashboard",
+    {
+      replace: true,
+    }
+  );
+
+}
+
+else if (
+  data.user.role === "student"
+) {
+
+  navigate(
+    "/student/dashboard",
+    {
+      replace: true,
+    }
+  );
+
+}
+
+else if (
+  data.user.role === "mentor"
+) {
+
+  navigate(
+    "/mentor/dashboard",
+    {
+      replace: true,
+    }
+  );
+
+}
+
+else {
+
+  navigate(
+    "/",
+    {
+      replace: true,
+    }
+  );
+
+}
+
 
       // ========================================================
       // ROLE REDIRECT

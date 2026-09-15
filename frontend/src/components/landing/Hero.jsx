@@ -1,621 +1,1177 @@
-import {
-  motion,
-} from "framer-motion";
-
+import React from "react";
+import { motion } from "framer-motion";
 import {
   FaArrowRight,
-  FaBookOpen,
-  FaGraduationCap,
-  FaLaptopCode,
-  FaPlay,
-  FaUsers,
-  FaVideo,
   FaChartLine,
+  FaDatabase,
+  FaCode,
+  FaBrain,
+  FaPlay,
+  FaCheck,
+  FaRobot,
+  FaProjectDiagram,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-import {
-  useNavigate,
-} from "react-router-dom";
-
-import heroImage from "../../assets/datalattice-hero-middle.png";
-
+import { requireHomeDemoAccess } from "./HomeAccessGate";
 import HeroSignupCard from "./HeroSignupCard";
 
+/* =========================================================
+   DATALATTICE HERO
+   =========================================================
 
-// ============================================================
-// HERO
-// ============================================================
+   Layout:
 
-function Hero() {
+   ┌─────────────────────────────────────────────────────────┐
+   │                        NAVBAR                           │
+   ├─────────────────────────────────────────────────────────┤
+   │                                                         │
+   │  LEFT                  MIDDLE                  RIGHT    │
+   │                                                         │
+   │  Hero heading          DataLattice             Signup   │
+   │  Description           Graph                   Card     │
+   │  Buttons               Network                          │
+   │  Learning points                                        │
+   │                                                         │
+   └─────────────────────────────────────────────────────────┘
 
-  const navigate =
-    useNavigate();
+   IMPORTANT:
+   ---------------------------------------------------------
+   This file does not modify:
+   - Navbar
+   - HomeAccessGate
+   - HeroSignupCard
+   - authentication
+   - OTP
+   - navigation logic
+   - backend functionality
+
+   Only the Hero presentation/layout/background is handled here.
+   ========================================================= */
 
 
-  // ==========================================================
-  // WHATSAPP
-  // ==========================================================
+/* =========================================================
+   HERO BACKGROUND
+   ========================================================= */
 
-  const openWhatsApp = () => {
-
-    window.open(
-      "https://wa.me/917204376429",
-      "_blank",
-      "noopener,noreferrer"
-    );
-
-  };
-
-
-  // ==========================================================
-  // RENDER
-  // ==========================================================
+function BackgroundNetwork() {
+  const dots = [
+    {
+      left: "28%",
+      top: "13%",
+      size: "5px",
+      delay: 0,
+      duration: 4.5,
+    },
+    {
+      left: "39%",
+      top: "27%",
+      size: "4px",
+      delay: 0.8,
+      duration: 5,
+    },
+    {
+      left: "54%",
+      top: "11%",
+      size: "4px",
+      delay: 1.2,
+      duration: 4.2,
+    },
+    {
+      left: "67%",
+      top: "26%",
+      size: "5px",
+      delay: 0.5,
+      duration: 5.2,
+    },
+    {
+      left: "79%",
+      top: "15%",
+      size: "4px",
+      delay: 1.8,
+      duration: 4.8,
+    },
+    {
+      left: "91%",
+      top: "45%",
+      size: "4px",
+      delay: 1.1,
+      duration: 5.5,
+    },
+    {
+      left: "64%",
+      top: "79%",
+      size: "4px",
+      delay: 2,
+      duration: 4.7,
+    },
+    {
+      left: "38%",
+      top: "82%",
+      size: "4px",
+      delay: 1.6,
+      duration: 5.3,
+    },
+    {
+      left: "17%",
+      top: "68%",
+      size: "4px",
+      delay: 0.9,
+      duration: 4.9,
+    },
+  ];
 
   return (
-
-    <section
-      id="home"
+    <div
+      aria-hidden="true"
       className="
-        relative
-        min-h-[calc(100vh-78px)]
+        pointer-events-none
+        absolute
+        inset-0
+        z-0
         overflow-hidden
-        bg-[#F4F9FF]
       "
     >
-
-      {/* ======================================================
-          DATALATTICE OPTION 2 HERO BACKGROUND
-
-          Visual language:
-          - light blue technical atmosphere
-          - layered data surfaces
-          - subtle geometric depth
-          - flowing analytical lines
-          - fine data nodes
-          - restrained blue / cyan accents
-          - no purple
-          - foreground content remains clean
-      ====================================================== */}
+      {/* =====================================================
+          CLEAN WHITE BASE
+          ===================================================== */}
 
       <div
         className="
-          pointer-events-none
+          absolute
+          inset-0
+          bg-white
+        "
+      />
+
+      {/* =====================================================
+          SOFT BLUE DEPTH LAYERS
+
+          These are intentionally subtle.
+          No colorful gradients.
+          ===================================================== */}
+
+      <motion.div
+        className="
+          absolute
+          -left-[12%]
+          top-[10%]
+          h-[420px]
+          w-[520px]
+          rounded-full
+          bg-[#F5F9FF]
+          blur-[90px]
+        "
+        animate={{
+          x: [0, 22, 0],
+          y: [0, 12, 0],
+          opacity: [0.7, 0.9, 0.7],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <motion.div
+        className="
+          absolute
+          right-[-12%]
+          top-[15%]
+          h-[420px]
+          w-[500px]
+          rounded-full
+          bg-[#F5F9FF]
+          blur-[100px]
+        "
+        animate={{
+          x: [0, -20, 0],
+          y: [0, 16, 0],
+          opacity: [0.6, 0.85, 0.6],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <motion.div
+        className="
+          absolute
+          bottom-[-22%]
+          left-[34%]
+          h-[340px]
+          w-[520px]
+          rounded-full
+          bg-[#EAF2FF]
+          blur-[110px]
+          opacity-30
+        "
+        animate={{
+          x: [0, 28, 0],
+        }}
+        transition={{
+          duration: 14,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      {/* =====================================================
+          PRIMARY TECHNICAL GRID
+          ===================================================== */}
+
+      <div
+        className="
+          absolute
+          inset-0
+          opacity-[0.052]
+        "
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              to right,
+              #0B1B3A 1px,
+              transparent 1px
+            ),
+            linear-gradient(
+              to bottom,
+              #0B1B3A 1px,
+              transparent 1px
+            )
+          `,
+          backgroundSize: "38px 38px",
+        }}
+      />
+
+      {/* =====================================================
+          MICRO GRID
+          ===================================================== */}
+
+      <div
+        className="
+          absolute
+          inset-0
+          opacity-[0.018]
+        "
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              to right,
+              #1463FF 1px,
+              transparent 1px
+            ),
+            linear-gradient(
+              to bottom,
+              #1463FF 1px,
+              transparent 1px
+            )
+          `,
+          backgroundSize: "9px 9px",
+        }}
+      />
+
+      {/* =====================================================
+          LARGE FLOWING DATA LINES
+          ===================================================== */}
+
+      <svg
+        viewBox="0 0 1600 760"
+        preserveAspectRatio="none"
+        className="
+          absolute
+          inset-0
+          h-full
+          w-full
+        "
+      >
+        {/* Upper blue path */}
+
+        <motion.path
+          d="
+            M-120 185
+            C120 105
+            300 210
+            505 165
+            C730 115
+            850 45
+            1060 92
+            C1270 138
+            1440 115
+            1710 180
+          "
+          fill="none"
+          stroke="#1463FF"
+          strokeWidth="1"
+          strokeOpacity="0.08"
+          initial={{
+            pathLength: 0,
+          }}
+          animate={{
+            pathLength: 1,
+          }}
+          transition={{
+            duration: 3.5,
+            ease: "easeOut",
+          }}
+        />
+
+        {/* Middle cyan path */}
+
+        <motion.path
+          d="
+            M-100 430
+            C150 350
+            310 485
+            530 410
+            C735 340
+            880 270
+            1070 325
+            C1280 385
+            1440 325
+            1700 405
+          "
+          fill="none"
+          stroke="#06B6D4"
+          strokeWidth="1"
+          strokeOpacity="0.045"
+          initial={{
+            pathLength: 0,
+          }}
+          animate={{
+            pathLength: 1,
+          }}
+          transition={{
+            duration: 4.2,
+            delay: 0.3,
+            ease: "easeOut",
+          }}
+        />
+
+        {/* Lower architectural curve */}
+
+        <path
+          d="
+            M90 780
+            C280 585
+            475 690
+            690 565
+            C900 445
+            1120 475
+            1330 595
+            C1450 665
+            1540 690
+            1660 650
+          "
+          fill="none"
+          stroke="#0B1B3A"
+          strokeWidth="0.8"
+          strokeOpacity="0.03"
+        />
+
+        {/* Large circular architectural arc */}
+
+        <path
+          d="
+            M-80 610
+            C190 330
+            505 250
+            795 305
+            C1085 360
+            1335 525
+            1660 390
+          "
+          fill="none"
+          stroke="#1463FF"
+          strokeWidth="0.8"
+          strokeOpacity="0.032"
+        />
+
+        {/* Secondary circular arc */}
+
+        <path
+          d="
+            M330 810
+            C490 525
+            760 390
+            1015 445
+            C1260 500
+            1420 635
+            1580 800
+          "
+          fill="none"
+          stroke="#06B6D4"
+          strokeWidth="0.8"
+          strokeOpacity="0.032"
+        />
+      </svg>
+
+      {/* =====================================================
+          SECONDARY DATA CONNECTIONS
+          ===================================================== */}
+
+      <svg
+        viewBox="0 0 1600 760"
+        preserveAspectRatio="none"
+        className="
+          absolute
+          inset-0
+          h-full
+          w-full
+        "
+      >
+        <path
+          d="M120 145 L430 145 L570 230"
+          fill="none"
+          stroke="#1463FF"
+          strokeWidth="0.7"
+          strokeOpacity="0.03"
+        />
+
+        <path
+          d="M720 105 L850 165 L1110 125"
+          fill="none"
+          stroke="#1463FF"
+          strokeWidth="0.7"
+          strokeOpacity="0.03"
+        />
+
+        <path
+          d="M1040 590 L1230 520 L1490 575"
+          fill="none"
+          stroke="#06B6D4"
+          strokeWidth="0.7"
+          strokeOpacity="0.028"
+        />
+
+        <path
+          d="M180 530 L340 470 L510 505"
+          fill="none"
+          stroke="#1463FF"
+          strokeWidth="0.7"
+          strokeOpacity="0.025"
+        />
+      </svg>
+
+      {/* =====================================================
+          ANIMATED DATA POINTS
+          ===================================================== */}
+
+      {dots.map((dot, index) => (
+        <motion.span
+          key={index}
+          className="
+            absolute
+            rounded-full
+            bg-[#1463FF]
+          "
+          style={{
+            left: dot.left,
+            top: dot.top,
+            width: dot.size,
+            height: dot.size,
+          }}
+          animate={{
+            opacity: [0.1, 0.55, 0.1],
+            scale: [0.8, 1.15, 0.8],
+          }}
+          transition={{
+            duration: dot.duration,
+            delay: dot.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+
+      {/* Cyan point */}
+
+      <motion.span
+        className="
+          absolute
+          left-[46%]
+          top-[18%]
+          h-1.5
+          w-1.5
+          rounded-full
+          bg-[#06B6D4]
+        "
+        animate={{
+          y: [0, -5, 0],
+          opacity: [0.1, 0.4, 0.1],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      {/* Second cyan point */}
+
+      <motion.span
+        className="
+          absolute
+          left-[72%]
+          top-[74%]
+          h-1.5
+          w-1.5
+          rounded-full
+          bg-[#06B6D4]
+        "
+        animate={{
+          y: [0, 5, 0],
+          opacity: [0.08, 0.35, 0.08],
+        }}
+        transition={{
+          duration: 4.8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      {/* =====================================================
+          TOP EDGE
+          ===================================================== */}
+
+      <div
+        className="
+          absolute
+          left-0
+          right-0
+          top-0
+          h-px
+          bg-[#E6EDF7]
+        "
+      />
+
+      {/* =====================================================
+          BOTTOM EDGE
+          ===================================================== */}
+
+      <div
+        className="
+          absolute
+          bottom-0
+          left-0
+          right-0
+          h-px
+          bg-[#E6EDF7]
+        "
+      />
+    </div>
+  );
+}
+
+
+/* =========================================================
+   DATALATTICE MIDDLE GRAPH
+   ========================================================= */
+
+function LatticeVisual() {
+  const nodes = [
+    {
+      id: "python",
+      left: "15%",
+      top: "39%",
+      label: "Python",
+      icon: FaCode,
+      active: true,
+    },
+    {
+      id: "sql",
+      left: "55%",
+      top: "22%",
+      label: "SQL",
+      icon: FaDatabase,
+      active: false,
+    },
+    {
+      id: "analytics",
+      left: "82%",
+      top: "43%",
+      label: "Analytics",
+      icon: FaChartLine,
+      active: true,
+    },
+    {
+      id: "machine-learning",
+      left: "34%",
+      top: "76%",
+      label: "Machine Learning",
+      icon: FaBrain,
+      active: false,
+    },
+    {
+      id: "projects",
+      left: "72%",
+      top: "76%",
+      label: "Projects",
+      icon: FaProjectDiagram,
+      active: true,
+    },
+  ];
+
+  return (
+    <div className="relative h-full w-full">
+
+      {/* =====================================================
+          GRAPH FRAME
+          ===================================================== */}
+
+      <div
+        className="
           absolute
           inset-0
           overflow-hidden
+          rounded-[26px]
+          border
+          border-[#DDE8F7]
+          bg-white/80
+          shadow-[0_18px_45px_rgba(11,27,58,0.07)]
+          backdrop-blur-sm
         "
       >
 
-        {/* ==================================================
-            BASE TECHNICAL LIGHTING
-        ================================================== */}
-
-        <div
-          className="
-            absolute
-            -left-[18%]
-            -top-[35%]
-            h-[760px]
-            w-[760px]
-            rounded-full
-            bg-blue-100/55
-            blur-[110px]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            right-[-20%]
-            top-[-18%]
-            h-[720px]
-            w-[720px]
-            rounded-full
-            bg-cyan-50/70
-            blur-[120px]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            bottom-[-35%]
-            left-[38%]
-            h-[620px]
-            w-[620px]
-            rounded-full
-            bg-blue-100/45
-            blur-[120px]
-          "
-        />
-
-
-        {/* ==================================================
-            LARGE ANGLED DATA SURFACES
-        ================================================== */}
-
-        <div
-          className="
-            absolute
-            right-[-8%]
-            top-[2%]
-            h-[430px]
-            w-[58%]
-            rotate-[7deg]
-            rounded-[80px]
-            border
-            border-blue-100/55
-            bg-gradient-to-br
-            from-white/30
-            via-blue-50/35
-            to-blue-100/25
-            opacity-80
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            right-[-14%]
-            top-[12%]
-            h-[360px]
-            w-[52%]
-            rotate-[7deg]
-            rounded-[70px]
-            border
-            border-blue-100/40
-            bg-white/20
-            opacity-70
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            left-[-14%]
-            bottom-[8%]
-            h-[250px]
-            w-[54%]
-            -rotate-[5deg]
-            rounded-[70px]
-            border
-            border-blue-100/40
-            bg-white/25
-            opacity-70
-          "
-        />
-
-
-        {/* ==================================================
-            FINE TECHNICAL GRID
-        ================================================== */}
+        {/* ===================================================
+            GRAPH GRID
+            =================================================== */}
 
         <div
           className="
             absolute
             inset-0
-            opacity-[0.24]
-            [background-image:linear-gradient(rgba(37,99,235,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.055)_1px,transparent_1px)]
-            [background-size:56px_56px]
+            opacity-[0.05]
           "
+          style={{
+            backgroundImage: `
+              linear-gradient(
+                #1463FF 1px,
+                transparent 1px
+              ),
+              linear-gradient(
+                90deg,
+                #1463FF 1px,
+                transparent 1px
+              )
+            `,
+            backgroundSize: "30px 30px",
+          }}
         />
 
+        {/* ===================================================
+            GRAPH HEADER
+            =================================================== */}
 
-        {/* ==================================================
-            LEFT DATA FLOW
-        ================================================== */}
+        <div
+          className="
+            absolute
+            left-0
+            right-0
+            top-0
+            z-30
+            flex
+            h-10
+            items-center
+            justify-between
+            border-b
+            border-[#E6EDF7]
+            bg-white/92
+            px-4
+            backdrop-blur-md
+          "
+        >
+          <div className="flex items-center gap-2">
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#1463FF]
+              "
+            />
+
+            <span
+              className="
+                text-[7px]
+                font-black
+                uppercase
+                tracking-[0.18em]
+                text-[#0B1B3A]
+              "
+            >
+              DataLattice
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#E6EDF7]
+              "
+            />
+
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#E6EDF7]
+              "
+            />
+
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#1463FF]
+              "
+            />
+          </div>
+        </div>
+
+        {/* ===================================================
+            NETWORK SVG
+            =================================================== */}
 
         <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
           className="
             absolute
-            left-[-5%]
-            top-[4%]
-            h-[690px]
-            w-[68%]
-            opacity-[0.48]
+            inset-x-[4%]
+            top-[9%]
+            h-[84%]
+            w-[92%]
           "
-          viewBox="0 0 900 690"
-          fill="none"
-          preserveAspectRatio="none"
           aria-hidden="true"
         >
+          {/* Main network */}
 
-          <path
+          <motion.path
             d="
-              M-80 560
-              C50 520 105 540 180 455
-              C270 350 335 445 420 350
-              C505 255 565 325 650 225
-              C735 125 810 145 980 35
+              M15 39
+              L55 22
+              L82 43
+              L72 76
+              L34 76
+              Z
             "
-            stroke="#60A5FA"
-            strokeWidth="1.4"
-            strokeLinecap="round"
+            fill="none"
+            stroke="#1463FF"
+            strokeWidth="0.38"
+            strokeOpacity="0.28"
+            initial={{
+              pathLength: 0,
+            }}
+            animate={{
+              pathLength: 1,
+            }}
+            transition={{
+              duration: 1.8,
+              ease: "easeInOut",
+            }}
           />
 
+          {/* Cross line */}
 
           <path
-            d="
-              M-80 590
-              C55 550 110 570 195 485
-              C285 390 345 475 435 380
-              C520 290 580 350 670 255
-              C755 165 820 180 980 75
-            "
-            stroke="#BFDBFE"
-            strokeWidth="1"
-            strokeDasharray="4 9"
-            strokeLinecap="round"
+            d="M15 39 L72 76"
+            fill="none"
+            stroke="#1463FF"
+            strokeWidth="0.22"
+            strokeOpacity="0.13"
           />
 
+          {/* Cyan route */}
 
           <path
-            d="
-              M-50 625
-              C80 590 125 600 210 525
-              C300 445 355 510 450 425
-              C540 345 595 390 685 305
-              C770 225 835 235 980 130
-            "
-            stroke="#DBEAFE"
-            strokeWidth="1"
-            strokeDasharray="2 12"
-            strokeLinecap="round"
+            d="M34 76 L82 43"
+            fill="none"
+            stroke="#06B6D4"
+            strokeWidth="0.28"
+            strokeOpacity="0.23"
+            strokeDasharray="2 2"
           />
 
+          {/* Vertical route */}
+
+          <path
+            d="M55 22 L34 76"
+            fill="none"
+            stroke="#1463FF"
+            strokeWidth="0.2"
+            strokeOpacity="0.12"
+          />
+
+          {/* Core connections */}
+
+          <path
+            d="M50 52 L15 39"
+            fill="none"
+            stroke="#1463FF"
+            strokeWidth="0.2"
+            strokeOpacity="0.15"
+          />
+
+          <path
+            d="M50 52 L55 22"
+            fill="none"
+            stroke="#1463FF"
+            strokeWidth="0.2"
+            strokeOpacity="0.15"
+          />
+
+          <path
+            d="M50 52 L82 43"
+            fill="none"
+            stroke="#06B6D4"
+            strokeWidth="0.2"
+            strokeOpacity="0.14"
+          />
+
+          <path
+            d="M50 52 L34 76"
+            fill="none"
+            stroke="#1463FF"
+            strokeWidth="0.2"
+            strokeOpacity="0.13"
+          />
+
+          <path
+            d="M50 52 L72 76"
+            fill="none"
+            stroke="#1463FF"
+            strokeWidth="0.2"
+            strokeOpacity="0.13"
+          />
+
+          {/* =================================================
+              MOVING DATA SIGNAL
+              ================================================= */}
+
+          <motion.circle
+            r="1"
+            fill="#1463FF"
+            initial={{
+              cx: 15,
+              cy: 39,
+              opacity: 0,
+            }}
+            animate={{
+              cx: [
+                15,
+                55,
+                82,
+                72,
+                34,
+                15,
+              ],
+              cy: [
+                39,
+                22,
+                43,
+                76,
+                76,
+                39,
+              ],
+              opacity: [
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+              ],
+            }}
+            transition={{
+              duration: 5.8,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
         </svg>
 
-
-        {/* ==================================================
-            RIGHT DATA FLOW
-        ================================================== */}
-
-        <svg
-          className="
-            absolute
-            right-[-7%]
-            top-[5%]
-            h-[600px]
-            w-[62%]
-            opacity-[0.52]
-          "
-          viewBox="0 0 820 600"
-          fill="none"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-
-          <path
-            d="
-              M-60 510
-              C70 470 110 495 185 420
-              C260 345 300 395 375 310
-              C455 220 515 275 595 190
-              C665 115 725 130 875 35
-            "
-            stroke="#38BDF8"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-
-
-          <path
-            d="
-              M-60 545
-              C75 505 115 530 200 455
-              C280 385 320 430 395 345
-              C480 260 530 310 615 225
-              C690 150 735 170 875 90
-            "
-            stroke="#BFDBFE"
-            strokeWidth="1"
-            strokeDasharray="5 10"
-            strokeLinecap="round"
-          />
-
-        </svg>
-
-
-        {/* ==================================================
-            CENTRAL TECHNICAL ARC
-        ================================================== */}
-
-        <div
-          className="
-            absolute
-            left-[58%]
-            top-[46%]
-            h-[470px]
-            w-[470px]
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            border
-            border-blue-100/55
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            left-[58%]
-            top-[46%]
-            h-[560px]
-            w-[560px]
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            border
-            border-blue-50/75
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            left-[58%]
-            top-[46%]
-            h-[650px]
-            w-[650px]
-            -translate-x-1/2
-            -translate-y-1/2
-            rounded-full
-            border
-            border-blue-50/50
-          "
-        />
-
-
-        {/* ==================================================
-            DATA NODES
-        ================================================== */}
-
-        <div
-          className="
-            absolute
-            left-[8%]
-            top-[28%]
-            h-2
-            w-2
-            rounded-full
-            bg-[#1463FF]/65
-            shadow-[0_0_0_7px_rgba(20,99,255,0.08)]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            left-[19%]
-            top-[18%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#06B6D4]/60
-            shadow-[0_0_0_6px_rgba(6,182,212,0.08)]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            left-[31%]
-            top-[12%]
-            h-2
-            w-2
-            rounded-full
-            bg-[#1463FF]/55
-            shadow-[0_0_0_7px_rgba(20,99,255,0.07)]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            left-[48%]
-            top-[21%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#06B6D4]/55
-            shadow-[0_0_0_6px_rgba(6,182,212,0.08)]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            right-[28%]
-            top-[16%]
-            h-2
-            w-2
-            rounded-full
-            bg-[#1463FF]/55
-            shadow-[0_0_0_7px_rgba(20,99,255,0.07)]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            right-[12%]
-            top-[32%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#06B6D4]/55
-            shadow-[0_0_0_6px_rgba(6,182,212,0.07)]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            right-[18%]
-            bottom-[19%]
-            h-2
-            w-2
-            rounded-full
-            bg-[#1463FF]/45
-            shadow-[0_0_0_7px_rgba(20,99,255,0.07)]
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            left-[42%]
-            bottom-[18%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#06B6D4]/50
-            shadow-[0_0_0_6px_rgba(6,182,212,0.07)]
-          "
-        />
-
-
-        {/* ==================================================
-            DATA CONNECTIONS
-        ================================================== */}
-
-        <svg
-          className="
-            absolute
-            inset-0
-            h-full
-            w-full
-            opacity-[0.22]
-          "
-          viewBox="0 0 1440 800"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-
-          <line
-            x1="110"
-            y1="245"
-            x2="315"
-            y2="150"
-            stroke="#60A5FA"
-            strokeWidth="1"
-            strokeDasharray="3 8"
-          />
-
-
-          <line
-            x1="315"
-            y1="150"
-            x2="500"
-            y2="220"
-            stroke="#93C5FD"
-            strokeWidth="1"
-            strokeDasharray="3 8"
-          />
-
-
-          <line
-            x1="500"
-            y1="220"
-            x2="690"
-            y2="135"
-            stroke="#BFDBFE"
-            strokeWidth="1"
-            strokeDasharray="3 8"
-          />
-
-
-          <line
-            x1="770"
-            y1="170"
-            x2="960"
-            y2="245"
-            stroke="#60A5FA"
-            strokeWidth="1"
-            strokeDasharray="3 8"
-          />
-
-
-          <line
-            x1="960"
-            y1="245"
-            x2="1150"
-            y2="155"
-            stroke="#93C5FD"
-            strokeWidth="1"
-            strokeDasharray="3 8"
-          />
-
-
-          <line
-            x1="1150"
-            y1="155"
-            x2="1360"
-            y2="230"
-            stroke="#BFDBFE"
-            strokeWidth="1"
-            strokeDasharray="3 8"
-          />
-
-        </svg>
-
-
-        {/* ==================================================
-            SMALL INSIGHT SIGNAL
-
-            DATA FLOW PANEL REMOVED COMPLETELY.
-        ================================================== */}
+        {/* ===================================================
+            CENTRAL CORE
+            =================================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            x: 8,
+            scale: 0.75,
           }}
           animate={{
             opacity: 1,
-            x: 0,
+            scale: 1,
           }}
           transition={{
-            delay: 1,
-            duration: 0.6,
+            duration: 0.65,
+            delay: 0.45,
           }}
           className="
             absolute
-            bottom-[13%]
-            right-[5%]
-            hidden
-            rounded-xl
-            border
-            border-blue-100/75
-            bg-white/65
-            px-3
-            py-2.5
-            shadow-sm
-            backdrop-blur-sm
-            lg:block
+            left-1/2
+            top-1/2
+            z-40
+            -translate-x-1/2
+            -translate-y-1/2
           "
         >
+          <motion.div
+            animate={{
+              rotate: 360,
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="
+              flex
+              h-[72px]
+              w-[72px]
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-[#1463FF]/20
+              bg-white
+              shadow-[0_15px_35px_rgba(20,99,255,0.12)]
+              sm:h-[78px]
+              sm:w-[78px]
+            "
+          >
+            <div
+              className="
+                flex
+                h-[53px]
+                w-[53px]
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-[#E6EDF7]
+                bg-[#F5F9FF]
+              "
+            >
+              <div
+                className="
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-xl
+                  bg-[#1463FF]
+                  text-white
+                  shadow-[0_8px_18px_rgba(20,99,255,0.24)]
+                "
+              >
+                <FaChartLine size={13} />
+              </div>
+            </div>
+          </motion.div>
 
           <div
             className="
-              flex
-              items-center
-              gap-2
+              absolute
+              left-1/2
+              top-full
+              mt-1.5
+              -translate-x-1/2
+              whitespace-nowrap
+              text-center
             "
           >
+            <p
+              className="
+                text-[6px]
+                font-black
+                uppercase
+                tracking-[0.15em]
+                text-[#0B1B3A]
+              "
+            >
+              Skills → Projects
+            </p>
+
+            <p
+              className="
+                mt-0.5
+                text-[5px]
+                font-semibold
+                text-[#64748B]
+              "
+            >
+              Projects → Careers
+            </p>
+          </div>
+        </motion.div>
+
+        {/* ===================================================
+            GRAPH NODES
+            =================================================== */}
+
+        {nodes.map((node, index) => {
+          const Icon = node.icon;
+
+          return (
+            <motion.div
+              key={node.id}
+              initial={{
+                opacity: 0,
+                scale: 0.75,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              transition={{
+                duration: 0.45,
+                delay: 0.35 + index * 0.1,
+              }}
+              className="
+                absolute
+                z-40
+              "
+              style={{
+                left: node.left,
+                top: node.top,
+                transform:
+                  "translate(-50%, -50%)",
+              }}
+            >
+              <motion.div
+                animate={
+                  node.active
+                    ? {
+                        y: [0, -3, 0],
+                      }
+                    : undefined
+                }
+                transition={
+                  node.active
+                    ? {
+                        duration: 3.4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }
+                    : undefined
+                }
+                className="
+                  flex
+                  items-center
+                  gap-1.5
+                  rounded-xl
+                  border
+                  border-[#E2EAF5]
+                  bg-white
+                  px-2
+                  py-1.5
+                  shadow-[0_8px_20px_rgba(11,27,58,0.07)]
+                "
+              >
+                <span
+                  className={`
+                    flex
+                    h-5
+                    w-5
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    ${
+                      node.active
+                        ? "bg-[#1463FF] text-white"
+                        : "bg-[#EAF2FF] text-[#1463FF]"
+                    }
+                  `}
+                >
+                  <Icon size={8} />
+                </span>
+
+                <span
+                  className="
+                    whitespace-nowrap
+                    text-[6px]
+                    font-black
+                    text-[#0B1B3A]
+                    sm:text-[7px]
+                  "
+                >
+                  {node.label}
+                </span>
+              </motion.div>
+            </motion.div>
+          );
+        })}
+
+        {/* ===================================================
+            CURRENT FOCUS
+            =================================================== */}
+
+        <div
+          className="
+            absolute
+            bottom-2.5
+            left-2.5
+            right-2.5
+            z-40
+            flex
+            items-center
+            justify-between
+            rounded-xl
+            border
+            border-[#E6EDF7]
+            bg-white/95
+            px-3
+            py-2
+            shadow-[0_8px_20px_rgba(11,27,58,0.05)]
+            backdrop-blur
+          "
+        >
+          <div>
+            <p
+              className="
+                text-[5px]
+                font-bold
+                uppercase
+                tracking-[0.14em]
+                text-[#64748B]
+              "
+            >
+              Current focus
+            </p>
+
+            <p
+              className="
+                mt-0.5
+                text-[7px]
+                font-black
+                text-[#0B1B3A]
+                sm:text-[8px]
+              "
+            >
+              Build real-world skills
+            </p>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#1463FF]
+              "
+            />
 
             <span
               className="
@@ -626,360 +1182,515 @@ function Hero() {
               "
             />
 
-
             <span
               className="
-                text-[8px]
-                font-bold
-                uppercase
-                tracking-[0.18em]
-                text-slate-400
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#DDE6F2]
               "
-            >
-              Insights
-            </span>
-
+            />
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 
-          <div
+/* =========================================================
+   DATA STICKERS
+   ---------------------------------------------------------
+   These are decorative background/space elements only.
+   They don't replace or modify any existing component.
+   ========================================================= */
+
+function DataStickers() {
+  return (
+    <>
+      {/* =====================================================
+          PYTHON
+          ===================================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 8,
+        }}
+        animate={{
+          opacity: 1,
+          y: [0, -3, 0],
+        }}
+        transition={{
+          opacity: {
+            duration: 0.5,
+            delay: 0.8,
+          },
+          y: {
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        }}
+        className="
+          pointer-events-none
+          absolute
+          bottom-[3%]
+          left-[-2%]
+          z-50
+          hidden
+          items-center
+          gap-1.5
+          rounded-xl
+          border
+          border-[#E6EDF7]
+          bg-white
+          px-2
+          py-1.5
+          shadow-[0_8px_22px_rgba(11,27,58,0.07)]
+          md:flex
+        "
+      >
+        <span
+          className="
+            flex
+            h-5
+            w-5
+            items-center
+            justify-center
+            rounded-lg
+            bg-[#EAF2FF]
+            text-[#1463FF]
+          "
+        >
+          <FaCode size={8} />
+        </span>
+
+        <div>
+          <p
             className="
-              mt-2
-              flex
-              items-center
-              gap-1.5
+              text-[5px]
+              font-bold
+              uppercase
+              tracking-[0.1em]
+              text-[#64748B]
             "
           >
+            Code
+          </p>
 
-            <span
-              className="
-                h-1.5
-                w-1.5
-                rounded-full
-                bg-blue-200
-              "
-            />
-
-
-            <span
-              className="
-                h-1.5
-                w-1.5
-                rounded-full
-                bg-blue-300
-              "
-            />
+          <p
+            className="
+              text-[7px]
+              font-black
+              text-[#0B1B3A]
+            "
+          >
+            Python
+          </p>
+        </div>
+      </motion.div>
 
 
-            <span
-              className="
-                h-1.5
-                w-1.5
-                rounded-full
-                bg-blue-400
-              "
-            />
+      {/* =====================================================
+          SQL
+          ===================================================== */}
 
-
-            <span
-              className="
-                h-1.5
-                w-1.5
-                rounded-full
-                bg-[#1463FF]
-              "
-            />
-
-          </div>
-
-        </motion.div>
-
-
-        {/* ==================================================
-            TEXT PROTECTION LAYER
-        ================================================== */}
-
-        <div
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: -8,
+        }}
+        animate={{
+          opacity: 1,
+          y: [0, 3, 0],
+        }}
+        transition={{
+          opacity: {
+            duration: 0.5,
+            delay: 1,
+          },
+          y: {
+            duration: 4.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        }}
+        className="
+          pointer-events-none
+          absolute
+          left-[45%]
+          top-[-5%]
+          z-50
+          hidden
+          items-center
+          gap-1.5
+          rounded-xl
+          border
+          border-[#E6EDF7]
+          bg-white
+          px-2
+          py-1.5
+          shadow-[0_8px_22px_rgba(11,27,58,0.07)]
+          md:flex
+        "
+      >
+        <span
           className="
-            absolute
-            left-0
-            top-0
-            h-full
-            w-[52%]
-            bg-white/22
-            backdrop-blur-[0.5px]
+            flex
+            h-5
+            w-5
+            items-center
+            justify-center
+            rounded-lg
+            bg-[#EAF2FF]
+            text-[#1463FF]
           "
+        >
+          <FaDatabase size={8} />
+        </span>
+
+        <div>
+          <p
+            className="
+              text-[5px]
+              font-bold
+              uppercase
+              tracking-[0.1em]
+              text-[#64748B]
+            "
+          >
+            Query
+          </p>
+
+          <p
+            className="
+              text-[7px]
+              font-black
+              text-[#0B1B3A]
+            "
+          >
+            SQL
+          </p>
+        </div>
+      </motion.div>
+
+
+      {/* =====================================================
+          ANALYTICS
+          ===================================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          x: 8,
+        }}
+        animate={{
+          opacity: 1,
+          x: [0, 3, 0],
+        }}
+        transition={{
+          opacity: {
+            duration: 0.5,
+            delay: 1.15,
+          },
+          x: {
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        }}
+        className="
+          pointer-events-none
+          absolute
+          bottom-[14%]
+          right-[-2%]
+          z-50
+          hidden
+          items-center
+          gap-1.5
+          rounded-xl
+          border
+          border-[#E6EDF7]
+          bg-white
+          px-2
+          py-1.5
+          shadow-[0_8px_22px_rgba(11,27,58,0.07)]
+          md:flex
+        "
+      >
+        <span
+          className="
+            flex
+            h-5
+            w-5
+            items-center
+            justify-center
+            rounded-lg
+            bg-[#EAF2FF]
+            text-[#1463FF]
+          "
+        >
+          <FaChartLine size={8} />
+        </span>
+
+        <div>
+          <p
+            className="
+              text-[5px]
+              font-bold
+              uppercase
+              tracking-[0.1em]
+              text-[#64748B]
+            "
+          >
+            Insight
+          </p>
+
+          <p
+            className="
+              text-[7px]
+              font-black
+              text-[#0B1B3A]
+            "
+          >
+            Analytics
+          </p>
+        </div>
+      </motion.div>
+
+
+      {/* =====================================================
+          AI & ML
+          ===================================================== */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 0.9,
+        }}
+        animate={{
+          opacity: 1,
+          scale: [1, 1.03, 1],
+        }}
+        transition={{
+          opacity: {
+            duration: 0.5,
+            delay: 1.3,
+          },
+          scale: {
+            duration: 3.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        }}
+        className="
+          pointer-events-none
+          absolute
+          bottom-[-5%]
+          right-[28%]
+          z-50
+          hidden
+          items-center
+          gap-1.5
+          rounded-full
+          border
+          border-[#E6EDF7]
+          bg-white
+          px-2
+          py-1.5
+          shadow-[0_8px_22px_rgba(11,27,58,0.06)]
+          md:flex
+        "
+      >
+        <FaRobot
+          size={8}
+          className="text-[#1463FF]"
         />
 
-
-        {/* ==================================================
-            SOFT EDGE DEPTH
-        ================================================== */}
-
-        <div
+        <span
           className="
-            absolute
-            inset-0
-            bg-[radial-gradient(circle_at_58%_45%,transparent_42%,rgba(244,249,255,0.32)_82%,rgba(238,246,255,0.70)_100%)]
+            text-[6px]
+            font-black
+            text-[#0B1B3A]
           "
-        />
+        >
+          AI & ML
+        </span>
+      </motion.div>
+    </>
+  );
+}
 
 
-        {/* ==================================================
-            TOP / BOTTOM BOUNDARIES
-        ================================================== */}
+/* =========================================================
+   MAIN HERO
+   ========================================================= */
 
-        <div
-          className="
-            absolute
-            inset-x-0
-            top-0
-            h-px
-            bg-blue-100/70
-          "
-        />
+function Hero() {
+  const navigate = useNavigate();
+
+  /* =======================================================
+     EXISTING PROTECTED NAVIGATION
+     ======================================================= */
+
+  const handleExplorePrograms =
+    requireHomeDemoAccess(() => {
+      navigate("/courses");
+    });
+
+  const handleWatchDemo =
+    requireHomeDemoAccess(() => {
+      navigate("/courses");
+    });
+
+  return (
+    <section
+      className="
+        relative
+        overflow-hidden
+        border-b
+        border-[#E6EDF7]
+        bg-white
+        min-h-[calc(100vh-74px)]
+        pt-[74px]
+      "
+    >
+
+      {/* =====================================================
+          BACKGROUND ONLY
+          ===================================================== */}
+
+      <BackgroundNetwork />
 
 
-        <div
-          className="
-            absolute
-            inset-x-0
-            bottom-0
-            h-px
-            bg-blue-100/60
-          "
-        />
-
-      </div>
-
-
-      {/* ======================================================
-          MAIN CONTENT
-
-          LEFT TEXT AND SIGNUP CARD NOW SHARE THE SAME
-          TOP ALIGNMENT.
-
-          CENTER VISUAL REMAINS VERTICALLY CENTERED.
-      ====================================================== */}
+      {/* =====================================================
+          MAIN CONTENT FRAME
+          ===================================================== */}
 
       <div
         className="
           relative
           z-10
-          w-full
+          mx-auto
+          flex
+          min-h-[calc(100vh-74px)]
+          max-w-[1500px]
+          flex-col
+          justify-center
           px-5
-          pb-8
-          pt-[94px]
+          py-7
           sm:px-7
-          sm:pb-10
-          sm:pt-[98px]
+          sm:py-8
           lg:px-8
-          lg:pb-12
-          lg:pt-[102px]
+          lg:py-8
+          xl:px-10
         "
       >
+
+        {/* ===================================================
+            THREE COLUMN HERO
+            =================================================== */}
 
         <div
           className="
             grid
-            items-start
-            gap-10
-            lg:grid-cols-[minmax(0,1.08fr)_minmax(280px,0.72fr)_390px]
-            lg:gap-2
-            xl:grid-cols-[minmax(0,1.12fr)_minmax(310px,0.78fr)_400px]
-            xl:gap-4
+            items-center
+
+            lg:grid-cols-[0.84fr_1.08fr_0.58fr]
+            lg:gap-5
+
+            xl:grid-cols-[0.86fr_1.10fr_0.58fr]
+            xl:gap-6
           "
         >
 
-          {/* ==================================================
-              LEFT HERO CONTENT
-
-              TOP ALIGNED WITH SIGNUP CARD.
-          ================================================== */}
+          {/* =================================================
+              LEFT COLUMN
+              ================================================= */}
 
           <motion.div
             initial={{
               opacity: 0,
-              x: -30,
+              x: -24,
             }}
             animate={{
               opacity: 1,
               x: 0,
             }}
             transition={{
-              duration: 0.7,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.65,
+              ease: "easeOut",
             }}
             className="
-              min-w-0
-              lg:pr-2
-              xl:pr-3
+              relative
+              z-30
+              w-full
+              max-w-[525px]
             "
           >
 
             {/* =================================================
-                MAIN HEADING
-            ================================================= */}
-
-            <motion.h1
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.12,
-                duration: 0.65,
-              }}
-              className="
-                max-w-none
-                text-[34px]
-                font-bold
-                leading-[1.08]
-                tracking-[-0.035em]
-                text-[#0B1B3A]
-                sm:text-[40px]
-                md:text-[44px]
-                lg:text-[40px]
-                xl:text-[45px]
-              "
-            >
-
-              <span
-                className="
-                  block
-                  whitespace-nowrap
-                "
-              >
-
-                <span>
-                  Get Job-Ready with{" "}
-                </span>
-
-
-                <span
-                  className="
-                    text-[#1463FF]
-                  "
-                >
-                
-                </span>
-
-              </span>
-
-
-              <span
-                className="
-                  mt-1
-                  block
-                  whitespace-nowrap
-                "
-              >
-
-                <span>
-                  Real World - {" "}
-                </span>
-
-
-                <span
-                  className="
-                    text-[#1463FF]
-                  "
-                >
-                  Data Skills
-                </span>
-
-              </span>
-
-            </motion.h1>
-
-
-            {/* =================================================
-                DESCRIPTION
-            ================================================= */}
-
-            <motion.p
-              initial={{
-                opacity: 0,
-                y: 15,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.22,
-                duration: 0.5,
-              }}
-              className="
-                mt-6
-                max-w-[590px]
-                text-base
-                font-normal
-                leading-7
-                text-slate-600
-                sm:text-lg
-                sm:leading-8
-              "
-            >
-
-              Learn Data Science and Data Analytics from industry
-              experts, work on real projects, attend live classes,
-              and build a career you’re proud of — only at DataLattice.
-
-            </motion.p>
-
-
-            {/* =================================================
-                BENEFITS
-            ================================================= */}
-
-            <div
-              className="
-                mt-7
-                grid
-                grid-cols-1
-                gap-3
-                sm:grid-cols-3
-              "
-            >
-
-              <HeroBenefit
-                icon={<FaBookOpen />}
-                title="Industry-Relevant Curriculum"
-                description="Learn skills companies use."
-                delay={0.3}
-              />
-
-
-              <HeroBenefit
-                icon={<FaUsers />}
-                title="Expert Mentors"
-                description="Learn from experienced professionals."
-                delay={0.38}
-              />
-
-
-              <HeroBenefit
-                icon={<FaChartLine />}
-                title="Real Projects & Certification"
-                description="Build practical career skills."
-                delay={0.46}
-              />
-
-            </div>
-
-
-            {/* =================================================
-                CTA
-            ================================================= */}
+                EYEBROW
+                ================================================= */}
 
             <motion.div
               initial={{
                 opacity: 0,
+                y: 8,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.45,
+                delay: 0.1,
+              }}
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-full
+                border
+                border-[#E0EAF7]
+                bg-white
+                px-3.5
+                py-2
+                shadow-[0_5px_18px_rgba(11,27,58,0.04)]
+              "
+            >
+              <span
+                className="
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#1463FF]
+                "
+              />
+
+              <span
+                className="
+                  text-[8px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-[#0B1B3A]
+                  sm:text-[9px]
+                "
+              >
+                Data education, reimagined
+              </span>
+            </motion.div>
+
+
+            {/* =================================================
+                MAIN HEADING
+                ================================================= */}
+
+            <motion.h1
+              initial={{
+                opacity: 0,
                 y: 15,
               }}
               animate={{
@@ -987,131 +1698,227 @@ function Hero() {
                 y: 0,
               }}
               transition={{
-                delay: 0.5,
-                duration: 0.5,
+                duration: 0.65,
+                delay: 0.17,
               }}
               className="
-                mt-7
+                mt-5
+                max-w-[510px]
+                text-[3rem]
+                font-black
+                leading-[0.94]
+                tracking-[-0.058em]
+                text-[#0B1B3A]
+
+                sm:text-[3.3rem]
+
+                md:text-[3.55rem]
+
+                lg:text-[3.55rem]
+
+                xl:text-[3.9rem]
+              "
+            >
+              Learn data.
+
+              <br />
+
+              <span className="text-[#1463FF]">
+                Build what
+              </span>
+
+              <br />
+
+              <span className="text-[#1463FF]">
+                matters.
+              </span>
+            </motion.h1>
+
+
+            {/* =================================================
+                CYAN ACCENT
+                ================================================= */}
+
+            <motion.div
+              initial={{
+                width: 0,
+              }}
+              animate={{
+                width: "88px",
+              }}
+              transition={{
+                duration: 0.65,
+                delay: 0.65,
+              }}
+              className="
+                mt-4
+                h-1
+                rounded-full
+                bg-[#06B6D4]
+              "
+            />
+
+
+            {/* =================================================
+                DESCRIPTION
+                ================================================= */}
+
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.55,
+                delay: 0.34,
+              }}
+              className="
+                mt-4
+                max-w-[500px]
+                text-[13px]
+                leading-6
+                text-[#64748B]
+
+                sm:text-[14px]
+
+                lg:text-[13px]
+
+                xl:text-[14px]
+              "
+            >
+              Practical data programs built around skills,
+              projects, mentorship, and the confidence to take
+              your next career step.
+            </motion.p>
+
+
+            {/* =================================================
+                ACTION BUTTONS
+                ================================================= */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.55,
+                delay: 0.47,
+              }}
+              className="
+                mt-5
                 flex
                 flex-col
-                gap-3
+                gap-2.5
                 sm:flex-row
               "
             >
 
-              <motion.button
+              {/* =================================================
+                  EXPLORE PROGRAMS
+                  ================================================= */}
+
+              <button
                 type="button"
-                whileHover={{
-                  y: -2,
-                }}
-                whileTap={{
-                  scale: 0.98,
-                }}
-                onClick={() =>
-                  navigate("/courses")
-                }
+                onClick={handleExplorePrograms}
                 className="
                   group
                   inline-flex
                   items-center
                   justify-center
-                  gap-3
+                  gap-2.5
                   rounded-full
                   bg-[#1463FF]
-                  px-7
-                  py-4
-                  text-sm
-                  font-bold
+                  px-5
+                  py-3
+                  text-[13px]
+                  font-black
                   text-white
-                  shadow-[0_15px_35px_rgba(20,99,255,0.22)]
+                  shadow-[0_12px_28px_rgba(20,99,255,0.20)]
                   transition-all
-                  duration-300
+                  duration-200
+                  hover:-translate-y-0.5
                   hover:bg-[#0B1B3A]
-                  hover:shadow-[0_20px_42px_rgba(11,27,58,0.22)]
-                  sm:text-base
                 "
               >
-
                 Explore Programs
 
-
                 <FaArrowRight
+                  size={10}
                   className="
                     transition-transform
-                    duration-300
+                    duration-200
                     group-hover:translate-x-1
                   "
                 />
+              </button>
 
-              </motion.button>
 
+              {/* =================================================
+                  SEE HOW IT WORKS
+                  ================================================= */}
 
-              <motion.button
+              <button
                 type="button"
-                whileHover={{
-                  y: -2,
-                }}
-                whileTap={{
-                  scale: 0.98,
-                }}
-                onClick={() =>
-                  navigate("/courses")
-                }
+                onClick={handleWatchDemo}
                 className="
+                  group
                   inline-flex
                   items-center
                   justify-center
-                  gap-3
+                  gap-2.5
                   rounded-full
                   border
-                  border-[#1463FF]/25
-                  bg-white/80
-                  px-7
-                  py-4
-                  text-sm
-                  font-semibold
+                  border-[#E1E9F4]
+                  bg-white
+                  px-5
+                  py-3
+                  text-[13px]
+                  font-black
                   text-[#0B1B3A]
-                  shadow-sm
-                  backdrop-blur
+                  shadow-[0_8px_22px_rgba(11,27,58,0.05)]
                   transition-all
-                  duration-300
-                  hover:border-[#1463FF]/45
-                  hover:bg-white
-                  hover:shadow-lg
-                  sm:text-base
+                  duration-200
+                  hover:-translate-y-0.5
+                  hover:border-[#1463FF]/30
+                  hover:text-[#1463FF]
                 "
               >
-
                 <span
                   className="
                     flex
-                    h-8
-                    w-8
+                    h-5
+                    w-5
                     items-center
                     justify-center
                     rounded-full
-                    bg-blue-50
+                    bg-[#EAF2FF]
                     text-[#1463FF]
+                    transition-colors
+                    duration-200
+                    group-hover:bg-[#1463FF]
+                    group-hover:text-white
                   "
                 >
-
-                  <FaPlay
-                    size={10}
-                  />
-
+                  <FaPlay size={6} />
                 </span>
 
-
-                Free Demo
-
-              </motion.button>
-
+                See How It Works
+              </button>
             </motion.div>
 
 
             {/* =================================================
-                TRUST
-            ================================================= */}
+                LEARNING POINTS
+                ================================================= */}
 
             <motion.div
               initial={{
@@ -1121,138 +1928,92 @@ function Hero() {
                 opacity: 1,
               }}
               transition={{
-                delay: 0.65,
                 duration: 0.5,
+                delay: 0.7,
               }}
               className="
-                mt-7
+                mt-5
                 flex
+                flex-wrap
                 items-center
-                gap-5
+                gap-x-3
+                gap-y-2
+                border-t
+                border-[#E6EDF7]
+                pt-3.5
               "
             >
+              {[
+                "Practical learning",
+                "Real projects",
+                "Expert mentorship",
+              ].map((item, index) => (
+                <React.Fragment key={item}>
 
-              <div
-                className="
-                  flex
-                  items-center
-                "
-              >
-
-                <div className="flex -space-x-2">
-
-                  <TrustAvatar
-                    name="Learner 1"
-                    seed="learner-one"
-                  />
-
-
-                  <TrustAvatar
-                    name="Learner 2"
-                    seed="learner-two"
-                  />
-
-
-                  <TrustAvatar
-                    name="Learner 3"
-                    seed="learner-three"
-                  />
-
-                </div>
-
-
-                <div
-                  className="
-                    ml-2
-                    flex
-                    h-10
-                    items-center
-                    rounded-full
-                    bg-blue-50
-                    px-3
-                    text-sm
-                    font-bold
-                    text-[#1463FF]
-                  "
-                >
-                  +150
-                </div>
-
-              </div>
-
-
-              <div
-                className="
-                  hidden
-                  h-10
-                  w-px
-                  bg-slate-200
-                  sm:block
-                "
-              />
-
-
-              <div>
-
-                <div
-                  className="
-                    flex
-                    items-center
-                    gap-1
-                    text-amber-400
-                  "
-                >
-
-                  ★
-                  ★
-                  ★
-                  ★
-                  ★
-
-
-                  <span
+                  <div
                     className="
-                      ml-1
-                      text-sm
-                      font-bold
-                      text-slate-700
+                      flex
+                      items-center
+                      gap-1.5
                     "
                   >
-                    4.8/5
-                  </span>
+                    <span
+                      className="
+                        flex
+                        h-5
+                        w-5
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-[#EAF2FF]
+                        text-[#1463FF]
+                      "
+                    >
+                      <FaCheck size={6} />
+                    </span>
 
-                </div>
+                    <span
+                      className="
+                        text-[7px]
+                        font-bold
+                        text-[#64748B]
+                        sm:text-[8px]
+                      "
+                    >
+                      {item}
+                    </span>
+                  </div>
 
+                  {index < 2 && (
+                    <span
+                      className="
+                        hidden
+                        h-1
+                        w-1
+                        rounded-full
+                        bg-[#CBD5E1]
+                        sm:block
+                      "
+                    />
+                  )}
 
-                <p
-                  className="
-                    mt-1
-                    text-xs
-                    font-normal
-                    text-slate-500
-                  "
-                >
-                  Trusted by 150+ learners
-                </p>
-
-              </div>
-
+                </React.Fragment>
+              ))}
             </motion.div>
 
           </motion.div>
 
 
-          {/* ==================================================
-              CENTER HERO VISUAL
-
-              Remains vertically centered independently.
-          ================================================== */}
+          {/* =================================================
+              MIDDLE COLUMN
+              EXISTING GRAPH
+              ================================================= */}
 
           <motion.div
             initial={{
               opacity: 0,
-              scale: 0.94,
-              x: 15,
+              scale: 0.96,
+              x: 12,
             }}
             animate={{
               opacity: 1,
@@ -1260,839 +2021,224 @@ function Hero() {
               x: 0,
             }}
             transition={{
+              duration: 0.7,
               delay: 0.2,
-              duration: 0.8,
-              ease: [0.22, 1, 0.36, 1],
+              ease: "easeOut",
             }}
             className="
               relative
-              hidden
-              min-h-[540px]
-              items-center
-              justify-center
-              lg:flex
+              mt-8
+              h-[285px]
+              w-full
+              min-w-0
+
+              sm:h-[305px]
+
+              md:h-[320px]
+
+              lg:mt-0
+              lg:h-[340px]
+
+              xl:h-[355px]
             "
           >
 
-            {/* Main soft visual atmosphere */}
+            <LatticeVisual />
 
-            <div
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                h-[390px]
-                w-[390px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                bg-blue-100/45
-                blur-3xl
-              "
-            />
+            {/* Decorative data stickers */}
 
-
-            {/* Circular visual frame */}
-
-            <div
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                h-[410px]
-                w-[410px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                border
-                border-blue-100/75
-                bg-white/55
-                shadow-[0_25px_80px_rgba(15,23,42,0.06)]
-                backdrop-blur-sm
-              "
-            />
-
-
-            {/* Secondary circular frame */}
-
-            <div
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                h-[475px]
-                w-[475px]
-                -translate-x-1/2
-                -translate-y-1/2
-                rounded-full
-                border
-                border-blue-50/80
-              "
-            />
-
-
-            {/* =================================================
-                REAL DATALATTICE HERO IMAGE
-            ================================================= */}
-
-            <motion.div
-              animate={{
-                y: [0, -8, 0],
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="
-                relative
-                z-10
-                w-[330px]
-                overflow-hidden
-                rounded-[28px]
-                border
-                border-white
-                bg-white
-                p-3
-                shadow-[0_35px_80px_rgba(15,23,42,0.12)]
-                xl:w-[365px]
-              "
-            >
-
-              <img
-                src={heroImage}
-                alt="DataLattice learning platform"
-                className="
-                  block
-                  h-auto
-                  w-full
-                  rounded-[20px]
-                  object-cover
-                "
-              />
-
-            </motion.div>
-
-
-            {/* =================================================
-                LIVE CLASSES
-            ================================================= */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: -20,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                delay: 0.75,
-                duration: 0.5,
-              }}
-              className="
-                absolute
-                left-0
-                top-[105px]
-                z-20
-                flex
-                items-center
-                gap-3
-                rounded-2xl
-                border
-                border-slate-200
-                bg-white
-                px-3
-                py-3
-                shadow-[0_18px_40px_rgba(15,23,42,0.10)]
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  h-10
-                  w-10
-                  items-center
-                  justify-center
-                  rounded-xl
-                  bg-blue-50
-                  text-[#1463FF]
-                "
-              >
-
-                <FaVideo
-                  size={15}
-                />
-
-              </div>
-
-
-              <div>
-
-                <p
-                  className="
-                    text-xs
-                    font-bold
-                    text-slate-900
-                  "
-                >
-                  Live Classes
-                </p>
-
-
-                <p
-                  className="
-                    mt-0.5
-                    text-[10px]
-                    font-normal
-                    text-slate-500
-                  "
-                >
-                  with Mentors
-                </p>
-
-              </div>
-
-            </motion.div>
-
-
-            {/* =================================================
-                HANDS-ON PROJECTS
-            ================================================= */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: -20,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                delay: 0.9,
-                duration: 0.5,
-              }}
-              className="
-                absolute
-                bottom-[125px]
-                left-[-10px]
-                z-20
-                flex
-                items-center
-                gap-3
-                rounded-2xl
-                border
-                border-slate-200
-                bg-white
-                px-3
-                py-3
-                shadow-[0_18px_40px_rgba(15,23,42,0.10)]
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  h-10
-                  w-10
-                  items-center
-                  justify-center
-                  rounded-xl
-                  bg-blue-50
-                  text-[#1463FF]
-                "
-              >
-
-                <FaLaptopCode
-                  size={15}
-                />
-
-              </div>
-
-
-              <div>
-
-                <p
-                  className="
-                    text-xs
-                    font-bold
-                    text-slate-900
-                  "
-                >
-                  Hands-on
-                </p>
-
-
-                <p
-                  className="
-                    mt-0.5
-                    text-[10px]
-                    font-normal
-                    text-slate-500
-                  "
-                >
-                  Projects
-                </p>
-
-              </div>
-
-            </motion.div>
-
-
-            {/* =================================================
-                CAREER SUPPORT
-            ================================================= */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: 20,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                delay: 1,
-                duration: 0.5,
-              }}
-              className="
-                absolute
-                bottom-[65px]
-                right-[-5px]
-                z-20
-                flex
-                items-center
-                gap-3
-                rounded-2xl
-                border
-                border-slate-200
-                bg-white
-                px-3
-                py-3
-                shadow-[0_18px_40px_rgba(15,23,42,0.10)]
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  h-10
-                  w-10
-                  items-center
-                  justify-center
-                  rounded-xl
-                  bg-blue-50
-                  text-[#1463FF]
-                "
-              >
-
-                <FaUsers
-                  size={15}
-                />
-
-              </div>
-
-
-              <div>
-
-                <p
-                  className="
-                    text-xs
-                    font-bold
-                    text-slate-900
-                  "
-                >
-                  Career
-                </p>
-
-
-                <p
-                  className="
-                    mt-0.5
-                    text-[10px]
-                    font-normal
-                    text-slate-500
-                  "
-                >
-                  Support
-                </p>
-
-              </div>
-
-            </motion.div>
-
-
-            {/* =================================================
-                CENTER CAPTION
-            ================================================= */}
-
-            <div
-              className="
-                absolute
-                bottom-[5px]
-                left-1/2
-                z-20
-                -translate-x-1/2
-                whitespace-nowrap
-                text-sm
-                font-semibold
-                italic
-                text-[#1463FF]
-              "
-            >
-              Your Future Starts Here
-            </div>
+            <DataStickers />
 
           </motion.div>
 
 
-          {/* ==================================================
-              SIGNUP PANEL
-
-              TOP ALIGNED WITH HERO HEADING.
-          ================================================== */}
+          {/* =================================================
+              RIGHT COLUMN
+              EXISTING SIGNUP CARD
+              ================================================= */}
 
           <motion.div
             initial={{
               opacity: 0,
-              x: 30,
+              x: 20,
             }}
             animate={{
               opacity: 1,
               x: 0,
             }}
             transition={{
-              delay: 0.15,
-              duration: 0.7,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.65,
+              delay: 0.32,
+              ease: "easeOut",
             }}
             className="
               relative
-              mx-auto
+              z-[70]
+              mt-8
               flex
               w-full
-              max-w-[400px]
-              items-start
+              items-center
               justify-center
-              lg:ml-auto
+
+              lg:mt-0
+              lg:min-h-[355px]
             "
           >
 
-            {/* Card atmosphere */}
+            {/* =================================================
+                IMPORTANT:
+
+                HeroSignupCard is NOT scaled vertically.
+
+                It keeps its own original dimensions/proportions.
+                ================================================= */}
 
             <div
               className="
-                pointer-events-none
-                absolute
-                -inset-4
-                rounded-[36px]
-                bg-blue-100/30
-                blur-2xl
+                relative
+                w-full
+                max-w-[350px]
               "
-            />
-
-
-            {/* Actual signup component */}
-
-            <HeroSignupCard />
+            >
+              <HeroSignupCard />
+            </div>
 
           </motion.div>
 
         </div>
 
 
-        {/* ======================================================
-            PROGRAM STRIP
+        {/* =====================================================
+            HERO BOTTOM STRIP
 
-            Final Hero content strip.
-            No duplicate statistics.
-        ====================================================== */}
+            No statistics here.
+            ===================================================== */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 20,
           }}
           animate={{
             opacity: 1,
-            y: 0,
           }}
           transition={{
-            delay: 0.8,
-            duration: 0.55,
+            duration: 0.5,
+            delay: 1,
           }}
           className="
-            mt-8
-            grid
-            grid-cols-1
-            gap-3
-            sm:grid-cols-2
-            lg:grid-cols-4
+            relative
+            z-30
+            mt-5
+            flex
+            items-center
+            justify-between
+            border-t
+            border-[#E6EDF7]
+            pt-3
           "
         >
 
-          <ProgramCard
-            icon={<FaBookOpen />}
-            title="Data Science & Analytics"
-            subtitle="Decode data. Drive impact."
-          />
+          <p
+            className="
+              text-[7px]
+              font-black
+              uppercase
+              tracking-[0.17em]
+              text-[#94A3B8]
+              sm:text-[8px]
+            "
+          >
+            Learn → Build → Apply → Grow
+          </p>
 
+          <div
+            className="
+              hidden
+              items-center
+              gap-2.5
+              sm:flex
+            "
+          >
+            <span
+              className="
+                text-[7px]
+                font-semibold
+                text-[#94A3B8]
+              "
+            >
+              Data Science
+            </span>
 
-          <ProgramCard
-            icon={<FaLaptopCode />}
-            title="SQL & Python"
-            subtitle="Build practical data skills."
-          />
+            <span
+              className="
+                h-1
+                w-1
+                rounded-full
+                bg-[#CBD5E1]
+              "
+            />
 
-
-          <ProgramCard
-            icon={<FaChartLine />}
-            title="Power BI & Analytics"
-            subtitle="Turn data into insights."
-          />
-
-
-          <ProgramCard
-            icon={<FaGraduationCap />}
-            title="Career Preparation"
-            subtitle="Projects, mentorship & job readiness."
-          />
+            <span
+              className="
+                text-[7px]
+                font-semibold
+                text-[#94A3B8]
+              "
+            >
+              Data Analytics
+            </span>
+          </div>
 
         </motion.div>
 
       </div>
 
 
-      {/* ======================================================
-          WHATSAPP FLOATING BUTTON
-      ====================================================== */}
+      {/* =====================================================
+          MOBILE LAYOUT
 
-      <motion.button
-        initial={{
-          opacity: 0,
-          scale: 0.85,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-        }}
-        transition={{
-          delay: 1.1,
-          duration: 0.45,
-        }}
-        whileHover={{
-          y: -3,
-          scale: 1.03,
-        }}
-        whileTap={{
-          scale: 0.97,
-        }}
-        onClick={openWhatsApp}
+          On mobile the three desktop columns naturally stack.
+          The existing signup component appears once here.
+
+          Desktop card above is hidden on mobile through the
+          lg-only wrapper below.
+          ===================================================== */}
+
+      <div
         className="
-          fixed
-          bottom-5
-          right-5
-          z-50
-          flex
-          items-center
-          gap-2.5
-          rounded-full
-          bg-[#25D366]
+          relative
+          z-[70]
+          mx-auto
+          mt-2
+          block
+          w-[min(100%,360px)]
           px-5
-          py-3.5
-          text-sm
-          font-bold
-          text-white
-          shadow-[0_15px_35px_rgba(37,211,102,0.28)]
-          transition-all
-          duration-300
-          hover:shadow-[0_18px_42px_rgba(37,211,102,0.35)]
-          sm:bottom-6
-          sm:right-6
+          pb-7
+          lg:hidden
         "
-        aria-label="Chat with us on WhatsApp"
       >
+        {/* ===================================================
+            MOBILE CARD
 
-        <span
+            This uses the SAME existing HeroSignupCard.
+            =================================================== */}
+
+        <div
           className="
-            flex
-            h-7
-            w-7
-            items-center
-            justify-center
-            rounded-full
+            overflow-hidden
+            rounded-[22px]
             border
-            border-white/30
-            bg-white/10
-            text-lg
+            border-[#E6EDF7]
+            bg-white
+            shadow-[0_15px_40px_rgba(11,27,58,0.10)]
           "
         >
-          ◔
-        </span>
-
-
-        <span>
-          Chat with us
-        </span>
-
-      </motion.button>
+          <HeroSignupCard />
+        </div>
+      </div>
 
     </section>
-
   );
-
 }
-
-
-// ============================================================
-// HERO BENEFIT
-// ============================================================
-
-function HeroBenefit({
-  icon,
-  title,
-  description,
-  delay = 0,
-}) {
-
-  return (
-
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 12,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      transition={{
-        delay,
-        duration: 0.45,
-      }}
-      whileHover={{
-        y: -3,
-      }}
-      className="
-        rounded-2xl
-        border
-        border-slate-200
-        bg-white/90
-        p-3
-        shadow-sm
-        backdrop-blur
-        transition-shadow
-        hover:shadow-md
-      "
-    >
-
-      <div
-        className="
-          flex
-          items-start
-          gap-2.5
-        "
-      >
-
-        <div
-          className="
-            flex
-            h-9
-            w-9
-            shrink-0
-            items-center
-            justify-center
-            rounded-xl
-            bg-blue-50
-            text-[#1463FF]
-          "
-        >
-          {icon}
-        </div>
-
-
-        <div
-          className="
-            min-w-0
-          "
-        >
-
-          <p
-            className="
-              text-[11px]
-              font-bold
-              leading-4
-              text-slate-900
-            "
-          >
-            {title}
-          </p>
-
-
-          <p
-            className="
-              mt-1
-              text-[9px]
-              font-normal
-              leading-4
-              text-slate-500
-            "
-          >
-            {description}
-          </p>
-
-        </div>
-
-      </div>
-
-    </motion.div>
-
-  );
-
-}
-
-
-// ============================================================
-// TRUST AVATAR
-// ============================================================
-
-function TrustAvatar({
-  name,
-  seed,
-}) {
-
-  return (
-
-    <img
-      src={`https://api.dicebear.com/9.x/personas/svg?seed=${seed}`}
-      alt={name}
-      className="
-        h-10
-        w-10
-        rounded-full
-        border-2
-        border-white
-        bg-slate-100
-      "
-    />
-
-  );
-
-}
-
-
-// ============================================================
-// PROGRAM CARD
-// ============================================================
-
-function ProgramCard({
-  icon,
-  title,
-  subtitle,
-}) {
-
-  return (
-
-    <motion.div
-      whileHover={{
-        y: -3,
-      }}
-      className="
-        flex
-        min-w-0
-        items-center
-        gap-3
-        rounded-2xl
-        border
-        border-blue-100
-        bg-white
-        p-4
-        shadow-sm
-        transition-all
-        duration-300
-        hover:shadow-md
-      "
-    >
-
-      <div
-        className="
-          flex
-          h-11
-          w-11
-          shrink-0
-          items-center
-          justify-center
-          rounded-xl
-          bg-blue-50
-          text-[#1463FF]
-        "
-      >
-        {icon}
-      </div>
-
-
-      <div
-        className="
-          min-w-0
-          flex-1
-        "
-      >
-
-        <p
-          className="
-            text-sm
-            font-bold
-            text-slate-900
-          "
-        >
-          {title}
-        </p>
-
-
-        <p
-          className="
-            mt-0.5
-            truncate
-            text-[11px]
-            font-normal
-            text-slate-500
-          "
-        >
-          {subtitle}
-        </p>
-
-      </div>
-
-
-      <div
-        className="
-          flex
-          h-8
-          w-8
-          shrink-0
-          items-center
-          justify-center
-          rounded-full
-          bg-blue-50
-          text-[#1463FF]
-        "
-      >
-
-        <FaArrowRight
-          size={11}
-        />
-
-      </div>
-
-    </motion.div>
-
-  );
-
-}
-
 
 export default Hero;

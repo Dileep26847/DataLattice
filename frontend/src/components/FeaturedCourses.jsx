@@ -16,13 +16,17 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import {
+  isDemoVerified,
+  openHomeSignupGate,
+} from "./landing/HomeAccessGate";
+
 
 // ============================================================
 // DATALATTICE PUBLIC PROGRAMS
 // ============================================================
 
 const programs = [
-
   {
     id: "data-science",
 
@@ -52,10 +56,9 @@ const programs = [
       "Real Projects",
     ],
 
-    visualization: "science",
-
+    visualization:
+      "science",
   },
-
 
   {
     id: "data-analytics",
@@ -86,10 +89,9 @@ const programs = [
       "Business Insights",
     ],
 
-    visualization: "analytics",
-
+    visualization:
+      "analytics",
   },
-
 ];
 
 
@@ -98,21 +100,59 @@ const programs = [
 // ============================================================
 
 function FeaturedCourses() {
-
   const navigate =
     useNavigate();
 
 
   // ==========================================================
-  // VIEW PROGRAM
+  // PROTECTED VIEW PROGRAM ACTION
+  //
+  // New visitor:
+  //   → stay on Home
+  //   → open HomeAccessGate
+  //   → show floating HeroSignupCard
+  //
+  // Verified visitor:
+  //   → navigate to /courses
   // ==========================================================
 
-  const handleViewProgram = () => {
+  const handleViewProgram = (event) => {
+    /*
+     * This is intentionally handled directly here instead
+     * of wrapping the function with requireHomeDemoAccess.
+     *
+     * That makes every FeaturedCourses button explicitly
+     * follow the same access decision.
+     */
 
-    navigate(
-      "/courses"
-    );
+    if (event?.preventDefault) {
+      event.preventDefault();
+    }
 
+    if (event?.stopPropagation) {
+      event.stopPropagation();
+    }
+
+    /*
+     * VERIFIED VISITOR
+     *
+     * Allow the original destination.
+     */
+    if (isDemoVerified()) {
+      navigate("/courses");
+      return;
+    }
+
+    /*
+     * NEW VISITOR
+     *
+     * Do not navigate.
+     *
+     * The HomeAccessGate mounted around Home.jsx will
+     * receive this event and display the floating
+     * HeroSignupCard with the blurred background.
+     */
+    openHomeSignupGate();
   };
 
 
@@ -121,7 +161,6 @@ function FeaturedCourses() {
   // ==========================================================
 
   return (
-
     <section
       id="programs"
       className="
@@ -173,9 +212,23 @@ function FeaturedCourses() {
 
         <motion.div
           animate={{
-            x: [0, 25, 0],
-            y: [0, -15, 0],
-            scale: [1, 1.05, 1],
+            x: [
+              0,
+              25,
+              0,
+            ],
+
+            y: [
+              0,
+              -15,
+              0,
+            ],
+
+            scale: [
+              1,
+              1.05,
+              1,
+            ],
           }}
           transition={{
             duration: 12,
@@ -201,9 +254,23 @@ function FeaturedCourses() {
 
         <motion.div
           animate={{
-            x: [0, -25, 0],
-            y: [0, 18, 0],
-            scale: [1, 1.07, 1],
+            x: [
+              0,
+              -25,
+              0,
+            ],
+
+            y: [
+              0,
+              18,
+              0,
+            ],
+
+            scale: [
+              1,
+              1.07,
+              1,
+            ],
           }}
           transition={{
             duration: 14,
@@ -255,7 +322,6 @@ function FeaturedCourses() {
             strokeLinecap="round"
           />
 
-
           <path
             d="
               M-40 265
@@ -291,7 +357,6 @@ function FeaturedCourses() {
           "
         />
 
-
         <span
           className="
             absolute
@@ -305,7 +370,6 @@ function FeaturedCourses() {
           "
         />
 
-
         <span
           className="
             absolute
@@ -318,7 +382,6 @@ function FeaturedCourses() {
             shadow-[0_0_0_6px_rgba(20,99,255,0.05)]
           "
         />
-
 
         <span
           className="
@@ -441,6 +504,7 @@ function FeaturedCourses() {
             >
 
               Build skills that
+
               <span
                 className="
                   text-[#1463FF]
@@ -525,7 +589,6 @@ function FeaturedCourses() {
                 Practical by design
               </p>
 
-
               <p
                 className="
                   mt-0.5
@@ -534,7 +597,6 @@ function FeaturedCourses() {
                 "
               >
                 Learn → build → apply
-
               </p>
 
             </div>
@@ -666,7 +728,6 @@ function FeaturedCourses() {
                 Start with the path that fits your goal.
               </p>
 
-
               <p
                 className="
                   mt-0.5
@@ -676,7 +737,6 @@ function FeaturedCourses() {
                 "
               >
                 Explore the curriculum and choose your direction.
-
               </p>
 
             </div>
@@ -730,9 +790,7 @@ function FeaturedCourses() {
       </div>
 
     </section>
-
   );
-
 }
 
 
@@ -745,9 +803,7 @@ function ProgramCard({
   index,
   onView,
 }) {
-
   return (
-
     <motion.article
       initial={{
         opacity: 0,
@@ -881,6 +937,7 @@ function ProgramCard({
             style={{
               backgroundColor:
                 program.accentSoft,
+
               color:
                 program.accent,
             }}
@@ -1039,7 +1096,6 @@ function ProgramCard({
               "
             >
               Explore the curriculum
-
             </p>
 
           </div>
@@ -1118,9 +1174,7 @@ function ProgramCard({
       />
 
     </motion.article>
-
   );
-
 }
 
 
@@ -1131,14 +1185,11 @@ function ProgramCard({
 function ProgramVisualization({
   type,
 }) {
-
   if (
     type ===
     "science"
   ) {
-
     return (
-
       <div
         className="
           relative
@@ -1246,6 +1297,7 @@ function ProgramVisualization({
               "0%",
               "100%",
             ],
+
             opacity: [
               0,
               1,
@@ -1344,9 +1396,7 @@ function ProgramVisualization({
         </div>
 
       </div>
-
     );
-
   }
 
 
@@ -1355,7 +1405,6 @@ function ProgramVisualization({
   // ==========================================================
 
   return (
-
     <div
       className="
         relative
@@ -1422,7 +1471,12 @@ function ProgramVisualization({
           "
         >
 
-          {[70, 48, 84, 62].map(
+          {[
+            70,
+            48,
+            84,
+            62,
+          ].map(
             (
               width,
               index
@@ -1612,10 +1666,12 @@ function ProgramVisualization({
                 "5%",
                 "92%",
               ],
+
               y: [
                 "70%",
                 "10%",
               ],
+
               opacity: [
                 0,
                 1,
@@ -1700,6 +1756,7 @@ function ProgramVisualization({
             1.4,
             0.8,
           ],
+
           opacity: [
             0.25,
             0.8,
@@ -1725,9 +1782,7 @@ function ProgramVisualization({
       />
 
     </div>
-
   );
-
 }
 
 
@@ -1741,9 +1796,7 @@ function DataNode({
   position,
   delay,
 }) {
-
   return (
-
     <motion.div
       initial={{
         opacity: 0,
@@ -1812,9 +1865,7 @@ function DataNode({
       </span>
 
     </motion.div>
-
   );
-
 }
 
 
@@ -1826,9 +1877,7 @@ function AnimatedConnection({
   className,
   delay = 0,
 }) {
-
   return (
-
     <motion.div
       initial={{
         scaleX: 0,
@@ -1857,9 +1906,7 @@ function AnimatedConnection({
         ${className}
       `}
     />
-
   );
-
 }
 
 

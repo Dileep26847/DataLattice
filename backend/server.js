@@ -62,6 +62,13 @@ const assignmentSubmissionRoutes =
     require("./routes/assignmentSubmissionRoutes");
 
 // ======================================
+// PAYMENT ROUTES
+// ======================================
+
+const paymentRoutes =
+    require("./routes/paymentRoutes");
+
+// ======================================
 // STUDENT ASSIGNMENT ROUTES
 // ======================================
 
@@ -350,6 +357,33 @@ app.use(
 app.use(
     "/api/enrollments",
     enrollmentRoutes
+);
+
+// ======================================
+// PAYMENT
+// ======================================
+//
+// IMPORTANT:
+//
+// paymentRoutes contains:
+//
+// POST /create-order
+// POST /verify
+// GET  /history
+//
+// Mounted here:
+//
+// /api/payment/create-order
+// /api/payment/verify
+// /api/payment/history
+//
+// Authentication remains enforced inside
+// paymentRoutes through verifyToken.
+//
+
+app.use(
+    "/api/payment",
+    paymentRoutes
 );
 
 // ======================================
@@ -662,6 +696,10 @@ const server =
             );
 
             console.log(
+                `💳 Payments: http://localhost:${PORT}/api/payment`
+            );
+
+            console.log(
                 `👨‍🎓 Students: http://localhost:${PORT}/api/admin/students`
             );
 
@@ -707,7 +745,7 @@ const server =
 
             console.log("======================================");
             console.log("");
-            
+
             // ======================================
             // COMMUNICATION RUNTIME
             // ======================================

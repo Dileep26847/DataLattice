@@ -17,7 +17,10 @@ import {
 
 import toast from "react-hot-toast";
 
-import { getLiveClasses } from "../services/liveClassService";
+import {
+    getLiveClasses,
+    joinLiveClass,
+} from "../services/liveClassService";
 
 
 // ============================================================
@@ -781,16 +784,59 @@ function LiveClasses() {
     // JOIN CLASS
     // ============================================================
 
-    const handleJoinClass = (
-        item
-    ) => {
+    const handleJoinClass = async (
+    item
+) => {
+
+    if (
+        !item?.id
+    ) {
+
+        toast.error(
+            "Invalid live class."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !item?.zoom_link
+    ) {
+
+        toast.error(
+            "Meeting link is not available."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        // ====================================================
+        // RECORD ATTENDANCE
+        // ====================================================
+
+        const response =
+            await joinLiveClass(
+                item.id
+            );
+
+
+        // ====================================================
+        // VERIFY BACKEND SUCCESS
+        // ====================================================
 
         if (
-            !item?.zoom_link
+            !response?.success
         ) {
 
             toast.error(
-                "Meeting link is not available."
+                response?.message ||
+                "Unable to record attendance."
             );
 
             return;
@@ -798,13 +844,42 @@ function LiveClasses() {
         }
 
 
+        // ====================================================
+        // OPEN ZOOM
+        //
+        // Attendance is recorded BEFORE opening Zoom.
+        // ====================================================
+
         window.open(
             item.zoom_link,
             "_blank",
             "noopener,noreferrer"
         );
 
-    };
+
+        toast.success(
+            "Attendance recorded. Joining live class..."
+        );
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "JOIN LIVE CLASS ERROR:",
+            error
+        );
+
+
+        toast.error(
+            error?.response?.data?.message ||
+            "Unable to join the live class."
+        );
+
+    }
+
+};
 
 
     // ============================================================

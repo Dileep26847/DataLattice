@@ -5,7 +5,6 @@ import {
   Navigate,
 } from "react-router-dom";
 
-
 // ============================================================
 // PUBLIC PAGES
 // ============================================================
@@ -15,8 +14,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Courses from "./pages/Courses";
 import CourseDetails from "./pages/CourseDetails";
+import DemoStudent from "./pages/DemoStudent";
+import EnrollmentPayment from "./pages/EnrollmentPayment";
 import NotFound from "./pages/NotFound";
-
 
 // ============================================================
 // STUDENT PAGES
@@ -33,13 +33,11 @@ import Assignments from "./pages/Assignments";
 import Certificates from "./pages/Certificates";
 import Calendar from "./pages/Calendar";
 
-
 // ============================================================
 // ADMIN DASHBOARD
 // ============================================================
 
 import AdminDashboard from "./pages/AdminDashboard";
-
 
 // ============================================================
 // ADMIN MANAGEMENT FEATURES
@@ -53,14 +51,12 @@ import BatchManagement from "./features/batches/BatchManagement";
 import AssignmentManagement from "./features/assignments/AssignmentManagement";
 import SubmissionManagement from "./features/submissions/SubmissionManagement";
 
-
 // ============================================================
 // ADMIN PAGES
 // ============================================================
 
 import LiveClassManagement from "./pages/admin/LiveClassManagement";
 import AdminSupport from "./pages/AdminSupport";
-
 
 // ============================================================
 // ADMIN ANALYTICS / REPORTING
@@ -69,13 +65,11 @@ import AdminSupport from "./pages/AdminSupport";
 import Analytics from "./pages/admin/Analytics";
 import Reports from "./pages/admin/Reports";
 
-
 // ============================================================
 // ADMIN AUTOMATION
 // ============================================================
 
 import AutomationCenter from "./pages/admin/AutomationCenter";
-
 
 // ============================================================
 // OTHER STUDENT PAGES
@@ -83,13 +77,11 @@ import AutomationCenter from "./pages/admin/AutomationCenter";
 
 import CertificateView from "./pages/CertificateView";
 
-
 // ============================================================
 // AUTHORIZATION
 // ============================================================
 
 import ProtectedRoute from "./components/ProtectedRoute";
-
 
 // ============================================================
 // STUDENT LAYOUT
@@ -97,26 +89,20 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import DashboardLayout from "./components/layout/DashboardLayout";
 
-
 // ============================================================
 // ADMIN LAYOUT
 // ============================================================
 
 import AdminLayout from "./components/layout/AdminLayout";
 
-
 // ============================================================
 // APP
 // ============================================================
 
 function App() {
-
   return (
-
     <BrowserRouter>
-
       <Routes>
-
 
         {/* ========================================================
             ========================================================
@@ -129,30 +115,84 @@ function App() {
           element={<Home />}
         />
 
-
         <Route
           path="/login"
           element={<Login />}
         />
-
 
         <Route
           path="/register"
           element={<Register />}
         />
 
-
         <Route
           path="/courses"
           element={<Courses />}
         />
-
 
         <Route
           path="/courses/:id"
           element={<CourseDetails />}
         />
 
+        {/* ========================================================
+            DEMO STUDENT PANEL
+            ========================================================
+
+            IMPORTANT:
+
+            This is intentionally OUTSIDE the real student
+            ProtectedRoute and DashboardLayout.
+
+            The demo is:
+            - Public after OTP verification
+            - One long-scroll page
+            - No sidebar
+            - No student DashboardLayout
+            - No real student authentication
+            - No backend student dashboard changes
+
+        ======================================================== */}
+
+        <Route
+          path="/demo/student"
+          element={<DemoStudent />}
+        />
+
+        {/* ========================================================
+            ENROLLMENT / PAYMENT
+            ========================================================
+
+            IMPORTANT:
+
+            This page is intentionally PUBLIC at the
+            routing level.
+
+            Authentication is checked inside
+            EnrollmentPayment.jsx before starting Razorpay.
+
+            Flow:
+
+            Demo Student
+                ↓
+            Join Now
+                ↓
+            Enrollment Payment
+                ↓
+            Login if required
+                ↓
+            Razorpay Checkout
+                ↓
+            Backend Payment Verification
+                ↓
+            Student Enrollment
+
+        ======================================================== */}
+
+        <Route
+          path="/enroll/payment"
+          element={<EnrollmentPayment />}
+        />
 
         {/* ========================================================
             ========================================================
@@ -177,24 +217,18 @@ function App() {
             - AdminSidebar
             - AdminTopbar
 
-            They should contain page content only.
         ======================================================== */}
 
         <Route
           path="/student"
           element={
-
             <ProtectedRoute
               allowedRole="student"
             >
-
               <DashboardLayout />
-
             </ProtectedRoute>
-
           }
         >
-
 
           {/* ======================================================
               STUDENT DEFAULT
@@ -210,7 +244,6 @@ function App() {
             }
           />
 
-
           {/* ======================================================
               STUDENT DASHBOARD
           ====================================================== */}
@@ -219,7 +252,6 @@ function App() {
             path="dashboard"
             element={<StudentDashboard />}
           />
-
 
           {/* ======================================================
               MY COURSES
@@ -230,7 +262,6 @@ function App() {
             element={<MyCourses />}
           />
 
-
           {/* ======================================================
               LEARNING
           ====================================================== */}
@@ -239,7 +270,6 @@ function App() {
             path="learn/:courseId"
             element={<LearningPage />}
           />
-
 
           {/* ======================================================
               LIVE CLASSES
@@ -250,7 +280,6 @@ function App() {
             element={<LiveClasses />}
           />
 
-
           {/* ======================================================
               ASSIGNMENTS
           ====================================================== */}
@@ -259,7 +288,6 @@ function App() {
             path="assignments"
             element={<Assignments />}
           />
-
 
           {/* ======================================================
               CERTIFICATES
@@ -270,7 +298,6 @@ function App() {
             element={<Certificates />}
           />
 
-
           {/* ======================================================
               CERTIFICATE VIEW
           ====================================================== */}
@@ -279,7 +306,6 @@ function App() {
             path="certificates/:id"
             element={<CertificateView />}
           />
-
 
           {/* ======================================================
               PROFILE
@@ -290,7 +316,6 @@ function App() {
             element={<Profile />}
           />
 
-
           {/* ======================================================
               SUPPORT
           ====================================================== */}
@@ -300,7 +325,6 @@ function App() {
             element={<Support />}
           />
 
-
           {/* ======================================================
               CALENDAR
           ====================================================== */}
@@ -309,7 +333,6 @@ function App() {
             path="calendar"
             element={<Calendar />}
           />
-
 
           {/* ======================================================
               SETTINGS
@@ -321,7 +344,6 @@ function App() {
           />
 
         </Route>
-
 
         {/* ========================================================
             ========================================================
@@ -347,23 +369,19 @@ function App() {
             <AdminTopbar />
 
             inside these pages.
+
         ======================================================== */}
 
         <Route
           path="/admin"
           element={
-
             <ProtectedRoute
               allowedRole="admin"
             >
-
               <AdminLayout />
-
             </ProtectedRoute>
-
           }
         >
-
 
           {/* ======================================================
               ADMIN DEFAULT
@@ -379,7 +397,6 @@ function App() {
             }
           />
 
-
           {/* ======================================================
               ADMIN DASHBOARD
           ====================================================== */}
@@ -388,7 +405,6 @@ function App() {
             path="dashboard"
             element={<AdminDashboard />}
           />
-
 
           {/* ======================================================
               STUDENT MANAGEMENT
@@ -399,7 +415,6 @@ function App() {
             element={<StudentManagement />}
           />
 
-
           {/* ======================================================
               MENTOR MANAGEMENT
           ====================================================== */}
@@ -408,7 +423,6 @@ function App() {
             path="mentors"
             element={<MentorManagement />}
           />
-
 
           {/* ======================================================
               COURSE MANAGEMENT
@@ -419,7 +433,6 @@ function App() {
             element={<CourseManagement />}
           />
 
-
           {/* ======================================================
               LESSON MANAGEMENT
           ====================================================== */}
@@ -428,7 +441,6 @@ function App() {
             path="lessons"
             element={<LessonManagement />}
           />
-
 
           {/* ======================================================
               BATCH MANAGEMENT
@@ -439,7 +451,6 @@ function App() {
             element={<BatchManagement />}
           />
 
-
           {/* ======================================================
               ASSIGNMENT MANAGEMENT
           ====================================================== */}
@@ -448,7 +459,6 @@ function App() {
             path="assignments"
             element={<AssignmentManagement />}
           />
-
 
           {/* ======================================================
               LIVE CLASS MANAGEMENT
@@ -459,7 +469,6 @@ function App() {
             element={<LiveClassManagement />}
           />
 
-
           {/* ======================================================
               SUBMISSION MANAGEMENT
           ====================================================== */}
@@ -468,7 +477,6 @@ function App() {
             path="submissions"
             element={<SubmissionManagement />}
           />
-
 
           {/* ======================================================
               ADMIN SUPPORT
@@ -479,7 +487,6 @@ function App() {
             element={<AdminSupport />}
           />
 
-
           {/* ======================================================
               ADMIN ANALYTICS
           ====================================================== */}
@@ -488,7 +495,6 @@ function App() {
             path="analytics"
             element={<Analytics />}
           />
-
 
           {/* ======================================================
               ADMIN REPORTS
@@ -499,7 +505,6 @@ function App() {
             element={<Reports />}
           />
 
-
           {/* ======================================================
               ADMIN AUTOMATION CENTER
           ====================================================== */}
@@ -508,7 +513,6 @@ function App() {
             path="automation"
             element={<AutomationCenter />}
           />
-
 
           {/* ======================================================
               ADMIN SETTINGS
@@ -521,7 +525,6 @@ function App() {
 
         </Route>
 
-
         {/* ========================================================
             ========================================================
             GLOBAL 404
@@ -533,14 +536,9 @@ function App() {
           element={<NotFound />}
         />
 
-
       </Routes>
-
     </BrowserRouter>
-
   );
-
 }
-
 
 export default App;

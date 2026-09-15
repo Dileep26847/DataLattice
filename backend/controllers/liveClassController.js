@@ -1,6 +1,9 @@
 const liveClassModel =
   require("../models/liveClassModel");
 
+const attendanceModel =
+  require("../models/attendanceModel");
+
 const {
   emitLiveClassScheduledEvent,
 } =
@@ -1421,5 +1424,225 @@ exports.deleteLiveClass =
       });
 
     }
+
+  };
+  // ============================================================
+// JOIN LIVE CLASS + RECORD ATTENDANCE
+//
+// Current attendance implementation:
+//
+// Student clicks "Join Live Class"
+// → verify student belongs to the class batch
+// → record attendance as Present
+// → frontend opens Zoom
+//
+// FUTURE:
+// Zoom participant joined/left webhooks can replace this
+// with actual participation-duration tracking.
+// ============================================================
+
+exports.joinLiveClass =
+  (req, res) => {
+
+    const liveClassId =
+      Number(req.params.id);
+
+    const studentId =
+      Number(req.user?.id);
+
+
+    // ========================================================
+    // VALIDATE LIVE CLASS ID
+    // ========================================================
+
+    if (!liveClassId) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "Valid Live Class ID is required.",
+
+      });
+
+    }
+
+
+    // ========================================================
+    // VALIDATE STUDENT
+    // ========================================================
+
+    if (
+      !studentId ||
+      req.user?.role !== "student"
+    ) {
+
+      return res.status(403).json({
+
+        success: false,
+
+        message:
+          "Only students can join live classes.",
+
+      });
+
+    }
+
+
+    // ========================================================
+    // VERIFY STUDENT HAS ACCESS TO THIS CLASS
+    // ========================================================
+
+    liveClassModel.getLiveClassByIdForStudent(
+
+      liveClassId,
+
+      studentId,
+
+      (classError, rows) => {
+
+        if (classError) {
+
+          console.error(
+            "JOIN LIVE CLASS AUTHORIZATION ERROR:",
+            classError
+          );
+
+
+          return res.status(500).json({
+
+            success: false,
+
+            message:
+              "Unable to verify live class access.",
+
+          });
+
+        }
+
+
+        if (
+          !rows ||
+          rows.length === 0
+        ) {
+
+          return res.status(403).json({
+
+            success: false,
+
+            message:
+              "You are not authorized to join this live class.",
+
+          });
+
+        }
+
+
+        const liveClass =
+          rows[0];
+
+
+        // ====================================================
+        // VERIFY ZOOM LINK
+        // ====================================================
+
+        if (
+          !liveClass.zoom_link
+        ) {
+
+          return res.status(400).json({
+
+            success: false,
+
+            message:
+              "Meeting link is not available.",
+
+          });
+
+        }
+
+
+        // ====================================================
+        // RECORD ATTENDANCE
+        // ====================================================
+
+        attendanceModel.recordStudentJoin(
+
+          liveClassId,
+
+          studentId,
+
+          (attendanceError) => {
+
+            if (attendanceError) {
+
+              console.error(
+                "RECORD LIVE CLASS ATTENDANCE ERROR:",
+                attendanceError
+              );
+
+
+              return res.status(500).json({
+
+                success: false,
+
+                message:
+                  "Unable to record attendance.",
+
+              });
+
+            }
+
+
+            // =================================================
+            // SUCCESS
+            // =================================================
+
+            return res.status(200).json({
+
+              success: true,
+
+              message:
+                "Attendance recorded successfully.",
+
+              attendance: {
+
+                live_class_id:
+                  liveClassId,
+
+                student_id:
+                  studentId,
+
+                status:
+                  "Present",
+
+              },
+
+              liveClass: {
+
+                id:
+                  liveClass.id,
+
+                title:
+                  liveClass.title,
+
+                zoom_link:
+                  liveClass.zoom_link,
+
+                meeting_id:
+                  liveClass.meeting_id,
+
+              },
+
+            });
+
+          }
+
+        );
+
+      }
+
+    );
 
   };

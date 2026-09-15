@@ -16,13 +16,17 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import {
+  isDemoVerified,
+  openHomeSignupGate,
+} from "./landing/HomeAccessGate";
+
 
 // ============================================================
 // DATALATTICE PUBLIC PROGRAMS
 // ============================================================
 
 const programs = [
-
   {
     id: "data-science",
 
@@ -39,20 +43,11 @@ const programs = [
       />
     ),
 
-    gradient:
-      "from-[#1463FF] via-[#1687F8] to-[#06B6D4]",
-
-    cardBackground:
-      "from-[#DCEBFF] via-[#E7F6FF] to-[#D8F8FA]",
-
     accent:
-      "text-[#1463FF]",
+      "#1463FF",
 
-    iconBackground:
-      "bg-white/70",
-
-    visualizationBackground:
-      "bg-white/45",
+    accentSoft:
+      "rgba(20,99,255,0.08)",
 
     skills: [
       "Python",
@@ -61,10 +56,9 @@ const programs = [
       "Real Projects",
     ],
 
-    visualization: "science",
-
+    visualization:
+      "science",
   },
-
 
   {
     id: "data-analytics",
@@ -82,20 +76,11 @@ const programs = [
       />
     ),
 
-    gradient:
-      "from-[#06B6D4] via-[#1599E8] to-[#1463FF]",
-
-    cardBackground:
-      "from-[#D8F8FA] via-[#E5F4FF] to-[#DCEBFF]",
-
     accent:
-      "text-[#06B6D4]",
+      "#06B6D4",
 
-    iconBackground:
-      "bg-white/70",
-
-    visualizationBackground:
-      "bg-white/45",
+    accentSoft:
+      "rgba(6,182,212,0.08)",
 
     skills: [
       "SQL",
@@ -104,10 +89,9 @@ const programs = [
       "Business Insights",
     ],
 
-    visualization: "analytics",
-
+    visualization:
+      "analytics",
   },
-
 ];
 
 
@@ -116,21 +100,59 @@ const programs = [
 // ============================================================
 
 function FeaturedCourses() {
-
   const navigate =
     useNavigate();
 
 
   // ==========================================================
-  // VIEW PROGRAM
+  // PROTECTED VIEW PROGRAM ACTION
+  //
+  // New visitor:
+  //   → stay on Home
+  //   → open HomeAccessGate
+  //   → show floating HeroSignupCard
+  //
+  // Verified visitor:
+  //   → navigate to /courses
   // ==========================================================
 
-  const handleViewProgram = () => {
+  const handleViewProgram = (event) => {
+    /*
+     * This is intentionally handled directly here instead
+     * of wrapping the function with requireHomeDemoAccess.
+     *
+     * That makes every FeaturedCourses button explicitly
+     * follow the same access decision.
+     */
 
-    navigate(
-      "/courses"
-    );
+    if (event?.preventDefault) {
+      event.preventDefault();
+    }
 
+    if (event?.stopPropagation) {
+      event.stopPropagation();
+    }
+
+    /*
+     * VERIFIED VISITOR
+     *
+     * Allow the original destination.
+     */
+    if (isDemoVerified()) {
+      navigate("/courses");
+      return;
+    }
+
+    /*
+     * NEW VISITOR
+     *
+     * Do not navigate.
+     *
+     * The HomeAccessGate mounted around Home.jsx will
+     * receive this event and display the floating
+     * HeroSignupCard with the blurred background.
+     */
+    openHomeSignupGate();
   };
 
 
@@ -139,15 +161,15 @@ function FeaturedCourses() {
   // ==========================================================
 
   return (
-
     <section
+      id="programs"
       className="
         relative
         overflow-hidden
-        bg-[#F5F9FF]
-        py-20
-        sm:py-24
-        lg:py-28
+        bg-[#F7FAFF]
+        py-12
+        sm:py-14
+        lg:py-16
       "
     >
 
@@ -165,30 +187,48 @@ function FeaturedCourses() {
         aria-hidden="true"
       >
 
-        {/* Technical grid */}
+        {/* ==================================================
+            TECHNICAL GRID
+        ================================================== */}
 
         <div
           className="
             absolute
             inset-0
-            opacity-[0.035]
+            opacity-[0.45]
           "
           style={{
             backgroundImage:
-              "linear-gradient(rgba(20,99,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(20,99,255,0.8) 1px, transparent 1px)",
+              "linear-gradient(rgba(20,99,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(20,99,255,0.045) 1px, transparent 1px)",
             backgroundSize:
-              "52px 52px",
+              "54px 54px",
           }}
         />
 
 
-        {/* Left blue atmosphere */}
+        {/* ==================================================
+            LEFT ATMOSPHERE
+        ================================================== */}
 
         <motion.div
           animate={{
-            x: [0, 35, 0],
-            y: [0, -15, 0],
-            scale: [1, 1.08, 1],
+            x: [
+              0,
+              25,
+              0,
+            ],
+
+            y: [
+              0,
+              -15,
+              0,
+            ],
+
+            scale: [
+              1,
+              1.05,
+              1,
+            ],
           }}
           transition={{
             duration: 12,
@@ -197,24 +237,40 @@ function FeaturedCourses() {
           }}
           className="
             absolute
-            -left-40
-            top-20
+            -left-48
+            top-16
             h-[420px]
             w-[420px]
             rounded-full
-            bg-[#1463FF]/[0.045]
-            blur-[110px]
+            bg-blue-100/45
+            blur-[120px]
           "
         />
 
 
-        {/* Right cyan atmosphere */}
+        {/* ==================================================
+            RIGHT ATMOSPHERE
+        ================================================== */}
 
         <motion.div
           animate={{
-            x: [0, -35, 0],
-            y: [0, 25, 0],
-            scale: [1, 1.1, 1],
+            x: [
+              0,
+              -25,
+              0,
+            ],
+
+            y: [
+              0,
+              18,
+              0,
+            ],
+
+            scale: [
+              1,
+              1.07,
+              1,
+            ],
           }}
           transition={{
             duration: 14,
@@ -223,109 +279,120 @@ function FeaturedCourses() {
           }}
           className="
             absolute
-            right-[-120px]
+            -right-44
             top-[30%]
-            h-[480px]
-            w-[480px]
+            h-[460px]
+            w-[460px]
             rounded-full
-            bg-[#06B6D4]/[0.04]
+            bg-cyan-100/30
             blur-[120px]
           "
         />
 
 
         {/* ==================================================
-            TECHNICAL DATA LINE
+            DATA FLOW
         ================================================== */}
 
         <svg
           className="
             absolute
-            inset-x-0
-            top-0
-            h-52
+            left-0
+            top-[8%]
+            h-[300px]
             w-full
-            opacity-60
+            opacity-[0.55]
           "
-          viewBox="0 0 1440 200"
+          viewBox="0 0 1440 300"
+          fill="none"
           preserveAspectRatio="none"
         >
 
           <path
             d="
-              M0 128
-              C110 112 180 145 280 120
-              C390 92 450 120 555 106
-              C670 91 730 116 825 94
-              C945 68 1010 104 1100 88
-              C1210 68 1290 91 1440 62
+              M-40 245
+              C120 210 190 230 315 175
+              C430 125 485 175 600 125
+              C715 75 770 120 895 80
+              C1020 40 1110 75 1220 38
+              C1310 8 1370 28 1480 -10
             "
-            fill="none"
-            stroke="#1463FF"
-            strokeOpacity="0.10"
-            strokeWidth="1"
+            stroke="#BFDBFE"
+            strokeWidth="1.2"
+            strokeLinecap="round"
           />
-
 
           <path
             d="
-              M0 141
-              C110 125 180 158 280 133
-              C390 105 450 133 555 119
-              C670 104 730 129 825 107
-              C945 81 1010 117 1100 101
-              C1210 81 1290 104 1440 75
+              M-40 265
+              C120 230 190 250 315 195
+              C430 145 485 195 600 145
+              C715 95 770 140 895 100
+              C1020 60 1110 95 1220 58
+              C1310 28 1370 48 1480 10
             "
-            fill="none"
-            stroke="#06B6D4"
-            strokeOpacity="0.08"
+            stroke="#DFF6FF"
             strokeWidth="1"
-            strokeDasharray="4 9"
+            strokeDasharray="5 10"
+            strokeLinecap="round"
           />
 
         </svg>
 
 
-        {/* Data nodes */}
+        {/* ==================================================
+            DATA NODES
+        ================================================== */}
 
         <span
           className="
             absolute
-            left-[18%]
-            top-[15%]
+            left-[12%]
+            top-[22%]
             h-1.5
             w-1.5
             rounded-full
             bg-[#1463FF]/45
-            shadow-[0_0_0_5px_rgba(20,99,255,0.05)]
+            shadow-[0_0_0_6px_rgba(20,99,255,0.06)]
           "
         />
-
 
         <span
           className="
             absolute
-            left-[39%]
-            top-[10%]
+            left-[31%]
+            top-[16%]
             h-1.5
             w-1.5
             rounded-full
             bg-[#06B6D4]/45
-            shadow-[0_0_0_5px_rgba(6,182,212,0.05)]
+            shadow-[0_0_0_6px_rgba(6,182,212,0.06)]
           "
         />
-
 
         <span
           className="
             absolute
-            right-[20%]
-            top-[18%]
+            right-[34%]
+            top-[25%]
             h-1.5
             w-1.5
             rounded-full
             bg-[#1463FF]/40
-            shadow-[0_0_0_5px_rgba(20,99,255,0.05)]
+            shadow-[0_0_0_6px_rgba(20,99,255,0.05)]
+          "
+        />
+
+        <span
+          className="
+            absolute
+            right-[12%]
+            top-[17%]
+            h-1.5
+            w-1.5
+            rounded-full
+            bg-[#06B6D4]/40
+            shadow-[0_0_0_6px_rgba(6,182,212,0.05)]
           "
         />
 
@@ -341,11 +408,11 @@ function FeaturedCourses() {
           relative
           z-10
           mx-auto
+          w-full
           max-w-7xl
           px-5
-          sm:px-8
-          lg:px-10
-          xl:px-12
+          sm:px-7
+          lg:px-8
         "
       >
 
@@ -356,116 +423,185 @@ function FeaturedCourses() {
         <motion.div
           initial={{
             opacity: 0,
-            y: 25,
+            y: 18,
           }}
           whileInView={{
             opacity: 1,
             y: 0,
           }}
           transition={{
-            duration: 0.65,
+            duration: 0.55,
           }}
           viewport={{
             once: true,
             amount: 0.25,
           }}
           className="
-            mx-auto
-            max-w-3xl
-            text-center
+            flex
+            flex-col
+            gap-5
+            lg:flex-row
+            lg:items-end
+            lg:justify-between
           "
         >
 
-          {/* Eyebrow */}
+          {/* ==================================================
+              LEFT HEADER
+          ================================================== */}
 
           <div
             className="
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              border
-              border-[#1463FF]/10
-              bg-white
-              px-4
-              py-2
-              text-xs
-              font-bold
-              uppercase
-              tracking-[0.18em]
-              text-[#1463FF]
-              shadow-sm
+              max-w-2xl
             "
           >
 
-            <span
+            <div
               className="
-                h-1.5
-                w-1.5
-                animate-pulse
+                inline-flex
+                items-center
+                gap-2
                 rounded-full
-                bg-[#1463FF]
+                border
+                border-blue-100
+                bg-white
+                px-3.5
+                py-2
+                text-[10px]
+                font-semibold
+                uppercase
+                tracking-[0.18em]
+                text-[#1463FF]
+                shadow-sm
               "
-            />
+            >
 
-            Focused Programs
+              <span
+                className="
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#06B6D4]
+                "
+              />
+
+              Focused Programs
+
+            </div>
+
+
+            <h2
+              className="
+                mt-5
+                text-3xl
+                font-semibold
+                leading-[1.08]
+                tracking-[-0.04em]
+                text-[#0B1B3A]
+                sm:text-4xl
+                lg:text-[46px]
+              "
+            >
+
+              Build skills that
+
+              <span
+                className="
+                  text-[#1463FF]
+                "
+              >
+                {" "}move with data.
+              </span>
+
+            </h2>
+
+
+            <p
+              className="
+                mt-4
+                max-w-xl
+                text-sm
+                leading-6
+                text-slate-500
+                sm:text-base
+                sm:leading-7
+              "
+            >
+
+              Two focused learning paths designed around practical
+              tools, real projects and the skills modern data teams
+              expect.
+
+            </p>
 
           </div>
 
 
-          {/* Heading */}
+          {/* ==================================================
+              RIGHT HEADER NOTE
+          ================================================== */}
 
-          <h2
+          <div
             className="
-              mt-6
-              text-4xl
-              font-black
-              leading-tight
-              tracking-[-0.04em]
-              text-[#0B1B3A]
-              sm:text-5xl
-              lg:text-6xl
+              hidden
+              items-center
+              gap-3
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white
+              px-4
+              py-3
+              shadow-sm
+              lg:flex
             "
           >
 
-            Choose Your{" "}
-
-            <span
+            <div
               className="
-                bg-gradient-to-r
-                from-[#1463FF]
-                to-[#06B6D4]
-                bg-clip-text
-                text-transparent
+                flex
+                h-9
+                w-9
+                items-center
+                justify-center
+                rounded-xl
+                bg-blue-50
+                text-[#1463FF]
               "
             >
-              Data Path
-            </span>
 
-          </h2>
+              <FaDatabase
+                size={14}
+              />
+
+            </div>
 
 
-          {/* Description */}
+            <div>
 
-          <p
-            className="
-              mx-auto
-              mt-5
-              max-w-2xl
-              text-base
-              leading-7
-              text-[#64748B]
-              sm:text-lg
-              sm:leading-8
-            "
-          >
+              <p
+                className="
+                  text-xs
+                  font-semibold
+                  text-[#0B1B3A]
+                "
+              >
+                Practical by design
+              </p>
 
-            Two focused programs.
-            Practical skills.
-            Real projects.
-            One clear direction toward becoming confident with data.
+              <p
+                className="
+                  mt-0.5
+                  text-[10px]
+                  text-slate-400
+                "
+              >
+                Learn → build → apply
+              </p>
 
-          </p>
+            </div>
+
+          </div>
 
         </motion.div>
 
@@ -476,11 +612,11 @@ function FeaturedCourses() {
 
         <div
           className="
-            mt-12
+            mt-8
             grid
-            gap-7
+            gap-5
             lg:grid-cols-2
-            lg:gap-8
+            lg:gap-6
           "
         >
 
@@ -518,35 +654,36 @@ function FeaturedCourses() {
         <motion.div
           initial={{
             opacity: 0,
-            y: 15,
+            y: 12,
           }}
           whileInView={{
             opacity: 1,
             y: 0,
           }}
           transition={{
-            delay: 0.2,
-            duration: 0.55,
+            delay: 0.15,
+            duration: 0.5,
           }}
           viewport={{
             once: true,
           }}
           className="
-            mt-9
+            mt-5
             flex
             flex-col
-            items-center
+            items-start
             justify-between
-            gap-5
+            gap-4
             rounded-2xl
             border
-            border-[#E6EDF7]
+            border-slate-200
             bg-white
-            px-6
-            py-5
-            shadow-[0_12px_35px_rgba(11,27,58,0.05)]
+            px-5
+            py-4
+            shadow-sm
             sm:flex-row
-            sm:px-7
+            sm:items-center
+            sm:px-6
           "
         >
 
@@ -555,27 +692,25 @@ function FeaturedCourses() {
               flex
               items-center
               gap-3
-              text-center
-              sm:text-left
             "
           >
 
             <div
               className="
                 flex
-                h-10
-                w-10
+                h-9
+                w-9
                 shrink-0
                 items-center
                 justify-center
                 rounded-xl
-                bg-[#EAF2FF]
-                text-[#1463FF]
+                bg-cyan-50
+                text-[#06B6D4]
               "
             >
 
-              <FaDatabase
-                size={15}
+              <FaChartBar
+                size={14}
               />
 
             </div>
@@ -586,22 +721,22 @@ function FeaturedCourses() {
               <p
                 className="
                   text-sm
-                  font-bold
+                  font-semibold
                   text-[#0B1B3A]
                 "
               >
-                Built around practical data skills
+                Start with the path that fits your goal.
               </p>
-
 
               <p
                 className="
                   mt-0.5
-                  text-xs
-                  text-[#64748B]
+                  text-[11px]
+                  leading-5
+                  text-slate-400
                 "
               >
-                Learn the tools, concepts and workflows used in real data work.
+                Explore the curriculum and choose your direction.
               </p>
 
             </div>
@@ -620,18 +755,27 @@ function FeaturedCourses() {
               shrink-0
               items-center
               gap-2
-              text-sm
-              font-bold
+              rounded-full
+              border
+              border-blue-100
+              bg-blue-50
+              px-4
+              py-2.5
+              text-xs
+              font-semibold
               text-[#1463FF]
-              transition-colors
-              hover:text-[#0B1B3A]
+              transition-all
+              duration-300
+              hover:border-blue-200
+              hover:bg-[#1463FF]
+              hover:text-white
             "
           >
 
             Explore programs
 
             <FaArrowRight
-              size={12}
+              size={10}
               className="
                 transition-transform
                 duration-200
@@ -646,9 +790,7 @@ function FeaturedCourses() {
       </div>
 
     </section>
-
   );
-
 }
 
 
@@ -661,13 +803,11 @@ function ProgramCard({
   index,
   onView,
 }) {
-
   return (
-
     <motion.article
       initial={{
         opacity: 0,
-        y: 35,
+        y: 22,
       }}
       whileInView={{
         opacity: 1,
@@ -675,8 +815,8 @@ function ProgramCard({
       }}
       transition={{
         delay:
-          index * 0.12,
-        duration: 0.65,
+          index * 0.1,
+        duration: 0.55,
         ease: [
           0.22,
           1,
@@ -689,267 +829,44 @@ function ProgramCard({
         amount: 0.2,
       }}
       whileHover={{
-        y: -7,
+        y: -4,
       }}
       className="
         group
         relative
         overflow-hidden
-        rounded-[30px]
+        rounded-[24px]
         border
-        border-[#1463FF]/15
+        border-slate-200
         bg-white
-        shadow-[0_20px_60px_rgba(11,27,58,0.09)]
-        transition-all
+        shadow-[0_14px_45px_rgba(11,27,58,0.06)]
+        transition-shadow
         duration-500
-        hover:border-[#1463FF]/25
-        hover:shadow-[0_28px_75px_rgba(20,99,255,0.16)]
+        hover:shadow-[0_22px_60px_rgba(11,27,58,0.10)]
       "
     >
 
       {/* ====================================================
-          MAIN COLOR BACKGROUND
-      ==================================================== */}
-
-      <div
-        className={`
-          pointer-events-none
-          absolute
-          inset-0
-          bg-gradient-to-br
-          ${program.cardBackground}
-        `}
-      />
-
-
-      {/* ====================================================
-          SOFT ANIMATED COLOR WASH
-      ==================================================== */}
-
-      <motion.div
-        animate={{
-          x: [
-            "-15%",
-            "15%",
-            "-15%",
-          ],
-          y: [
-            "-8%",
-            "8%",
-            "-8%",
-          ],
-          scale: [
-            1,
-            1.12,
-            1,
-          ],
-          opacity: [
-            0.20,
-            0.32,
-            0.20,
-          ],
-        }}
-        transition={{
-          duration: 11,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          pointer-events-none
-          absolute
-          -left-24
-          -top-24
-          h-[360px]
-          w-[360px]
-          rounded-full
-          bg-[#1463FF]/30
-          blur-[90px]
-        "
-      />
-
-
-      <motion.div
-        animate={{
-          x: [
-            "10%",
-            "-15%",
-            "10%",
-          ],
-          y: [
-            "10%",
-            "-10%",
-            "10%",
-          ],
-          scale: [
-            1,
-            1.15,
-            1,
-          ],
-          opacity: [
-            0.16,
-            0.28,
-            0.16,
-          ],
-        }}
-        transition={{
-          duration: 13,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          pointer-events-none
-          absolute
-          -bottom-28
-          -right-20
-          h-[380px]
-          w-[380px]
-          rounded-full
-          bg-[#06B6D4]/25
-          blur-[100px]
-        "
-      />
-
-
-      {/* ====================================================
-          SOFT CENTER LIGHT
+          ACCENT LINE
       ==================================================== */}
 
       <div
         className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-1/2
-          h-[280px]
-          w-[280px]
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-white/25
-          blur-[90px]
-        "
-      />
-
-
-      {/* ====================================================
-          SUBTLE CARD GRID
-      ==================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          opacity-[0.25]
-        "
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(20,99,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(20,99,255,0.08) 1px, transparent 1px)",
-          backgroundSize:
-            "44px 44px",
-        }}
-      />
-
-
-      {/* ====================================================
-          SLOW MOVING DATA GLOW
-      ==================================================== */}
-
-      <motion.div
-        animate={{
-          x: [
-            "-120%",
-            "120%",
-          ],
-          opacity: [
-            0,
-            0.55,
-            0,
-          ],
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="
-          pointer-events-none
-          absolute
-          left-0
-          top-[28%]
-          h-px
-          w-1/2
-          bg-gradient-to-r
-          from-transparent
-          via-[#06B6D4]/45
-          to-transparent
-          blur-[1px]
-        "
-      />
-
-
-      <motion.div
-        animate={{
-          x: [
-            "120%",
-            "-120%",
-          ],
-          opacity: [
-            0,
-            0.35,
-            0,
-          ],
-        }}
-        transition={{
-          duration: 9,
-          repeat: Infinity,
-          ease: "linear",
-          delay: 2,
-        }}
-        className="
-          pointer-events-none
-          absolute
-          right-0
-          top-[72%]
-          h-px
-          w-1/3
-          bg-gradient-to-r
-          from-transparent
-          via-[#1463FF]/40
-          to-transparent
-          blur-[1px]
-        "
-      />
-
-
-      {/* ====================================================
-          TOP COLOR BAR
-      ==================================================== */}
-
-      <div
-        className={`
-          relative
-          z-20
-          h-1.5
+          h-[3px]
           w-full
-          bg-gradient-to-r
-          ${program.gradient}
-        `}
+        "
+        style={{
+          backgroundColor:
+            program.accent,
+        }}
       />
 
 
-      {/* ====================================================
-          CONTENT
-      ==================================================== */}
-
       <div
         className="
-          relative
-          z-10
-          p-6
-          sm:p-8
-          lg:p-9
+          p-5
+          sm:p-6
+          lg:p-7
         "
       >
 
@@ -968,54 +885,27 @@ function ProgramCard({
 
           <div>
 
-            <div
+            <p
               className="
-                inline-flex
-                items-center
-                gap-2
-                rounded-full
-                border
-                border-[#1463FF]/10
-                bg-white/60
-                px-3
-                py-1.5
-                shadow-sm
-                backdrop-blur-sm
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.2em]
+                text-slate-400
               "
             >
-
-              <span
-                className="
-                  h-1.5
-                  w-1.5
-                  rounded-full
-                  bg-[#1463FF]
-                "
-              />
-
-              <p
-                className="
-                  text-[9px]
-                  font-bold
-                  uppercase
-                  tracking-[0.2em]
-                  text-[#1463FF]
-                "
-              >
-                {program.eyebrow}
-              </p>
-
-            </div>
+              {program.eyebrow}
+            </p>
 
 
             <h3
               className="
-                mt-3
-                text-3xl
-                font-bold
+                mt-1.5
+                text-2xl
+                font-semibold
                 tracking-[-0.035em]
                 text-[#0B1B3A]
-                sm:text-4xl
+                sm:text-3xl
               "
             >
               {program.title}
@@ -1024,56 +914,38 @@ function ProgramCard({
           </div>
 
 
-          {/* Program icon */}
+          {/* ==================================================
+              ICON
+          ================================================== */}
 
-          <motion.div
-            animate={{
-              y: [
-                0,
-                -4,
-                0,
-              ],
-            }}
-            transition={{
-              duration: 3.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className={`
-              relative
+          <div
+            className="
               flex
-              h-14
-              w-14
+              h-11
+              w-11
               shrink-0
               items-center
               justify-center
-              rounded-2xl
-              ${program.iconBackground}
-              ${program.accent}
+              rounded-xl
               border
-              border-white/80
-              shadow-[0_10px_25px_rgba(20,99,255,0.12)]
-              backdrop-blur-sm
-              transition-all
+              border-slate-100
+              text-[#1463FF]
+              transition-transform
               duration-300
               group-hover:scale-105
-              group-hover:-rotate-2
-            `}
-          >
+            "
+            style={{
+              backgroundColor:
+                program.accentSoft,
 
-            <span
-              className="
-                absolute
-                inset-1
-                rounded-xl
-                border
-                border-[#1463FF]/5
-              "
-            />
+              color:
+                program.accent,
+            }}
+          >
 
             {program.icon}
 
-          </motion.div>
+          </div>
 
         </div>
 
@@ -1084,12 +956,11 @@ function ProgramCard({
 
         <p
           className="
-            mt-5
+            mt-4
             max-w-xl
             text-sm
-            leading-7
-            text-[#475569]
-            sm:text-base
+            leading-6
+            text-slate-500
           "
         >
           {program.description}
@@ -1101,89 +972,23 @@ function ProgramCard({
         ================================================== */}
 
         <div
-          className={`
+          className="
             relative
-            mt-7
+            mt-5
             overflow-hidden
             rounded-2xl
             border
-            border-white/80
-            ${program.visualizationBackground}
+            border-slate-200
+            bg-[#F8FBFF]
             p-4
-            shadow-[0_10px_30px_rgba(11,27,58,0.06)]
-            backdrop-blur-sm
-            sm:p-5
-          `}
+          "
         >
 
-          {/* Visualization grid */}
-
-          <div
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              opacity-60
-            "
-            aria-hidden="true"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(20,99,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(20,99,255,0.06) 1px, transparent 1px)",
-              backgroundSize:
-                "30px 30px",
-            }}
+          <ProgramVisualization
+            type={
+              program.visualization
+            }
           />
-
-
-          {/* Animated scanning line */}
-
-          <motion.div
-            animate={{
-              x: [
-                "-100%",
-                "100%",
-              ],
-              opacity: [
-                0,
-                0.7,
-                0,
-              ],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            className="
-              pointer-events-none
-              absolute
-              left-0
-              top-0
-              h-full
-              w-1/3
-              bg-gradient-to-r
-              from-transparent
-              via-[#06B6D4]/10
-              to-transparent
-              blur-sm
-            "
-          />
-
-
-          <div
-            className="
-              relative
-              z-10
-            "
-          >
-
-            <ProgramVisualization
-              type={
-                program.visualization
-              }
-            />
-
-          </div>
 
         </div>
 
@@ -1194,7 +999,7 @@ function ProgramCard({
 
         <div
           className="
-            mt-6
+            mt-5
             flex
             flex-wrap
             gap-2
@@ -1213,7 +1018,7 @@ function ProgramCard({
                 }
                 initial={{
                   opacity: 0,
-                  y: 5,
+                  y: 4,
                 }}
                 whileInView={{
                   opacity: 1,
@@ -1221,10 +1026,10 @@ function ProgramCard({
                 }}
                 transition={{
                   delay:
-                    0.15 +
+                    0.12 +
                     skillIndex *
-                      0.05,
-                  duration: 0.3,
+                      0.04,
+                  duration: 0.25,
                 }}
                 viewport={{
                   once: true,
@@ -1232,20 +1037,13 @@ function ProgramCard({
                 className="
                   rounded-full
                   border
-                  border-white/80
-                  bg-white/55
+                  border-slate-200
+                  bg-slate-50
                   px-3
                   py-1.5
-                  text-[11px]
-                  font-semibold
-                  text-[#475569]
-                  shadow-sm
-                  backdrop-blur-sm
-                  transition-all
-                  duration-200
-                  hover:border-[#1463FF]/20
-                  hover:bg-white/80
-                  hover:text-[#1463FF]
+                  text-[10px]
+                  font-medium
+                  text-slate-600
                 "
               >
                 {skill}
@@ -1263,14 +1061,14 @@ function ProgramCard({
 
         <div
           className="
-            mt-8
+            mt-6
             flex
             items-center
             justify-between
             gap-4
             border-t
-            border-[#1463FF]/10
-            pt-6
+            border-slate-100
+            pt-5
           "
         >
 
@@ -1278,9 +1076,11 @@ function ProgramCard({
 
             <p
               className="
-                text-xs
-                font-semibold
-                text-[#64748B]
+                text-[10px]
+                font-medium
+                uppercase
+                tracking-[0.14em]
+                text-slate-400
               "
             >
               Learning path
@@ -1290,9 +1090,9 @@ function ProgramCard({
             <p
               className="
                 mt-1
-                text-sm
-                font-semibold
-                text-[#0B1B3A]
+                text-xs
+                font-medium
+                text-slate-500
               "
             >
               Explore the curriculum
@@ -1304,8 +1104,7 @@ function ProgramCard({
           <motion.button
             type="button"
             whileHover={{
-              x: 3,
-              scale: 1.02,
+              x: 2,
             }}
             whileTap={{
               scale: 0.97,
@@ -1320,25 +1119,24 @@ function ProgramCard({
               gap-2
               rounded-full
               bg-[#1463FF]
-              px-5
-              py-3
+              px-4
+              py-2.5
               text-xs
-              font-bold
+              font-semibold
               text-white
-              shadow-[0_10px_25px_rgba(20,99,255,0.25)]
+              shadow-[0_8px_20px_rgba(20,99,255,0.16)]
               transition-all
               duration-300
               hover:bg-[#0B1B3A]
-              hover:shadow-[0_12px_30px_rgba(11,27,58,0.18)]
-              sm:px-6
-              sm:text-sm
+              hover:shadow-[0_10px_25px_rgba(11,27,58,0.16)]
+              sm:px-5
             "
           >
 
             View Program
 
             <FaArrowRight
-              size={11}
+              size={10}
               className="
                 transition-transform
                 duration-200
@@ -1354,78 +1152,29 @@ function ProgramCard({
 
 
       {/* ====================================================
-          FLOATING DATA POINTS
+          SUBTLE HOVER LIGHT
       ==================================================== */}
 
-      <motion.span
-        animate={{
-          y: [
-            0,
-            -10,
-            0,
-          ],
-          opacity: [
-            0.35,
-            0.8,
-            0.35,
-          ],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+      <div
         className="
           pointer-events-none
           absolute
-          right-[24%]
-          top-[23%]
-          z-20
-          h-2
-          w-2
+          -right-20
+          -top-20
+          h-40
+          w-40
           rounded-full
-          bg-[#06B6D4]
-          shadow-[0_0_14px_rgba(6,182,212,0.6)]
-        "
-      />
-
-
-      <motion.span
-        animate={{
-          y: [
-            0,
-            8,
-            0,
-          ],
-          opacity: [
-            0.25,
-            0.7,
-            0.25,
-          ],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          pointer-events-none
-          absolute
-          bottom-[27%]
-          left-[13%]
-          z-20
-          h-1.5
-          w-1.5
-          rounded-full
-          bg-[#1463FF]
-          shadow-[0_0_12px_rgba(20,99,255,0.5)]
+          bg-blue-100/40
+          opacity-0
+          blur-3xl
+          transition-opacity
+          duration-500
+          group-hover:opacity-100
         "
       />
 
     </motion.article>
-
   );
-
 }
 
 
@@ -1436,32 +1185,31 @@ function ProgramCard({
 function ProgramVisualization({
   type,
 }) {
-
   if (
     type ===
     "science"
   ) {
-
     return (
-
       <div
         className="
           relative
-          h-44
-          sm:h-48
+          h-36
+          sm:h-40
         "
       >
 
-        {/* Data nodes */}
+        {/* ==================================================
+            DATA NODES
+        ================================================== */}
 
         <DataNode
           icon={
             <FaTable
-              size={13}
+              size={12}
             />
           }
           label="DATA"
-          position="left-1 top-5"
+          position="left-0 top-4"
           delay={0}
         />
 
@@ -1469,46 +1217,48 @@ function ProgramVisualization({
         <DataNode
           icon={
             <FaPython
-              size={13}
+              size={12}
             />
           }
           label="PYTHON"
-          position="left-[25%] top-[55%]"
-          delay={0.2}
+          position="left-[25%] top-[52%]"
+          delay={0.15}
         />
 
 
         <DataNode
           icon={
             <FaProjectDiagram
-              size={13}
+              size={12}
             />
           }
           label="ML"
-          position="left-[51%] top-4"
-          delay={0.4}
+          position="left-[51%] top-3"
+          delay={0.3}
         />
 
 
         <DataNode
           icon={
             <FaChartLine
-              size={13}
+              size={12}
             />
           }
           label="INSIGHT"
-          position="right-0 top-[55%]"
-          delay={0.6}
+          position="right-0 top-[52%]"
+          delay={0.45}
         />
 
 
-        {/* Connecting path */}
+        {/* ==================================================
+            CONNECTIONS
+        ================================================== */}
 
         <AnimatedConnection
           className="
-            left-[13%]
-            top-[39%]
-            w-[20%]
+            left-[12%]
+            top-[38%]
+            w-[19%]
             rotate-[18deg]
           "
           delay={0}
@@ -1518,26 +1268,28 @@ function ProgramVisualization({
         <AnimatedConnection
           className="
             left-[38%]
-            top-[42%]
-            w-[20%]
+            top-[40%]
+            w-[19%]
             -rotate-[18deg]
           "
-          delay={0.25}
+          delay={0.18}
         />
 
 
         <AnimatedConnection
           className="
             left-[63%]
-            top-[42%]
+            top-[40%]
             w-[19%]
             rotate-[18deg]
           "
-          delay={0.5}
+          delay={0.36}
         />
 
 
-        {/* Moving data pulse */}
+        {/* ==================================================
+            MOVING DATA PULSE
+        ================================================== */}
 
         <motion.div
           animate={{
@@ -1545,6 +1297,7 @@ function ProgramVisualization({
               "0%",
               "100%",
             ],
+
             opacity: [
               0,
               1,
@@ -1560,17 +1313,19 @@ function ProgramVisualization({
           className="
             absolute
             left-[12%]
-            top-[40%]
+            top-[39%]
             h-1.5
             w-1.5
             rounded-full
             bg-[#06B6D4]
-            shadow-[0_0_12px_rgba(6,182,212,0.9)]
+            shadow-[0_0_10px_rgba(6,182,212,0.65)]
           "
         />
 
 
-        {/* Mini chart */}
+        {/* ==================================================
+            MINI CHART
+        ================================================== */}
 
         <div
           className="
@@ -1579,10 +1334,10 @@ function ProgramVisualization({
             left-0
             right-0
             flex
-            h-7
+            h-6
             items-end
             gap-1
-            opacity-80
+            opacity-70
           "
         >
 
@@ -1617,9 +1372,9 @@ function ProgramVisualization({
                 transition={{
                   delay:
                     index *
-                    0.06,
+                    0.05,
                   duration:
-                    0.5,
+                    0.45,
                   ease:
                     "easeOut",
                 }}
@@ -1641,40 +1396,40 @@ function ProgramVisualization({
         </div>
 
       </div>
-
     );
-
   }
 
 
-  return (
+  // ==========================================================
+  // DATA ANALYTICS VISUALIZATION
+  // ==========================================================
 
+  return (
     <div
       className="
         relative
-        h-44
-        sm:h-48
+        h-36
+        sm:h-40
       "
     >
 
       {/* ==================================================
-          SQL DATA PANEL
+          SQL PANEL
       ================================================== */}
 
       <div
         className="
           absolute
           left-0
-          top-2
-          h-36
+          top-1
+          h-32
           w-[46%]
-          rounded-2xl
+          rounded-xl
           border
-          border-[#CFE2F2]
-          bg-white/65
+          border-slate-200
+          bg-white
           p-3
-          shadow-[0_8px_25px_rgba(11,27,58,0.06)]
-          backdrop-blur-sm
+          shadow-sm
         "
       >
 
@@ -1688,11 +1443,11 @@ function ProgramVisualization({
 
           <span
             className="
-              text-[9px]
-              font-bold
+              text-[8px]
+              font-semibold
               uppercase
-              tracking-wider
-              text-[#64748B]
+              tracking-[0.12em]
+              text-slate-400
             "
           >
             SQL DATA
@@ -1700,8 +1455,10 @@ function ProgramVisualization({
 
 
           <FaDatabase
-            size={11}
-            className="text-[#06B6D4]"
+            size={10}
+            className="
+              text-[#06B6D4]
+            "
           />
 
         </div>
@@ -1714,7 +1471,12 @@ function ProgramVisualization({
           "
         >
 
-          {[70, 48, 84, 62].map(
+          {[
+            70,
+            48,
+            84,
+            62,
+          ].map(
             (
               width,
               index
@@ -1734,9 +1496,9 @@ function ProgramVisualization({
                 transition={{
                   delay:
                     index *
-                    0.1,
+                    0.08,
                   duration:
-                    0.7,
+                    0.65,
                   ease:
                     "easeOut",
                 }}
@@ -1744,11 +1506,11 @@ function ProgramVisualization({
                   once: true,
                 }}
                 className="
-                  h-2
+                  h-1.5
                   rounded-full
                   bg-gradient-to-r
-                  from-[#06B6D4]
-                  to-[#1463FF]
+                  from-[#1463FF]
+                  to-[#06B6D4]
                 "
               />
 
@@ -1761,23 +1523,22 @@ function ProgramVisualization({
 
 
       {/* ==================================================
-          CHART PANEL
+          INSIGHTS CHART
       ================================================== */}
 
       <div
         className="
           absolute
           right-0
-          top-2
-          h-36
+          top-1
+          h-32
           w-[48%]
-          rounded-2xl
+          rounded-xl
           border
-          border-[#CFE2F2]
-          bg-white/65
+          border-slate-200
+          bg-white
           p-3
-          shadow-[0_8px_25px_rgba(11,27,58,0.06)]
-          backdrop-blur-sm
+          shadow-sm
         "
       >
 
@@ -1791,11 +1552,11 @@ function ProgramVisualization({
 
           <span
             className="
-              text-[9px]
-              font-bold
+              text-[8px]
+              font-semibold
               uppercase
-              tracking-wider
-              text-[#64748B]
+              tracking-[0.12em]
+              text-slate-400
             "
           >
             INSIGHTS
@@ -1803,8 +1564,10 @@ function ProgramVisualization({
 
 
           <FaChartBar
-            size={11}
-            className="text-[#1463FF]"
+            size={10}
+            className="
+              text-[#1463FF]
+            "
           />
 
         </div>
@@ -1813,8 +1576,8 @@ function ProgramVisualization({
         <div
           className="
             relative
-            mt-3
-            h-24
+            mt-2
+            h-20
           "
         >
 
@@ -1827,29 +1590,6 @@ function ProgramVisualization({
             "
             fill="none"
           >
-
-            {/* Light reference line */}
-
-            <path
-              d="
-                M5 78
-                C30 70,
-                35 76,
-                58 65
-                S88 60,
-                105 55
-                S135 57,
-                150 45
-                S180 48,
-                215 30
-              "
-              stroke="#D9E6F7"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-
-
-            {/* Main analytics line */}
 
             <motion.path
               d="
@@ -1864,12 +1604,9 @@ function ProgramVisualization({
                 S180 35,
                 215 12
               "
-              stroke="currentColor"
-              strokeWidth="3"
+              stroke="#1463FF"
+              strokeWidth="2.5"
               strokeLinecap="round"
-              className="
-                text-[#1463FF]
-              "
               initial={{
                 pathLength: 0,
               }}
@@ -1877,8 +1614,39 @@ function ProgramVisualization({
                 pathLength: 1,
               }}
               transition={{
-                duration: 1.8,
+                duration: 1.7,
                 ease: "easeInOut",
+              }}
+              viewport={{
+                once: true,
+              }}
+            />
+
+
+            <motion.path
+              d="
+                M5 78
+                C35 72,
+                60 74,
+                88 66
+                S125 68,
+                150 55
+                S190 52,
+                215 44
+              "
+              stroke="#DCE7F7"
+              strokeWidth="1"
+              strokeDasharray="4 6"
+              strokeLinecap="round"
+              initial={{
+                pathLength: 0,
+              }}
+              whileInView={{
+                pathLength: 1,
+              }}
+              transition={{
+                delay: 0.15,
+                duration: 1.4,
               }}
               viewport={{
                 once: true,
@@ -1888,7 +1656,9 @@ function ProgramVisualization({
           </svg>
 
 
-          {/* Moving point */}
+          {/* ==================================================
+              MOVING POINT
+          ================================================== */}
 
           <motion.div
             animate={{
@@ -1896,10 +1666,12 @@ function ProgramVisualization({
                 "5%",
                 "92%",
               ],
+
               y: [
                 "70%",
                 "10%",
               ],
+
               opacity: [
                 0,
                 1,
@@ -1916,11 +1688,11 @@ function ProgramVisualization({
               absolute
               left-0
               top-0
-              h-2
-              w-2
+              h-1.5
+              w-1.5
               rounded-full
               bg-[#06B6D4]
-              shadow-[0_0_14px_rgba(6,182,212,0.8)]
+              shadow-[0_0_10px_rgba(6,182,212,0.65)]
             "
           />
 
@@ -1937,13 +1709,8 @@ function ProgramVisualization({
         animate={{
           opacity: [
             0.25,
-            0.8,
+            0.7,
             0.25,
-          ],
-          scale: [
-            0.95,
-            1.05,
-            0.95,
           ],
         }}
         transition={{
@@ -1954,16 +1721,15 @@ function ProgramVisualization({
         className="
           absolute
           left-1/2
-          top-[48%]
-          h-10
-          w-10
+          top-[46%]
+          h-9
+          w-9
           -translate-x-1/2
           -translate-y-1/2
           rounded-full
           border
-          border-[#1463FF]/25
-          bg-[#1463FF]/[0.06]
-          shadow-[0_0_25px_rgba(20,99,255,0.10)]
+          border-[#06B6D4]/30
+          bg-cyan-50
         "
       >
 
@@ -1972,7 +1738,7 @@ function ProgramVisualization({
             absolute
             inset-2
             rounded-full
-            bg-[#06B6D4]/20
+            bg-[#06B6D4]/15
           "
         />
 
@@ -1987,13 +1753,14 @@ function ProgramVisualization({
         animate={{
           scale: [
             0.8,
-            1.5,
+            1.4,
             0.8,
           ],
+
           opacity: [
-            0.2,
+            0.25,
             0.8,
-            0.2,
+            0.25,
           ],
         }}
         transition={{
@@ -2004,21 +1771,18 @@ function ProgramVisualization({
         className="
           absolute
           left-1/2
-          top-[48%]
-          h-2
-          w-2
+          top-[46%]
+          h-1.5
+          w-1.5
           -translate-x-1/2
           -translate-y-1/2
           rounded-full
-          bg-[#06B6D4]
-          shadow-[0_0_10px_rgba(6,182,212,0.7)]
+          bg-[#1463FF]
         "
       />
 
     </div>
-
   );
-
 }
 
 
@@ -2032,13 +1796,11 @@ function DataNode({
   position,
   delay,
 }) {
-
   return (
-
     <motion.div
       initial={{
         opacity: 0,
-        scale: 0.85,
+        scale: 0.9,
       }}
       whileInView={{
         opacity: 1,
@@ -2046,7 +1808,7 @@ function DataNode({
       }}
       transition={{
         delay,
-        duration: 0.45,
+        duration: 0.4,
       }}
       viewport={{
         once: true,
@@ -2054,7 +1816,7 @@ function DataNode({
       animate={{
         y: [
           0,
-          -4,
+          -3,
           0,
         ],
       }}
@@ -2064,27 +1826,26 @@ function DataNode({
         z-10
         flex
         items-center
-        gap-2
-        rounded-xl
+        gap-1.5
+        rounded-lg
         border
-        border-[#CFE2F2]
-        bg-white/75
-        px-2.5
-        py-2
-        shadow-[0_6px_18px_rgba(11,27,58,0.07)]
-        backdrop-blur-sm
+        border-slate-200
+        bg-white
+        px-2
+        py-1.5
+        shadow-sm
       `}
     >
 
       <span
         className="
           flex
-          h-6
-          w-6
+          h-5
+          w-5
           items-center
           justify-center
-          rounded-lg
-          bg-[#EAF2FF]
+          rounded-md
+          bg-blue-50
           text-[#1463FF]
         "
       >
@@ -2094,19 +1855,17 @@ function DataNode({
 
       <span
         className="
-          text-[9px]
-          font-bold
-          tracking-[0.08em]
-          text-[#64748B]
+          text-[8px]
+          font-semibold
+          tracking-[0.06em]
+          text-slate-500
         "
       >
         {label}
       </span>
 
     </motion.div>
-
   );
-
 }
 
 
@@ -2118,9 +1877,7 @@ function AnimatedConnection({
   className,
   delay = 0,
 }) {
-
   return (
-
     <motion.div
       initial={{
         scaleX: 0,
@@ -2132,7 +1889,7 @@ function AnimatedConnection({
       }}
       transition={{
         delay,
-        duration: 0.7,
+        duration: 0.6,
         ease: "easeOut",
       }}
       viewport={{
@@ -2145,13 +1902,11 @@ function AnimatedConnection({
         origin-left
         border-t
         border-dashed
-        border-[#1463FF]/30
+        border-[#1463FF]/25
         ${className}
       `}
     />
-
   );
-
 }
 
 

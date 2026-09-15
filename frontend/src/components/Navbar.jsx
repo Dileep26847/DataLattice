@@ -20,7 +20,6 @@ import {
   FaXmark,
 } from "react-icons/fa6";
 
-
 // ============================================================
 // DATALATTICE PUBLIC NAVIGATION
 // ============================================================
@@ -44,13 +43,11 @@ const publicNavigation = [
   },
 ];
 
-
 // ============================================================
 // COMPONENT
 // ============================================================
 
 function Navbar() {
-
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -58,96 +55,194 @@ function Navbar() {
   const [mobileOpen, setMobileOpen] =
     useState(false);
 
-
   // ==========================================================
-  // SAFE USER PARSE
+  // AUTH STATE
   // ==========================================================
 
-  const getStoredUser = () => {
-
+  const [authState, setAuthState] = useState(() => {
     try {
-
       const storedUser =
         localStorage.getItem("user");
 
-      return storedUser
-        ? JSON.parse(storedUser)
-        : null;
+      const storedToken =
+        localStorage.getItem("token");
 
+      return {
+        token: storedToken || null,
+        user: storedUser
+          ? JSON.parse(storedUser)
+          : null,
+      };
     } catch {
-
-      return null;
-
+      return {
+        token: null,
+        user: null,
+      };
     }
+  });
 
+  // ==========================================================
+  // REFRESH AUTH STATE
+  // ==========================================================
+
+  const refreshAuthState = () => {
+    try {
+      const storedUser =
+        localStorage.getItem("user");
+
+      const storedToken =
+        localStorage.getItem("token");
+
+      setAuthState({
+        token: storedToken || null,
+        user: storedUser
+          ? JSON.parse(storedUser)
+          : null,
+      });
+    } catch {
+      setAuthState({
+        token: null,
+        user: null,
+      });
+    }
   };
 
+  // ==========================================================
+  // LISTEN FOR AUTH CHANGES
+  //
+  // Login and logout can happen without the Navbar itself
+  // being remounted. This event keeps the navbar in sync.
+  // ==========================================================
 
-  const token =
-    localStorage.getItem("token");
+  useEffect(() => {
+    const handleAuthChange = () => {
+      refreshAuthState();
+    };
 
-  const user =
-    getStoredUser();
+    window.addEventListener(
+      "Data Lattice-auth-change",
+      handleAuthChange
+    );
 
+    window.addEventListener(
+      "storage",
+      handleAuthChange
+    );
+
+    return () => {
+      window.removeEventListener(
+        "Data Lattice-auth-change",
+        handleAuthChange
+      );
+
+      window.removeEventListener(
+        "storage",
+        handleAuthChange
+      );
+    };
+  }, []);
+
+  // ==========================================================
+  // CURRENT AUTH VALUES
+  // ==========================================================
+
+  const token = authState.token;
+
+  const user = authState.user;
+
+  // ==========================================================
+  // DETERMINE APPLICATION AREA
+  //
+  // IMPORTANT:
+  // Authentication alone does NOT determine which navbar
+  // should be shown.
+  //
+  // A logged-in student visiting "/" must still see the
+  // public Home navbar.
+  // ==========================================================
+
+  const isStudentArea =
+    location.pathname === "/student" ||
+    location.pathname.startsWith("/student/");
+
+  const isAdminArea =
+    location.pathname === "/admin" ||
+    location.pathname.startsWith("/admin/");
+
+  const isMentorArea =
+    location.pathname === "/mentor" ||
+    location.pathname.startsWith("/mentor/");
+
+  const isDashboardArea =
+    isStudentArea ||
+    isAdminArea ||
+    isMentorArea;
+
+  // ==========================================================
+  // NAVBAR MODE
+  // ==========================================================
+
+  const showAuthenticatedNavbar =
+    Boolean(token) && isDashboardArea;
+
+  const showPublicNavbar =
+    !showAuthenticatedNavbar;
 
   // ==========================================================
   // CLOSE MOBILE MENU ON ROUTE CHANGE
   // ==========================================================
 
   useEffect(() => {
-
     setMobileOpen(false);
-
   }, [location.pathname]);
-
 
   // ==========================================================
   // LOCK BODY WHEN MOBILE MENU IS OPEN
   // ==========================================================
 
   useEffect(() => {
-
     if (mobileOpen) {
-
       document.body.style.overflow =
         "hidden";
-
     } else {
-
       document.body.style.overflow =
         "";
-
     }
 
-
     return () => {
-
       document.body.style.overflow =
         "";
-
     };
-
   }, [mobileOpen]);
-
 
   // ==========================================================
   // LOGOUT
   // ==========================================================
 
   const logout = () => {
-
+    // Remove authenticated session
     localStorage.removeItem("token");
-
     localStorage.removeItem("user");
 
-    setMobileOpen(false);
-
-    navigate("/login", {
-      replace: true,
+    // Immediately update this Navbar
+    setAuthState({
+      token: null,
+      user: null,
     });
 
-  };
+    // Close mobile menu
+    setMobileOpen(false);
 
+    // Notify the rest of the application
+    window.dispatchEvent(
+      new Event("Data Lattice-auth-change")
+    );
+
+    // Always return to public Home
+    navigate("/", {
+      replace: true,
+    });
+  };
 
   // ==========================================================
   // PUBLIC SECTION NAVIGATION
@@ -156,36 +251,24 @@ function Navbar() {
   const handleSectionNavigation = (
     href
   ) => {
-
     setMobileOpen(false);
 
-
-    if (
-      location.pathname !== "/"
-    ) {
-
+    if (location.pathname !== "/") {
       navigate(`/${href}`);
 
       return;
-
     }
-
 
     const element =
       document.querySelector(href);
 
-
     if (element) {
-
       element.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
-
     }
-
   };
-
 
   // ==========================================================
   // LOGGED-IN NAVIGATION
@@ -193,7 +276,6 @@ function Navbar() {
 
   const dashboardLinkClass =
     ({ isActive }) => {
-
       return `
         relative
         rounded-xl
@@ -210,18 +292,14 @@ function Navbar() {
             : "text-[#0B1B3A]/75 hover:bg-white/45 hover:text-[#1463FF]"
         }
       `;
-
     };
-
 
   // ==========================================================
   // RENDER
   // ==========================================================
 
   return (
-
     <>
-
       {/* ======================================================
           GLASSMORPHISM NAVBAR
       ====================================================== */}
@@ -252,7 +330,6 @@ function Navbar() {
           backdrop-saturate-150
         "
       >
-
         {/* ====================================================
             SUBTLE GLASS HIGHLIGHT
         ==================================================== */}
@@ -271,7 +348,6 @@ function Navbar() {
           "
         />
 
-
         <div
           className="
             relative
@@ -285,7 +361,6 @@ function Navbar() {
             lg:px-8
           "
         >
-
           {/* ==================================================
               LOGO
           ================================================== */}
@@ -304,7 +379,6 @@ function Navbar() {
               -translate-y-1
             "
           >
-
             {/* Logo mark */}
 
             <div
@@ -328,7 +402,6 @@ function Navbar() {
                 group-hover:shadow-[0_10px_28px_rgba(20,99,255,0.12)]
               "
             >
-
               <div
                 className="
                   absolute
@@ -340,7 +413,6 @@ function Navbar() {
                 "
               />
 
-
               <div
                 className="
                   absolute
@@ -350,7 +422,6 @@ function Navbar() {
                   bg-[#06B6D4]
                 "
               />
-
 
               <span
                 className="
@@ -364,7 +435,6 @@ function Navbar() {
                 "
               />
 
-
               <span
                 className="
                   absolute
@@ -376,14 +446,11 @@ function Navbar() {
                   bg-[#1463FF]
                 "
               />
-
             </div>
-
 
             {/* Wordmark */}
 
             <div>
-
               <div
                 className="
                   text-[20px]
@@ -393,11 +460,8 @@ function Navbar() {
                   text-[#0B1B3A]
                 "
               >
-
                 DataLattice
-
               </div>
-
 
               <div
                 className="
@@ -410,22 +474,20 @@ function Navbar() {
                   text-[#64748B]
                 "
               >
-
                 Learn • Build • Grow
-
               </div>
-
             </div>
-
           </Link>
-
 
           {/* ==================================================
               DESKTOP PUBLIC NAVIGATION
+              
+              IMPORTANT:
+              This is shown on "/" even when the user is logged
+              in as a student.
           ================================================== */}
 
-          {!token && (
-
+          {showPublicNavbar && (
             <nav
               className="
                 hidden
@@ -446,10 +508,8 @@ function Navbar() {
                 lg:-translate-y-1/2
               "
             >
-
               {publicNavigation.map(
                 (item) => (
-
                   <button
                     key={item.label}
                     type="button"
@@ -472,25 +532,18 @@ function Navbar() {
                       hover:text-[#1463FF]
                     "
                   >
-
                     {item.label}
-
                   </button>
-
                 )
               )}
-
             </nav>
-
           )}
-
 
           {/* ==================================================
               LOGGED-IN DESKTOP NAVIGATION
           ================================================== */}
 
-          {token && (
-
+          {showAuthenticatedNavbar && (
             <nav
               className="
                 hidden
@@ -511,97 +564,115 @@ function Navbar() {
                 lg:-translate-y-1/2
               "
             >
+              {/* ==================================================
+                  STUDENT NAVIGATION
+              ================================================== */}
 
-              <NavLink
-                to="/"
-                className={
-                  dashboardLinkClass
-                }
-              >
-                Home
-              </NavLink>
+              {isStudentArea &&
+                user?.role === "student" && (
+                  <>
+                    <NavLink
+                      to="/student/dashboard"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      Dashboard
+                    </NavLink>
 
+                    <NavLink
+                      to="/student/my-courses"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      My Learning
+                    </NavLink>
 
-              <NavLink
-                to="/courses"
-                className={
-                  dashboardLinkClass
-                }
-              >
-                Courses
-              </NavLink>
+                    <NavLink
+                      to="/student/live-classes"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      Live Classes
+                    </NavLink>
+                  </>
+                )}
 
+              {/* ==================================================
+                  ADMIN NAVIGATION
+              ================================================== */}
 
-              {user?.role ===
-                "student" && (
-                <>
+              {isAdminArea &&
+                user?.role === "admin" && (
+                  <>
+                    <NavLink
+                      to="/admin/dashboard"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      Dashboard
+                    </NavLink>
 
-                  <NavLink
-                    to="/student/dashboard"
-                    className={
-                      dashboardLinkClass
-                    }
-                  >
-                    Dashboard
-                  </NavLink>
+                    <NavLink
+                      to="/admin/students"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      Students
+                    </NavLink>
 
+                    <NavLink
+                      to="/admin/courses"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      Courses
+                    </NavLink>
+                  </>
+                )}
 
-                  <NavLink
-                    to="/my-courses"
-                    className={
-                      dashboardLinkClass
-                    }
-                  >
-                    My Learning
-                  </NavLink>
+              {/* ==================================================
+                  MENTOR NAVIGATION
+              ================================================== */}
 
+              {isMentorArea &&
+                user?.role === "mentor" && (
+                  <>
+                    <NavLink
+                      to="/mentor/dashboard"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      Dashboard
+                    </NavLink>
 
-                  <NavLink
-                    to="/live-classes"
-                    className={
-                      dashboardLinkClass
-                    }
-                  >
-                    Live Classes
-                  </NavLink>
+                    <NavLink
+                      to="/mentor/courses"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      My Courses
+                    </NavLink>
 
-                </>
-              )}
-
-
-              {user?.role ===
-                "admin" && (
-
-                <NavLink
-                  to="/admin/dashboard"
-                  className={
-                    dashboardLinkClass
-                  }
-                >
-                  Admin
-                </NavLink>
-
-              )}
-
-
-              {user?.role ===
-                "mentor" && (
-
-                <NavLink
-                  to="/mentor/dashboard"
-                  className={
-                    dashboardLinkClass
-                  }
-                >
-                  Mentor
-                </NavLink>
-
-              )}
-
+                    <NavLink
+                      to="/mentor/live-classes"
+                      className={
+                        dashboardLinkClass
+                      }
+                    >
+                      Live Classes
+                    </NavLink>
+                  </>
+                )}
             </nav>
-
           )}
-
 
           {/* ==================================================
               DESKTOP RIGHT SIDE
@@ -615,9 +686,11 @@ function Navbar() {
               lg:flex
             "
           >
+            {/* ==================================================
+                PUBLIC RIGHT SIDE
+            ================================================== */}
 
-            {!token ? (
-
+            {showPublicNavbar && (
               <Link
                 to="/login"
                 className="
@@ -646,13 +719,15 @@ function Navbar() {
                   focus-visible:ring-offset-2
                 "
               >
-
                 Login
-
               </Link>
+            )}
 
-            ) : (
+            {/* ==================================================
+                AUTHENTICATED RIGHT SIDE
+            ================================================== */}
 
+            {showAuthenticatedNavbar && (
               <div
                 className="
                   flex
@@ -668,7 +743,6 @@ function Navbar() {
                   backdrop-blur-md
                 "
               >
-
                 <div
                   className="
                     flex
@@ -676,7 +750,6 @@ function Navbar() {
                     gap-2.5
                   "
                 >
-
                   <img
                     src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                       user?.full_name ||
@@ -692,14 +765,12 @@ function Navbar() {
                     "
                   />
 
-
                   <div
                     className="
                       hidden
                       xl:block
                     "
                   >
-
                     <p
                       className="
                         text-xs
@@ -708,12 +779,9 @@ function Navbar() {
                         text-[#0B1B3A]
                       "
                     >
-
                       {user?.full_name ||
                         "User"}
-
                     </p>
-
 
                     <p
                       className="
@@ -725,16 +793,11 @@ function Navbar() {
                         text-[#64748B]
                       "
                     >
-
                       {user?.role ||
                         "Student"}
-
                     </p>
-
                   </div>
-
                 </div>
-
 
                 <button
                   type="button"
@@ -752,17 +815,11 @@ function Navbar() {
                     hover:text-red-600
                   "
                 >
-
                   Logout
-
                 </button>
-
               </div>
-
             )}
-
           </div>
-
 
           {/* ==================================================
               MOBILE MENU BUTTON
@@ -803,30 +860,22 @@ function Navbar() {
               lg:hidden
             "
           >
-
             {mobileOpen ? (
               <FaXmark size={18} />
             ) : (
               <FaBars size={18} />
             )}
-
           </button>
-
         </div>
-
       </motion.header>
-
 
       {/* ======================================================
           MOBILE MENU
       ====================================================== */}
 
       <AnimatePresence>
-
         {mobileOpen && (
-
           <>
-
             {/* Backdrop */}
 
             <motion.div
@@ -851,7 +900,6 @@ function Navbar() {
                 lg:hidden
               "
             />
-
 
             {/* Glass Menu */}
 
@@ -889,7 +937,6 @@ function Navbar() {
                 lg:hidden
               "
             >
-
               {/* Glass highlight */}
 
               <div
@@ -903,20 +950,19 @@ function Navbar() {
                 "
               />
 
+              {/* ==================================================
+                  MOBILE PUBLIC NAVIGATION
+              ================================================== */}
 
-              {!token ? (
-
+              {showPublicNavbar && (
                 <>
-
                   <div
                     className="
                       space-y-1
                     "
                   >
-
                     {publicNavigation.map(
                       (item) => (
-
                         <button
                           key={
                             item.label
@@ -948,11 +994,9 @@ function Navbar() {
                             hover:text-[#1463FF]
                           "
                         >
-
                           <span>
                             {item.label}
                           </span>
-
 
                           <span
                             className="
@@ -961,14 +1005,10 @@ function Navbar() {
                           >
                             →
                           </span>
-
                         </button>
-
                       )
                     )}
-
                   </div>
-
 
                   <div
                     className="
@@ -978,7 +1018,6 @@ function Navbar() {
                       pt-3
                     "
                   >
-
                     <Link
                       to="/login"
                       onClick={() =>
@@ -1004,23 +1043,22 @@ function Navbar() {
                         hover:bg-[#0B1B3A]
                       "
                     >
-
                       Login
-
                     </Link>
-
                   </div>
-
                 </>
+              )}
 
-              ) : (
+              {/* ==================================================
+                  MOBILE AUTHENTICATED NAVIGATION
+              ================================================== */}
 
+              {showAuthenticatedNavbar && (
                 <div
                   className="
                     space-y-1
                   "
                 >
-
                   {/* User */}
 
                   <div
@@ -1038,7 +1076,6 @@ function Navbar() {
                       backdrop-blur-md
                     "
                   >
-
                     <img
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                         user?.full_name ||
@@ -1054,9 +1091,7 @@ function Navbar() {
                       "
                     />
 
-
                     <div>
-
                       <p
                         className="
                           text-sm
@@ -1064,12 +1099,9 @@ function Navbar() {
                           text-[#0B1B3A]
                         "
                       >
-
                         {user?.full_name ||
                           "User"}
-
                       </p>
-
 
                       <p
                         className="
@@ -1079,103 +1111,169 @@ function Navbar() {
                           text-[#64748B]
                         "
                       >
-
                         {user?.role ||
                           "Student"}
-
                       </p>
-
                     </div>
-
                   </div>
 
+                  {/* ==================================================
+                      STUDENT MOBILE NAVIGATION
+                  ================================================== */}
 
-                  <NavLink
-                    to="/"
-                    className={
-                      dashboardLinkClass
-                    }
-                  >
-                    Home
-                  </NavLink>
+                  {isStudentArea &&
+                    user?.role ===
+                      "student" && (
+                      <>
+                        <NavLink
+                          to="/student/dashboard"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          Dashboard
+                        </NavLink>
 
+                        <NavLink
+                          to="/student/my-courses"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          My Learning
+                        </NavLink>
 
-                  <NavLink
-                    to="/courses"
-                    className={
-                      dashboardLinkClass
-                    }
-                  >
-                    Courses
-                  </NavLink>
+                        <NavLink
+                          to="/student/live-classes"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          Live Classes
+                        </NavLink>
+                      </>
+                    )}
 
+                  {/* ==================================================
+                      ADMIN MOBILE NAVIGATION
+                  ================================================== */}
 
-                  {user?.role ===
-                    "student" && (
-                    <>
+                  {isAdminArea &&
+                    user?.role ===
+                      "admin" && (
+                      <>
+                        <NavLink
+                          to="/admin/dashboard"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          Dashboard
+                        </NavLink>
 
-                      <NavLink
-                        to="/student/dashboard"
-                        className={
-                          dashboardLinkClass
-                        }
-                      >
-                        Dashboard
-                      </NavLink>
+                        <NavLink
+                          to="/admin/students"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          Students
+                        </NavLink>
 
+                        <NavLink
+                          to="/admin/courses"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          Courses
+                        </NavLink>
+                      </>
+                    )}
 
-                      <NavLink
-                        to="/my-courses"
-                        className={
-                          dashboardLinkClass
-                        }
-                      >
-                        My Learning
-                      </NavLink>
+                  {/* ==================================================
+                      MENTOR MOBILE NAVIGATION
+                  ================================================== */}
 
+                  {isMentorArea &&
+                    user?.role ===
+                      "mentor" && (
+                      <>
+                        <NavLink
+                          to="/mentor/dashboard"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          Dashboard
+                        </NavLink>
 
-                      <NavLink
-                        to="/live-classes"
-                        className={
-                          dashboardLinkClass
-                        }
-                      >
-                        Live Classes
-                      </NavLink>
+                        <NavLink
+                          to="/mentor/courses"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          My Courses
+                        </NavLink>
 
-                    </>
-                  )}
+                        <NavLink
+                          to="/mentor/live-classes"
+                          onClick={() =>
+                            setMobileOpen(
+                              false
+                            )
+                          }
+                          className={
+                            dashboardLinkClass
+                          }
+                        >
+                          Live Classes
+                        </NavLink>
+                      </>
+                    )}
 
-
-                  {user?.role ===
-                    "admin" && (
-
-                    <NavLink
-                      to="/admin/dashboard"
-                      className={
-                        dashboardLinkClass
-                      }
-                    >
-                      Admin
-                    </NavLink>
-
-                  )}
-
-
-                  {user?.role ===
-                    "mentor" && (
-
-                    <NavLink
-                      to="/mentor/dashboard"
-                      className={
-                        dashboardLinkClass
-                      }
-                    >
-                      Mentor
-                    </NavLink>
-
-                  )}
-
+                  {/* LOGOUT */}
 
                   <button
                     type="button"
@@ -1198,28 +1296,16 @@ function Navbar() {
                       hover:bg-red-50/70
                     "
                   >
-
                     Logout
-
                   </button>
-
                 </div>
-
               )}
-
             </motion.div>
-
           </>
-
         )}
-
       </AnimatePresence>
-
     </>
-
   );
-
 }
-
 
 export default Navbar;
