@@ -1,244 +1,472 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  FaArrowRight,
-  FaBookOpen,
-  FaChevronDown,
-  FaCircle,
-  FaQuestionCircle,
-} from "react-icons/fa";
+  FiArrowRight,
+  FiArrowUpRight,
+  FiCheck,
+  FiMinus,
+  FiPlus,
+} from "react-icons/fi";
+
+/* =========================================================
+   DATALATTICE FAQ
+   ========================================================= */
 
 const faqs = [
   {
-    q: "What can I learn with DataLattice?",
-    a: "DataLattice currently focuses on two public learning paths: Data Science and Data Analytics. Each path is designed around structured learning, practical skill development, and project-based application.",
-    icon: FaBookOpen,
+    number: "01",
+    question: "What is DataLattice?",
+    answer:
+      "DataLattice is a practical learning platform focused on helping learners build real skills in data science, data analytics and related career paths through structured learning and project-based practice.",
   },
   {
-    q: "Do I need prior coding experience?",
-    a: "Prior experience depends on the learning path and your starting point. The programs are structured to build foundational concepts before moving into more practical and advanced topics.",
-    icon: FaQuestionCircle,
+    number: "02",
+    question: "What programs are available?",
+    answer:
+      "Our current programs include Data Science and Data Analytics. Each program focuses on building strong fundamentals, practical skills and project experience.",
   },
   {
-    q: "How does the learning journey work?",
-    a: "The learning experience follows a practical progression: learn the fundamentals, practice the concepts, complete assessments and exercises, build projects, and continue developing career-ready capability.",
-    icon: FaCircle,
+    number: "03",
+    question: "Are the programs suitable for beginners?",
+    answer:
+      "Yes. The learning journey is designed to start with the fundamentals and gradually move toward practical application and project work.",
   },
   {
-    q: "Can I track my learning progress?",
-    a: "Yes. Student learning activity is connected to the DataLattice learning platform, where progress, lessons, assessments, assignments, projects, and other learning activity can be managed as part of the student experience.",
-    icon: FaCircle,
+    number: "04",
+    question: "Will I work on real projects?",
+    answer:
+      "Yes. Practical project work is an important part of the learning experience. The goal is to help you turn what you learn into work you can actually demonstrate.",
   },
   {
-    q: "Are projects part of the learning experience?",
-    a: "Projects are an important part of the DataLattice learning approach. The goal is to move beyond theory and give learners opportunities to apply concepts and build practical work.",
-    icon: FaCircle,
+    number: "05",
+    question: "Do I need prior programming experience?",
+    answer:
+      "Prior experience can be helpful, but it is not required for starting from the fundamentals. The appropriate starting point depends on the program and your current skill level.",
   },
   {
-    q: "How do I get started?",
-    a: "Choose the Data Science or Data Analytics path that matches your goals, review the available program information, and continue through the registration and learning workflow.",
-    icon: FaArrowRight,
+    number: "06",
+    question: "How do I choose between Data Science and Data Analytics?",
+    answer:
+      "Data Analytics focuses more on working with business data, SQL, visualization, dashboards and insights. Data Science goes further into Python, statistics, machine learning and practical data science workflows.",
+  },
+  {
+    number: "07",
+    question: "Can I explore the programs before enrolling?",
+    answer:
+      "Yes. You can explore the available programs and understand what each learning path covers before deciding to continue.",
   },
 ];
 
-export default function FAQ() {
-  const [open, setOpen] = useState(0);
-  const shouldReduceMotion = useReducedMotion();
+/* =========================================================
+   FAQ ITEM
+   ========================================================= */
 
-  const toggleFaq = (index) => {
-    setOpen((current) => (current === index ? -1 : index));
-  };
+function FAQItem({
+  item,
+  index,
+  isOpen,
+  onToggle,
+  shouldReduceMotion,
+}) {
+  return (
+    <motion.div
+      initial={
+        shouldReduceMotion
+          ? false
+          : {
+              opacity: 0,
+              y: 16,
+            }
+      }
+      whileInView={
+        shouldReduceMotion
+          ? undefined
+          : {
+              opacity: 1,
+              y: 0,
+            }
+      }
+      viewport={{
+        once: true,
+        amount: 0.15,
+      }}
+      transition={{
+        duration: shouldReduceMotion ? 0 : 0.45,
+        delay: shouldReduceMotion ? 0 : index * 0.04,
+      }}
+      className="border-b border-[#DCE5F1] last:border-b-0"
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="group flex w-full items-start gap-4 py-5 text-left sm:gap-6 sm:py-6"
+      >
+        {/* Number */}
+
+        <span
+          className={`
+            mt-0.5
+            w-7
+            shrink-0
+            text-[10px]
+            font-bold
+            tracking-[0.12em]
+            transition-colors
+            duration-200
+            ${
+              isOpen
+                ? "text-[#0C5FF5]"
+                : "text-[#9AA8BA] group-hover:text-[#0C5FF5]"
+            }
+          `}
+        >
+          {item.number}
+        </span>
+
+        {/* Question */}
+
+        <span className="flex-1 pr-2">
+          <span
+            className={`
+              block
+              text-base
+              font-semibold
+              leading-7
+              tracking-[-0.015em]
+              transition-colors
+              duration-200
+              sm:text-[17px]
+              ${
+                isOpen
+                  ? "text-[#0C5FF5]"
+                  : "text-[#0A1832] group-hover:text-[#0C5FF5]"
+              }
+            `}
+          >
+            {item.question}
+          </span>
+        </span>
+
+        {/* Icon */}
+
+        <span
+          className={`
+            flex
+            h-8
+            w-8
+            shrink-0
+            items-center
+            justify-center
+            rounded-full
+            border
+            transition-all
+            duration-200
+            ${
+              isOpen
+                ? "border-[#0C5FF5] bg-[#0C5FF5] text-white"
+                : "border-[#CBD7E5] bg-white text-[#0A1832] group-hover:border-[#0C5FF5]"
+            }
+          `}
+        >
+          {isOpen ? <FiMinus size={14} /> : <FiPlus size={14} />}
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{
+              height: 0,
+              opacity: 0,
+            }}
+            animate={{
+              height: "auto",
+              opacity: 1,
+            }}
+            exit={{
+              height: 0,
+              opacity: 0,
+            }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.24,
+              ease: "easeOut",
+            }}
+            className="overflow-hidden"
+          >
+            <div className="ml-11 max-w-2xl pb-6 pr-10 sm:ml-[52px]">
+              <p className="text-sm leading-7 text-[#5E6D81] sm:text-[15px]">
+                {item.answer}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+/* =========================================================
+   MAIN COMPONENT
+   ========================================================= */
+
+export default function FAQ() {
+  const [openIndex, setOpenIndex] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section
-      id="faq-section"
-      className="relative overflow-hidden bg-slate-50 py-24 sm:py-28"
+      id="faq"
+      className="relative overflow-hidden bg-[#F7FAFF] py-20 sm:py-24 lg:py-28"
     >
-      <div className="absolute -left-32 top-20 h-72 w-72 rounded-full bg-indigo-100/70 blur-3xl" />
-      <div className="absolute -right-32 bottom-0 h-80 w-80 rounded-full bg-cyan-100/60 blur-3xl" />
+      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+        {/* ===================================================
+            MAIN FAQ FRAME
+        =================================================== */}
 
-      <div className="relative mx-auto max-w-7xl px-6">
-        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-          <motion.div
-            initial={
-              shouldReduceMotion
-                ? false
-                : {
-                    opacity: 0,
-                    x: -24,
-                  }
-            }
-            whileInView={
-              shouldReduceMotion
-                ? undefined
-                : {
-                    opacity: 1,
-                    x: 0,
-                  }
-            }
-            viewport={{
-              once: true,
-              amount: 0.3,
-            }}
-            transition={{
-              duration: shouldReduceMotion ? 0 : 0.65,
-            }}
-            className="lg:sticky lg:top-28"
-          >
-            <div className="flex items-center gap-3">
-              <span className="h-px w-10 bg-indigo-600" />
+        <div className="overflow-hidden rounded-[30px] bg-[#0A1832]">
+          <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
+            {/* =================================================
+                LEFT EDITORIAL PANEL
+            ================================================= */}
 
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-indigo-600">
-                FAQ
-              </p>
-            </div>
+            <div className="relative overflow-hidden p-7 sm:p-10 lg:p-12">
+              {/* Subtle grid */}
 
-            <h2 className="mt-5 text-4xl font-bold tracking-[-0.04em] text-slate-950 sm:text-5xl">
-              Questions before you{" "}
-              <span className="text-indigo-600">start.</span>
-            </h2>
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.035]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
+                  backgroundSize: "44px 44px",
+                }}
+              />
 
-            <p className="mt-6 max-w-lg text-base leading-7 text-slate-600">
-              A few things to know about the DataLattice learning experience,
-              programs, progress tracking, and project-based approach.
-            </p>
+              {/* Gradient glow */}
 
-            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white">
-                  <FaQuestionCircle className="text-sm" />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full blur-3xl"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(12,95,245,0.25) 0%, rgba(12,95,245,0) 70%)",
+                }}
+              />
+
+              <div className="relative z-10 flex min-h-[470px] flex-col">
+                {/* Label */}
+
+                <div className="flex items-center gap-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#0289F9]" />
+
+                  <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#4CA7FF]">
+                    Before you start
+                  </span>
                 </div>
 
-                <div>
-                  <p className="font-bold text-slate-950">
-                    Still have a question?
-                  </p>
+                {/* Heading */}
 
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
-                    Use the available contact or support channels if you need
-                    help with something specific.
-                  </p>
+                <h2 className="mt-7 max-w-md text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-white sm:text-5xl lg:text-[52px]">
+                  Questions
+                  <br />
+                  <span className="bg-gradient-to-r from-[#0C5FF5] via-[#0289F9] to-[#3531E7] bg-clip-text text-transparent">
+                    before you
+                  </span>
+                  <br />
+                  begin?
+                </h2>
+
+                <p className="mt-6 max-w-sm text-sm leading-7 text-white/55">
+                  Choosing a learning path is easier when you know what to
+                  expect. We have answered some of the questions learners ask
+                  before getting started.
+                </p>
+
+                {/* Small checklist */}
+
+                <div className="mt-8 space-y-3">
+                  {[
+                    "Understand the learning paths",
+                    "Know what practical work involves",
+                    "Choose where to begin",
+                  ].map((text) => (
+                    <div
+                      key={text}
+                      className="flex items-center gap-3 text-xs text-white/70"
+                    >
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0C5FF5]/15 text-[#4CA7FF]">
+                        <FiCheck size={11} />
+                      </span>
+
+                      {text}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bottom marker */}
+
+                <div className="mt-auto pt-10">
+                  <div className="flex items-end justify-between border-t border-white/10 pt-5">
+                    <div>
+                      <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/30">
+                        DataLattice
+                      </p>
+
+                      <p className="mt-1 text-xs text-white/50">
+                        Learn. Build. Grow.
+                      </p>
+                    </div>
+
+                    <span className="text-5xl font-black leading-none tracking-[-0.08em] text-white/[0.06]">
+                      FAQ
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </motion.div>
 
-          <motion.div
-            initial={
-              shouldReduceMotion
-                ? false
-                : {
-                    opacity: 0,
-                    x: 24,
-                  }
-            }
-            whileInView={
+            {/* =================================================
+                RIGHT QUESTIONS PANEL
+            ================================================= */}
+
+            <div className="bg-white p-6 sm:p-8 lg:p-10">
+              {/* Header */}
+
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#0C5FF5]">
+                  Common questions
+                </p>
+
+                <span className="text-[10px] font-medium text-[#9AA8BA]">
+                  {String(faqs.length).padStart(2, "0")} answers
+                </span>
+              </div>
+
+              {/* FAQ list */}
+
+              <div className="border-t border-[#DCE5F1]">
+                {faqs.map((item, index) => (
+                  <FAQItem
+                    key={item.question}
+                    item={item}
+                    index={index}
+                    isOpen={openIndex === index}
+                    onToggle={() =>
+                      setOpenIndex(openIndex === index ? -1 : index)
+                    }
+                    shouldReduceMotion={shouldReduceMotion}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ===================================================
+            BOTTOM CTA
+        =================================================== */}
+
+        <motion.div
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 15,
+                }
+          }
+          whileInView={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
+          }
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.5,
+          }}
+          className="
+            mt-6
+            flex
+            flex-col
+            gap-5
+            rounded-2xl
+            border
+            border-[#DCE5F1]
+            bg-white
+            px-6
+            py-6
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+            sm:px-8
+          "
+        >
+          <div>
+            <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#0289F9]">
+              Ready when you are
+            </p>
+
+            <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.025em] text-[#0A1832] sm:text-xl">
+              Explore the learning paths.
+            </h3>
+          </div>
+
+          <motion.a
+            href="/courses"
+            whileHover={
               shouldReduceMotion
                 ? undefined
                 : {
-                    opacity: 1,
-                    x: 0,
+                    x: 3,
                   }
             }
-            viewport={{
-              once: true,
-              amount: 0.2,
-            }}
-            transition={{
-              duration: shouldReduceMotion ? 0 : 0.65,
-              delay: shouldReduceMotion ? 0 : 0.08,
-            }}
-            className="space-y-4"
+            className="
+              inline-flex
+              shrink-0
+              items-center
+              justify-center
+              gap-2
+              rounded-xl
+              bg-[#0C5FF5]
+              px-5
+              py-3
+              text-xs
+              font-semibold
+              text-white
+              shadow-[0_10px_24px_rgba(12,95,245,0.18)]
+              transition-colors
+              duration-200
+              hover:bg-[#0289F9]
+            "
           >
-            {faqs.map((faq, index) => {
-              const isOpen = open === index;
-              const Icon = faq.icon;
+            Explore programs
+            <FiArrowRight size={13} />
+          </motion.a>
+        </motion.div>
 
-              return (
-                <div
-                  key={faq.q}
-                  className={`overflow-hidden rounded-3xl border bg-white transition-all duration-300 ${
-                    isOpen
-                      ? "border-indigo-200 shadow-lg shadow-indigo-100/50"
-                      : "border-slate-200 shadow-sm hover:border-slate-300"
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => toggleFaq(index)}
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-answer-${index}`}
-                    className="flex w-full items-center gap-4 p-5 text-left sm:p-6"
-                  >
-                    <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300 ${
-                        isOpen
-                          ? "bg-indigo-600 text-white"
-                          : "bg-slate-100 text-slate-500"
-                      }`}
-                    >
-                      <Icon className="text-sm" />
-                    </div>
+        {/* ===================================================
+            SMALL NAVIGATION HINT
+        =================================================== */}
 
-                    <span className="flex-1 pr-3 text-base font-bold text-slate-950 sm:text-lg">
-                      {faq.q}
-                    </span>
+        <div className="mt-5 flex justify-end">
+          <a
+            href="/courses"
+            className="group inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7B8A9E] transition-colors hover:text-[#0C5FF5]"
+          >
+            View all programs
 
-                    <span
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
-                        isOpen
-                          ? "bg-indigo-50 text-indigo-600"
-                          : "bg-slate-100 text-slate-500"
-                      }`}
-                    >
-                      <FaChevronDown
-                        className={`text-xs transition-transform duration-300 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
-                      />
-                    </span>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        id={`faq-answer-${index}`}
-                        initial={
-                          shouldReduceMotion
-                            ? false
-                            : {
-                                height: 0,
-                                opacity: 0,
-                              }
-                        }
-                        animate={{
-                          height: "auto",
-                          opacity: 1,
-                        }}
-                        exit={
-                          shouldReduceMotion
-                            ? undefined
-                            : {
-                                height: 0,
-                                opacity: 0,
-                              }
-                        }
-                        transition={{
-                          duration: shouldReduceMotion ? 0 : 0.25,
-                        }}
-                      >
-                        <div className="border-t border-slate-100 px-5 pb-6 pt-5 pl-[4.5rem] sm:px-6 sm:pb-7 sm:pl-[5rem]">
-                          <p className="max-w-2xl text-sm leading-7 text-slate-600">
-                            {faq.a}
-                          </p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </motion.div>
+            <FiArrowUpRight
+              size={12}
+              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </a>
         </div>
       </div>
     </section>

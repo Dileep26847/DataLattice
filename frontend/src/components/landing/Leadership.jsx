@@ -1,13 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
+
 import {
   FaArrowRight,
-  FaLinkedinIn,
-  FaQuoteLeft,
-  FaRocket,
-  FaLightbulb,
-  FaUsers,
   FaGraduationCap,
+  FaRocket,
+  FaUsers,
+  FaLightbulb,
+  FaQuoteLeft,
 } from "react-icons/fa";
 
 /* =========================================================
@@ -87,210 +87,196 @@ const principles = [
 ];
 
 /* =========================================================
-   LEADER CARD
+   LEADER ROW
    ========================================================= */
 
-function LeaderCard({ leader, index }) {
-  const imageSrc = leader?.image || "";
-
+function LeaderRow({ leader, index }) {
   return (
     <motion.article
       initial={{
         opacity: 0,
-        y: 30,
+        x: 28,
       }}
       whileInView={{
         opacity: 1,
-        y: 0,
+        x: 0,
       }}
       viewport={{
         once: true,
-        amount: 0.15,
+        amount: 0.2,
       }}
       transition={{
         duration: 0.55,
-        delay: index * 0.08,
-        ease: "easeOut",
-      }}
-      whileHover={{
-        y: -7,
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1],
       }}
       className="
         group
-        overflow-hidden
-        rounded-[28px]
-        border
-        border-[#E6EDF7]
-        bg-white
-        shadow-[0_16px_45px_rgba(11,27,58,0.07)]
-        transition-shadow
-        duration-300
-        hover:shadow-[0_24px_60px_rgba(20,99,255,0.14)]
+        relative
+        flex
+        gap-4
+        border-b
+        border-white/10
+        py-5
+        last:border-b-0
+        sm:gap-5
       "
     >
+      {/* Number */}
+
+      <div
+        className="
+          hidden
+          w-7
+          shrink-0
+          pt-1
+          text-[9px]
+          font-semibold
+          tracking-[0.15em]
+          text-white/25
+          sm:block
+        "
+      >
+        0{index + 1}
+      </div>
+
       {/* Image */}
 
-      <div className="p-4 sm:p-5">
+      <div
+        className="
+          relative
+          h-[92px]
+          w-[78px]
+          shrink-0
+          overflow-hidden
+          rounded-xl
+          bg-white/10
+          sm:h-[104px]
+          sm:w-[88px]
+        "
+      >
+        <img
+          src={leader.image}
+          alt={`Demo profile of ${leader.name}`}
+          loading="lazy"
+          className="
+            h-full
+            w-full
+            object-cover
+            object-center
+            grayscale-[15%]
+            transition-transform
+            duration-500
+            group-hover:scale-[1.05]
+          "
+        />
+
         <div
           className="
-            relative
-            overflow-hidden
-            rounded-[24px]
-            bg-[#EAF2FF]
+            absolute
+            inset-x-0
+            bottom-0
+            h-8
+            bg-gradient-to-t
+            from-[#0A1832]/70
+            to-transparent
           "
-        >
-          {imageSrc ? (
-            <img
-              src={imageSrc}
-              alt={`Demo profile of ${leader.name}`}
-              loading="lazy"
+        />
+      </div>
+
+      {/* Content */}
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p
               className="
-                h-[280px]
-                w-full
-                object-cover
-                object-center
-                transition-transform
-                duration-500
-                group-hover:scale-[1.035]
-                sm:h-[320px]
-              "
-            />
-          ) : (
-            <div
-              className="
-                flex
-                h-[280px]
-                items-center
-                justify-center
-                bg-[#EAF2FF]
-                text-sm
+                text-[8px]
                 font-semibold
-                text-[#64748B]
-                sm:h-[320px]
+                uppercase
+                tracking-[0.16em]
+                text-[#0289F9]
               "
             >
-              Demo Photo
-            </div>
-          )}
+              {leader.role}
+            </p>
 
-          {/* Demo badge */}
-
-          <div
-            className="
-              absolute
-              left-4
-              top-4
-              rounded-full
-              border
-              border-white/80
-              bg-white/90
-              px-3
-              py-1.5
-              text-[10px]
-              font-black
-              uppercase
-              tracking-[0.12em]
-              text-[#1463FF]
-              shadow-sm
-              backdrop-blur
-            "
-          >
-            Demo Profile
+            <h3
+              className="
+                mt-1
+                text-lg
+                font-semibold
+                tracking-[-0.025em]
+                text-white
+                sm:text-xl
+              "
+            >
+              {leader.name}
+            </h3>
           </div>
 
-          {/* LinkedIn button */}
-
-          <button
-            type="button"
-            aria-label={`LinkedIn profile for ${leader.name}`}
+          <motion.div
+            whileHover={{
+              x: 3,
+            }}
             className="
-              absolute
-              bottom-4
-              right-4
+              mt-1
               flex
-              h-10
-              w-10
+              h-7
+              w-7
+              shrink-0
               items-center
               justify-center
               rounded-full
-              bg-[#1463FF]
-              text-white
-              shadow-lg
-              transition-all
-              duration-200
-              hover:scale-105
-              hover:bg-[#0B1B3A]
+              border
+              border-white/10
+              text-[#0289F9]
+              transition-colors
+              duration-300
+              group-hover:border-[#0289F9]/40
+              group-hover:bg-[#0289F9]/10
             "
           >
-            <FaLinkedinIn size={14} />
-          </button>
+            <FaArrowRight size={9} />
+          </motion.div>
         </div>
 
-        {/* Content */}
+        <p
+          className="
+            mt-2
+            max-w-lg
+            text-[10px]
+            leading-5
+            text-white/50
+            sm:text-[11px]
+          "
+        >
+          {leader.bio}
+        </p>
 
-        <div className="px-1 pb-1 pt-5">
+        <div
+          className="
+            mt-3
+            flex
+            items-start
+            gap-2
+          "
+        >
+          <FaQuoteLeft
+            size={8}
+            className="mt-1 shrink-0 text-[#0289F9]/70"
+          />
+
           <p
             className="
-              text-[11px]
-              font-black
-              uppercase
-              tracking-[0.15em]
-              text-[#1463FF]
+              text-[9px]
+              font-medium
+              leading-4
+              text-white/65
             "
           >
-            {leader.role}
+            {leader.quote}
           </p>
-
-          <h3
-            className="
-              mt-2
-              text-2xl
-              font-black
-              tracking-tight
-              text-[#0B1B3A]
-            "
-          >
-            {leader.name}
-          </h3>
-
-          <p
-            className="
-              mt-3
-              text-sm
-              leading-7
-              text-[#64748B]
-            "
-          >
-            {leader.bio}
-          </p>
-
-          {/* Quote */}
-
-          <div
-            className="
-              mt-5
-              rounded-[20px]
-              bg-[#F5F9FF]
-              p-4
-            "
-          >
-            <FaQuoteLeft
-              size={16}
-              className="text-[#1463FF]/40"
-            />
-
-            <p
-              className="
-                mt-2
-                text-sm
-                font-semibold
-                leading-6
-                text-[#334155]
-              "
-            >
-              “{leader.quote}”
-            </p>
-          </div>
         </div>
       </div>
     </motion.article>
@@ -309,164 +295,29 @@ export default function Leadership() {
         relative
         overflow-hidden
         bg-white
-        py-20
-        sm:py-24
-        lg:py-28
+        py-12
+        sm:py-14
+        lg:py-16
       "
     >
-      {/* ===================================================
-          BACKGROUND DECORATION
-          =================================================== */}
-
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute
-          -left-40
-          top-20
-          h-80
-          w-80
-          rounded-full
-          bg-[#1463FF]/5
-          blur-3xl
-        "
-      />
-
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute
-          -right-40
-          top-32
-          h-96
-          w-96
-          rounded-full
-          bg-[#06B6D4]/5
-          blur-3xl
-        "
-      />
-
       <div
         className="
-          relative
           mx-auto
+          w-full
           max-w-7xl
           px-5
-          sm:px-8
-          lg:px-10
+          sm:px-7
+          lg:px-8
         "
       >
         {/* =================================================
-            SECTION HEADER
-            ================================================= */}
+            MAIN LEADERSHIP PANEL
+        ================================================= */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 20,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-          }}
-          transition={{
-            duration: 0.55,
-          }}
-          className="
-            mx-auto
-            max-w-3xl
-            text-center
-          "
-        >
-          <span
-            className="
-              inline-flex
-              items-center
-              rounded-full
-              border
-              border-[#1463FF]/15
-              bg-[#F5F9FF]
-              px-4
-              py-2
-              text-[11px]
-              font-black
-              uppercase
-              tracking-[0.16em]
-              text-[#1463FF]
-            "
-          >
-            The people behind DataLattice
-          </span>
-
-          <h2
-            className="
-              mt-5
-              text-3xl
-              font-black
-              leading-tight
-              tracking-tight
-              text-[#0B1B3A]
-              sm:text-4xl
-              lg:text-5xl
-            "
-          >
-            Meet the minds behind{" "}
-            <span className="text-[#1463FF]">
-              DataLattice.
-            </span>
-          </h2>
-
-          <p
-            className="
-              mx-auto
-              mt-5
-              max-w-2xl
-              text-sm
-              leading-7
-              text-[#64748B]
-              sm:text-base
-            "
-          >
-            A team focused on making data education practical,
-            accessible, and connected to real career opportunities.
-          </p>
-        </motion.div>
-
-        {/* =================================================
-            LEADERS
-            ================================================= */}
-
-        <div
-          className="
-            mt-12
-            grid
-            gap-6
-            md:grid-cols-2
-            lg:grid-cols-3
-          "
-        >
-          {leaders.map((leader, index) => (
-            <LeaderCard
-              key={leader.id}
-              leader={leader}
-              index={index}
-            />
-          ))}
-        </div>
-
-        {/* =================================================
-            VISION
-            ================================================= */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 25,
+            y: 18,
           }}
           whileInView={{
             opacity: 1,
@@ -477,116 +328,366 @@ export default function Leadership() {
             amount: 0.15,
           }}
           transition={{
-            duration: 0.55,
+            duration: 0.65,
+            ease: [0.22, 1, 0.36, 1],
           }}
           className="
-            mt-16
+            relative
             overflow-hidden
-            rounded-[32px]
-            border
-            border-[#E6EDF7]
-            bg-[#F5F9FF]
+            rounded-[28px]
+            bg-[#0A1832]
           "
         >
+          {/* Subtle accent line */}
+
           <div
             className="
+              absolute
+              left-0
+              top-0
+              h-1
+              w-full
+              bg-gradient-to-r
+              from-[#0C5FF5]
+              via-[#0289F9]
+              to-[#3531E7]
+            "
+          />
+
+          {/* Very subtle background structure */}
+
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              right-[-100px]
+              top-[-120px]
+              h-[300px]
+              w-[300px]
+              rounded-full
+              border
+              border-[#0C5FF5]/10
+            "
+          />
+
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              right-[-55px]
+              top-[-75px]
+              h-[210px]
+              w-[210px]
+              rounded-full
+              border
+              border-[#0289F9]/10
+            "
+          />
+
+          <div
+            className="
+              relative
               grid
-              items-center
-              gap-8
-              p-7
-              sm:p-10
-              lg:grid-cols-[1fr_auto]
-              lg:p-12
+              lg:grid-cols-[0.85fr_1.15fr]
             "
           >
-            <div>
-              <span
-                className="
-                  text-[11px]
-                  font-black
-                  uppercase
-                  tracking-[0.18em]
-                  text-[#1463FF]
-                "
-              >
-                Our Vision
-              </span>
-
-              <h3
-                className="
-                  mt-3
-                  max-w-2xl
-                  text-2xl
-                  font-black
-                  leading-tight
-                  tracking-tight
-                  text-[#0B1B3A]
-                  sm:text-3xl
-                  lg:text-4xl
-                "
-              >
-                Make data skills more{" "}
-                <span className="text-[#1463FF]">
-                  accessible and useful.
-                </span>
-              </h3>
-
-              <p
-                className="
-                  mt-5
-                  max-w-2xl
-                  text-sm
-                  leading-7
-                  text-[#64748B]
-                  sm:text-base
-                "
-              >
-                We want learners to leave every program with
-                more than a certificate — practical skills,
-                meaningful projects, mentor guidance, and a
-                clearer next step.
-              </p>
-            </div>
+            {/* =================================================
+                LEFT EDITORIAL SIDE
+            ================================================= */}
 
             <div
               className="
+                relative
                 flex
-                min-w-[180px]
                 flex-col
-                items-center
-                justify-center
-                rounded-[26px]
-                bg-[#0B1B3A]
-                px-8
-                py-8
-                text-center
-                shadow-xl
+                justify-between
+                p-7
+                sm:p-9
+                lg:min-h-[590px]
+                lg:p-11
               "
             >
-              <span className="text-3xl font-black text-white">
-                Learn.
-              </span>
+              <div>
+                {/* Label */}
 
-              <span className="text-3xl font-black text-[#67E8F9]">
-                Build.
-              </span>
+                <div
+                  className="
+                    inline-flex
+                    items-center
+                    gap-2
+                    text-[9px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.18em]
+                    text-[#0289F9]
+                  "
+                >
+                  <span
+                    className="
+                      h-1.5
+                      w-1.5
+                      rounded-full
+                      bg-[#0289F9]
+                    "
+                  />
 
-              <span className="text-3xl font-black text-[#1463FF]">
-                Grow.
-              </span>
+                  Leadership
+                </div>
+
+                {/* Heading */}
+
+                <h2
+                  className="
+                    mt-6
+                    max-w-xl
+                    text-4xl
+                    font-semibold
+                    leading-[1.02]
+                    tracking-[-0.045em]
+                    text-white
+                    sm:text-5xl
+                    lg:text-[52px]
+                  "
+                >
+                  The people
+                  <span
+                    className="
+                      block
+                      bg-gradient-to-r
+                      from-[#0C5FF5]
+                      via-[#0289F9]
+                      to-[#3531E7]
+                      bg-clip-text
+                      text-transparent
+                    "
+                  >
+                    shaping the journey.
+                  </span>
+                </h2>
+
+                {/* Description */}
+
+                <p
+                  className="
+                    mt-5
+                    max-w-md
+                    text-sm
+                    leading-6
+                    text-white/55
+                    sm:text-base
+                    sm:leading-7
+                  "
+                >
+                  A team focused on making data education practical,
+                  accessible, and connected to real career opportunities.
+                </p>
+              </div>
+
+              {/* Vision */}
+
+              <div
+                className="
+                  mt-10
+                  border-t
+                  border-white/10
+                  pt-6
+                  lg:mt-auto
+                "
+              >
+                <p
+                  className="
+                    text-[9px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.18em]
+                    text-[#0289F9]
+                  "
+                >
+                  Our vision
+                </p>
+
+                <h3
+                  className="
+                    mt-3
+                    max-w-md
+                    text-xl
+                    font-semibold
+                    leading-7
+                    tracking-[-0.025em]
+                    text-white
+                    sm:text-2xl
+                  "
+                >
+                  Make data skills more{" "}
+                  <span className="text-[#0289F9]">
+                    accessible and useful.
+                  </span>
+                </h3>
+
+                <p
+                  className="
+                    mt-3
+                    max-w-md
+                    text-[11px]
+                    leading-5
+                    text-white/45
+                    sm:text-xs
+                    sm:leading-6
+                  "
+                >
+                  We want learners to leave every program with more
+                  than a certificate — practical skills, meaningful
+                  projects, mentor guidance, and a clearer next step.
+                </p>
+
+                {/* Learning progression */}
+
+                <div
+                  className="
+                    mt-6
+                    flex
+                    items-center
+                    gap-2
+                  "
+                >
+                  <span
+                    className="
+                      text-xs
+                      font-semibold
+                      text-white
+                    "
+                  >
+                    Learn
+                  </span>
+
+                  <span className="h-px w-8 bg-white/20" />
+
+                  <span
+                    className="
+                      text-xs
+                      font-semibold
+                      text-[#0289F9]
+                    "
+                  >
+                    Build
+                  </span>
+
+                  <span className="h-px w-8 bg-white/20" />
+
+                  <span
+                    className="
+                      text-xs
+                      font-semibold
+                      text-[#3531E7]
+                    "
+                  >
+                    Grow
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* =================================================
+                RIGHT LEADERSHIP DIRECTORY
+            ================================================= */}
+
+            <div
+              className="
+                border-t
+                border-white/10
+                bg-white/[0.025]
+                px-6
+                py-5
+                sm:px-9
+                sm:py-7
+                lg:border-l
+                lg:border-t-0
+                lg:px-10
+                lg:py-9
+              "
+            >
+              {/* Directory heading */}
+
+              <div
+                className="
+                  flex
+                  items-center
+                  justify-between
+                  border-b
+                  border-white/10
+                  pb-4
+                "
+              >
+                <div>
+                  <p
+                    className="
+                      text-[8px]
+                      font-semibold
+                      uppercase
+                      tracking-[0.18em]
+                      text-white/30
+                    "
+                  >
+                    Leadership team
+                  </p>
+
+                  <p
+                    className="
+                      mt-1
+                      text-sm
+                      font-semibold
+                      text-white
+                    "
+                  >
+                    The people behind DataLattice
+                  </p>
+                </div>
+
+                <span
+                  className="
+                    rounded-full
+                    border
+                    border-[#0289F9]/20
+                    bg-[#0289F9]/10
+                    px-2.5
+                    py-1.5
+                    text-[8px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.12em]
+                    text-[#0289F9]
+                  "
+                >
+                  Team
+                </span>
+              </div>
+
+              {/* Leaders */}
+
+              <div className="mt-1">
+                {leaders.map((leader, index) => (
+                  <LeaderRow
+                    key={leader.id}
+                    leader={leader}
+                    index={index}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </motion.div>
 
         {/* =================================================
             PRINCIPLES
-            ================================================= */}
+        ================================================= */}
 
-        <div className="mt-16">
+        <div className="mt-7">
           <motion.div
             initial={{
               opacity: 0,
-              y: 20,
+              y: 12,
             }}
             whileInView={{
               opacity: 1,
@@ -595,39 +696,69 @@ export default function Leadership() {
             viewport={{
               once: true,
             }}
-            className="text-center"
+            transition={{
+              duration: 0.45,
+            }}
+            className="
+              flex
+              flex-col
+              gap-2
+              sm:flex-row
+              sm:items-end
+              sm:justify-between
+            "
           >
-            <span
-              className="
-                text-[11px]
-                font-black
-                uppercase
-                tracking-[0.18em]
-                text-[#1463FF]
-              "
-            >
-              What guides us
-            </span>
+            <div>
+              <p
+                className="
+                  text-[9px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.18em]
+                  text-[#0289F9]
+                "
+              >
+                What guides us
+              </p>
 
-            <h3
+              <h3
+                className="
+                  mt-1.5
+                  text-xl
+                  font-semibold
+                  tracking-[-0.03em]
+                  text-[#0A1832]
+                  sm:text-2xl
+                "
+              >
+                Built around what matters.
+              </h3>
+            </div>
+
+            <p
               className="
-                mt-3
-                text-2xl
-                font-black
-                tracking-tight
-                text-[#0B1B3A]
-                sm:text-3xl
+                max-w-md
+                text-[11px]
+                leading-5
+                text-slate-400
               "
             >
-              Built around what matters.
-            </h3>
+              The principles behind how we design learning and
+              build the DataLattice experience.
+            </p>
           </motion.div>
+
+          {/* Principle strip */}
 
           <div
             className="
-              mt-8
+              mt-4
               grid
-              gap-4
+              overflow-hidden
+              rounded-[20px]
+              border
+              border-slate-200
+              bg-white
               sm:grid-cols-2
               lg:grid-cols-4
             "
@@ -640,7 +771,7 @@ export default function Leadership() {
                   key={principle.id}
                   initial={{
                     opacity: 0,
-                    y: 20,
+                    y: 10,
                   }}
                   whileInView={{
                     opacity: 1,
@@ -651,59 +782,66 @@ export default function Leadership() {
                     amount: 0.15,
                   }}
                   transition={{
-                    duration: 0.45,
-                    delay: index * 0.06,
-                  }}
-                  whileHover={{
-                    y: -5,
+                    duration: 0.4,
+                    delay: index * 0.05,
                   }}
                   className="
-                    rounded-[24px]
-                    border
-                    border-[#E6EDF7]
-                    bg-white
-                    p-6
-                    shadow-[0_12px_35px_rgba(11,27,58,0.05)]
-                    transition-shadow
+                    group
+                    border-b
+                    border-slate-200
+                    p-5
+                    transition-colors
                     duration-300
-                    hover:shadow-[0_18px_40px_rgba(20,99,255,0.10)]
+                    hover:bg-[#F7FAFF]
+                    sm:border-r
+                    sm:last:border-r-0
+                    lg:border-b-0
                   "
                 >
-                  <div
-                    className="
-                      flex
-                      h-11
-                      w-11
-                      items-center
-                      justify-center
-                      rounded-2xl
-                      bg-[#EAF2FF]
-                      text-[#1463FF]
-                    "
-                  >
-                    <Icon size={18} />
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="
+                        flex
+                        h-9
+                        w-9
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-xl
+                        bg-[#F0F6FF]
+                        text-[#0C5FF5]
+                        transition-all
+                        duration-300
+                        group-hover:bg-[#0C5FF5]
+                        group-hover:text-white
+                      "
+                    >
+                      <Icon size={13} />
+                    </div>
+
+                    <div>
+                      <h4
+                        className="
+                          text-sm
+                          font-semibold
+                          text-[#0A1832]
+                        "
+                      >
+                        {principle.title}
+                      </h4>
+
+                      <p
+                        className="
+                          mt-1.5
+                          text-[10px]
+                          leading-5
+                          text-slate-400
+                        "
+                      >
+                        {principle.text}
+                      </p>
+                    </div>
                   </div>
-
-                  <h4
-                    className="
-                      mt-5
-                      font-black
-                      text-[#0B1B3A]
-                    "
-                  >
-                    {principle.title}
-                  </h4>
-
-                  <p
-                    className="
-                      mt-2
-                      text-sm
-                      leading-6
-                      text-[#64748B]
-                    "
-                  >
-                    {principle.text}
-                  </p>
                 </motion.div>
               );
             })}
@@ -711,93 +849,83 @@ export default function Leadership() {
         </div>
 
         {/* =================================================
-            BOTTOM CTA STRIP
-            ================================================= */}
+            SMALL CLOSING STRIP
+        ================================================= */}
 
         <motion.div
           initial={{
             opacity: 0,
-            y: 20,
           }}
           whileInView={{
             opacity: 1,
-            y: 0,
           }}
           viewport={{
             once: true,
           }}
           transition={{
-            duration: 0.55,
+            duration: 0.4,
           }}
           className="
-            mt-16
+            mt-4
             flex
-            flex-col
-            items-start
+            flex-wrap
+            items-center
             justify-between
-            gap-6
-            rounded-[28px]
-            bg-gradient-to-r
-            from-[#1463FF]
-            to-[#0B1B3A]
-            px-7
-            py-8
-            shadow-[0_20px_60px_rgba(20,99,255,0.18)]
-            sm:px-10
-            lg:flex-row
-            lg:items-center
+            gap-3
+            border-t
+            border-slate-200
+            pt-4
           "
         >
-          <div>
-            <p
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              text-[9px]
+              font-semibold
+              uppercase
+              tracking-[0.14em]
+              text-slate-400
+            "
+          >
+            <span
               className="
-                text-[11px]
-                font-black
-                uppercase
-                tracking-[0.18em]
-                text-[#A5F3FC]
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#0289F9]
               "
-            >
-              Start your journey
-            </p>
+            />
 
-            <h3
-              className="
-                mt-2
-                text-2xl
-                font-black
-                text-white
-                sm:text-3xl
-              "
-            >
-              Build skills that move you forward.
-            </h3>
+            Leadership with purpose
           </div>
 
           <a
             href="#courses"
             className="
+              group
               inline-flex
-              shrink-0
               items-center
-              gap-3
-              rounded-full
-              bg-white
-              px-6
-              py-3.5
-              text-sm
-              font-black
-              text-[#0B1B3A]
-              shadow-lg
-              transition-all
+              gap-2
+              text-[10px]
+              font-semibold
+              text-[#0C5FF5]
+              transition-colors
               duration-200
-              hover:-translate-y-0.5
-              hover:shadow-xl
+              hover:text-[#3531E7]
             "
           >
             Explore Programs
 
-            <FaArrowRight size={13} />
+            <FaArrowRight
+              size={8}
+              className="
+                transition-transform
+                duration-200
+                group-hover:translate-x-1
+              "
+            />
           </a>
         </motion.div>
       </div>

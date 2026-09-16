@@ -27,16 +27,16 @@ export default function CTA() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-white px-6 py-20 sm:py-24"
+      className="relative overflow-hidden bg-white px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24"
     >
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto w-full max-w-7xl">
         <motion.div
           initial={
             shouldReduceMotion
               ? false
               : {
                   opacity: 0,
-                  y: 24,
+                  y: 20,
                 }
           }
           whileInView={
@@ -49,196 +49,398 @@ export default function CTA() {
           }
           viewport={{
             once: true,
-            amount: 0.3,
+            amount: 0.25,
           }}
           transition={{
-            duration: shouldReduceMotion ? 0 : 0.7,
+            duration: shouldReduceMotion ? 0 : 0.65,
+            ease: "easeOut",
           }}
-          className="relative overflow-hidden rounded-[2.5rem] bg-slate-950 px-7 py-12 text-white sm:px-12 sm:py-16 lg:px-16"
+          className="
+            relative
+            overflow-hidden
+            rounded-[30px]
+            bg-[#0A1832]
+          "
         >
-          <div className="absolute inset-0">
-            <div
-              className="absolute inset-0 opacity-[0.07]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-                backgroundSize: "42px 42px",
-              }}
-            />
+          {/* =================================================
+              QUIET BRAND ACCENT
+          ================================================= */}
 
-            <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-indigo-500/25 blur-3xl" />
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              right-[-120px]
+              top-[-150px]
+              h-[430px]
+              w-[430px]
+              rounded-full
+              opacity-30
+              blur-3xl
+            "
+            style={{
+              background:
+                "radial-gradient(circle, rgba(53,49,231,0.55) 0%, rgba(53,49,231,0) 70%)",
+            }}
+          />
 
-            <div className="absolute -bottom-32 right-0 h-96 w-96 rounded-full bg-cyan-400/15 blur-3xl" />
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              bottom-[-180px]
+              left-[35%]
+              h-[420px]
+              w-[420px]
+              rounded-full
+              opacity-20
+              blur-3xl
+            "
+            style={{
+              background:
+                "radial-gradient(circle, rgba(2,137,249,0.6) 0%, rgba(2,137,249,0) 70%)",
+            }}
+          />
 
-            {!shouldReduceMotion && (
-              <>
-                <motion.div
-                  className="absolute left-[58%] top-[18%] h-2 w-2 rounded-full bg-indigo-300"
-                  animate={{
-                    y: [0, 22, 0],
-                    opacity: [0.35, 1, 0.35],
-                  }}
-                  transition={{
-                    duration: 3.2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
+          {/* =================================================
+              CONTENT
+          ================================================= */}
 
-                <motion.div
-                  className="absolute right-[18%] top-[54%] h-1.5 w-1.5 rounded-full bg-cyan-300"
-                  animate={{
-                    x: [0, -18, 0],
-                    opacity: [0.25, 1, 0.25],
-                  }}
-                  transition={{
-                    duration: 2.8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.5,
-                  }}
-                />
+          <div
+            className="
+              relative
+              z-10
+              grid
+              gap-12
+              px-7
+              py-10
+              sm:px-10
+              sm:py-12
+              lg:grid-cols-[1fr_0.65fr]
+              lg:items-end
+              lg:px-14
+              lg:py-14
+              xl:px-16
+            "
+          >
+            {/* =================================================
+                LEFT
+            ================================================= */}
 
-                <motion.div
-                  className="absolute bottom-[18%] right-[38%] h-2 w-2 rounded-full bg-sky-300"
-                  animate={{
-                    y: [0, -20, 0],
-                    opacity: [0.25, 1, 0.25],
-                  }}
-                  transition={{
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1,
-                  }}
-                />
-              </>
-            )}
-          </div>
-
-          <div className="relative z-10 grid gap-12 lg:grid-cols-[1fr_0.72fr] lg:items-center">
             <div className="max-w-3xl">
-              <div className="flex items-center gap-3">
-                <span className="h-px w-10 bg-cyan-300" />
+              {/* Eyebrow */}
 
-                <p className="text-xs font-bold uppercase tracking-[0.24em] text-cyan-300">
+              <div className="flex items-center gap-3">
+                <span className="h-px w-9 bg-[#0289F9]" />
+
+                <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#4CA7FF]">
                   Start your next step
                 </p>
               </div>
 
-              <h2 className="mt-5 text-4xl font-bold tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+              {/* Heading */}
+
+              <h2
+                className="
+                  mt-6
+                  text-4xl
+                  font-semibold
+                  leading-[1.02]
+                  tracking-[-0.05em]
+                  text-white
+                  sm:text-5xl
+                  lg:text-[60px]
+                "
+              >
                 Learn data.
                 <br />
-                <span className="text-cyan-300">Build capability.</span>
+                <span className="bg-gradient-to-r from-[#0C5FF5] via-[#0289F9] to-[#3531E7] bg-clip-text text-transparent">
+                  Build capability.
+                </span>
               </h2>
 
-              <p className="mt-6 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
+              {/* Description */}
+
+              <p
+                className="
+                  mt-6
+                  max-w-2xl
+                  text-sm
+                  leading-7
+                  text-white/55
+                  sm:text-base
+                  sm:leading-7
+                "
+              >
                 Choose a focused learning path, strengthen your technical
                 skills, practice what you learn, and build projects that show
                 what you can do.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              {/* =================================================
+                  PROGRAM SIGNALS
+              ================================================= */}
+
+              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
                 {programSignals.map((item) => {
                   const Icon = item.icon;
 
                   return (
                     <div
                       key={item.label}
-                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-slate-300"
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        text-xs
+                        font-medium
+                        text-white/65
+                      "
                     >
-                      <Icon className="text-xs text-cyan-300" />
+                      <span
+                        className="
+                          flex
+                          h-7
+                          w-7
+                          items-center
+                          justify-center
+                          rounded-lg
+                          border
+                          border-white/10
+                          bg-white/[0.05]
+                        "
+                      >
+                        <Icon className="text-[11px] text-[#0289F9]" />
+                      </span>
+
                       {item.label}
                     </div>
                   );
                 })}
               </div>
 
+              {/* =================================================
+                  ACTIONS
+              ================================================= */}
+
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <a
+                <motion.a
                   href="/courses"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-bold text-slate-950 transition-transform duration-300 hover:-translate-y-0.5 hover:bg-slate-100"
+                  whileHover={
+                    shouldReduceMotion
+                      ? undefined
+                      : {
+                          y: -2,
+                        }
+                  }
+                  whileTap={
+                    shouldReduceMotion
+                      ? undefined
+                      : {
+                          scale: 0.98,
+                        }
+                  }
+                  className="
+                    inline-flex
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-xl
+                    bg-[#0C5FF5]
+                    px-6
+                    py-3.5
+                    text-sm
+                    font-semibold
+                    text-white
+                    shadow-[0_12px_28px_rgba(12,95,245,0.25)]
+                    transition-colors
+                    duration-200
+                    hover:bg-[#0289F9]
+                  "
                 >
                   Explore programs
-                  <FaArrowRight className="text-xs" />
-                </a>
+                  <FaArrowRight className="text-[10px]" />
+                </motion.a>
 
-                <a
+                <motion.a
                   href="/login"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.04] px-6 py-3.5 text-sm font-bold text-white transition-colors duration-300 hover:bg-white/[0.09]"
+                  whileHover={
+                    shouldReduceMotion
+                      ? undefined
+                      : {
+                          y: -2,
+                        }
+                  }
+                  className="
+                    inline-flex
+                    items-center
+                    justify-center
+                    rounded-xl
+                    border
+                    border-white/15
+                    bg-white/[0.04]
+                    px-6
+                    py-3.5
+                    text-sm
+                    font-semibold
+                    text-white
+                    transition-all
+                    duration-200
+                    hover:border-white/25
+                    hover:bg-white/[0.08]
+                  "
                 >
                   Sign in
-                </a>
+                </motion.a>
               </div>
             </div>
 
-            <div className="relative hidden lg:block">
-              <div className="relative mx-auto aspect-square max-w-[360px]">
-                <div className="absolute inset-[15%] rounded-full border border-white/10" />
+            {/* =================================================
+                RIGHT — SIMPLE CLOSING VISUAL
+            ================================================= */}
 
-                <div className="absolute inset-[28%] rounded-full border border-cyan-300/20" />
+            <div className="lg:flex lg:justify-end">
+              <motion.div
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : {
+                        opacity: 0,
+                        x: 20,
+                      }
+                }
+                whileInView={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        opacity: 1,
+                        x: 0,
+                      }
+                }
+                viewport={{
+                  once: true,
+                  amount: 0.25,
+                }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.7,
+                  delay: shouldReduceMotion ? 0 : 0.1,
+                }}
+                className="
+                  relative
+                  w-full
+                  max-w-[330px]
+                  lg:mb-1
+                "
+              >
+                {/* Top label */}
 
-                <div className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-[2rem] border border-cyan-300/20 bg-cyan-300/10 shadow-[0_0_60px_rgba(34,211,238,0.12)]">
-                  <div className="flex h-full items-center justify-center">
-                    <FaChartLine className="text-3xl text-cyan-300" />
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/35">
+                    Your next move
+                  </span>
+
+                  <span className="text-[9px] font-bold tracking-[0.16em] text-[#0289F9]">
+                    01
+                  </span>
+                </div>
+
+                {/* Main statement */}
+
+                <div className="py-7">
+                  <p
+                    className="
+                      text-2xl
+                      font-semibold
+                      leading-[1.15]
+                      tracking-[-0.035em]
+                      text-white
+                      sm:text-3xl
+                    "
+                  >
+                    Start with a skill.
+                    <br />
+                    <span className="text-white/40">
+                      Leave with something
+                    </span>
+                    <br />
+                    <span className="text-[#0289F9]">you can show.</span>
+                  </p>
+                </div>
+
+                {/* Progress line */}
+
+                <div className="border-t border-white/10 pt-5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] uppercase tracking-[0.16em] text-white/30">
+                      Learn
+                    </span>
+
+                    <span className="text-[9px] uppercase tracking-[0.16em] text-white/30">
+                      Build
+                    </span>
+
+                    <span className="text-[9px] uppercase tracking-[0.16em] text-white/30">
+                      Grow
+                    </span>
                   </div>
-                </div>
 
-                <div className="absolute left-[7%] top-[28%] flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06]">
-                  <FaDatabase className="text-lg text-indigo-300" />
-                </div>
-
-                <div className="absolute bottom-[16%] left-[21%] flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06]">
-                  <FaProjectDiagram className="text-lg text-sky-300" />
-                </div>
-
-                <div className="absolute right-[8%] top-[21%] flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06]">
-                  <FaChartLine className="text-lg text-cyan-300" />
-                </div>
-
-                <svg
-                  viewBox="0 0 360 360"
-                  className="absolute inset-0 h-full w-full"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M 70 125 C 125 100, 145 145, 180 180"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.12)"
-                    strokeWidth="1"
-                  />
-
-                  <path
-                    d="M 180 180 C 210 210, 245 235, 275 280"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.12)"
-                    strokeWidth="1"
-                  />
-
-                  <path
-                    d="M 180 180 C 210 145, 245 110, 290 100"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.12)"
-                    strokeWidth="1"
-                  />
-
-                  {!shouldReduceMotion && (
-                    <motion.circle
-                      r="3"
-                      fill="#67e8f9"
-                      animate={{
-                        cx: [70, 180, 290],
-                        cy: [125, 180, 100],
+                  <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/10">
+                    <motion.div
+                      initial={{
+                        width: 0,
+                      }}
+                      whileInView={{
+                        width: "100%",
+                      }}
+                      viewport={{
+                        once: true,
                       }}
                       transition={{
-                        duration: 3.2,
-                        repeat: Infinity,
-                        ease: "linear",
+                        duration: shouldReduceMotion ? 0 : 1.1,
+                        ease: "easeOut",
                       }}
+                      className="
+                        h-full
+                        rounded-full
+                        bg-gradient-to-r
+                        from-[#0C5FF5]
+                        via-[#0289F9]
+                        to-[#3531E7]
+                      "
                     />
-                  )}
-                </svg>
-              </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* =================================================
+              BOTTOM BRAND LINE
+          ================================================= */}
+
+          <div
+            className="
+              relative
+              z-10
+              border-t
+              border-white/[0.08]
+              px-7
+              py-4
+              sm:px-10
+              lg:px-14
+              xl:px-16
+            "
+          >
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-white/25">
+                DataLattice
+              </p>
+
+              <p className="text-[10px] text-white/30">
+                Learn · Build · Grow
+              </p>
             </div>
           </div>
         </motion.div>

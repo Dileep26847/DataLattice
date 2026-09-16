@@ -1,13 +1,17 @@
 import { motion, useReducedMotion } from "framer-motion";
+
 import {
   FaArrowRight,
-  FaChartLine,
-  FaCheck,
   FaDatabase,
   FaLaptopCode,
   FaProjectDiagram,
   FaRocket,
 } from "react-icons/fa";
+
+/* =========================================================
+   DATALATTICE SUCCESS STORIES
+   OUTCOME STORY SYSTEM
+   ========================================================= */
 
 const learningSignals = [
   {
@@ -44,224 +48,9 @@ const learningSignals = [
   },
 ];
 
-const progressBars = [
-  { label: "Foundations", value: 82 },
-  { label: "Practice", value: 68 },
-  { label: "Projects", value: 54 },
-  { label: "Career readiness", value: 41 },
-];
-
-function AnimatedChart({ shouldReduceMotion }) {
-  return (
-    <div className="relative h-full min-h-[360px] overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.22),transparent_32%),radial-gradient(circle_at_80%_80%,rgba(6,182,212,0.16),transparent_30%)]" />
-
-      <div
-        className="absolute inset-0 opacity-[0.08]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "36px 36px",
-        }}
-      />
-
-      <div className="relative z-10 flex h-full flex-col">
-        <div className="flex items-start justify-between gap-6">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300">
-              Learning signal
-            </p>
-
-            <h3 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-              Capability compounds.
-            </h3>
-
-            <p className="mt-3 max-w-md text-sm leading-6 text-slate-400">
-              The goal is not to collect course completions. It is to move from
-              understanding to practical capability.
-            </p>
-          </div>
-
-          <div className="hidden rounded-2xl border border-white/10 bg-white/5 p-3 sm:block">
-            <FaChartLine className="text-xl text-cyan-300" />
-          </div>
-        </div>
-
-        <div className="relative mt-8 flex-1">
-          <div className="absolute inset-x-0 top-1/2 h-px bg-white/10" />
-
-          <div className="absolute inset-x-0 bottom-5 top-4">
-            <svg
-              viewBox="0 0 640 250"
-              className="h-full w-full overflow-visible"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <defs>
-                <linearGradient
-                  id="datalattice-progress-gradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="0%"
-                >
-                  <stop offset="0%" stopColor="#818cf8" />
-                  <stop offset="50%" stopColor="#38bdf8" />
-                  <stop offset="100%" stopColor="#22d3ee" />
-                </linearGradient>
-
-                <linearGradient
-                  id="datalattice-area-gradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="0%"
-                  y2="100%"
-                >
-                  <stop
-                    offset="0%"
-                    stopColor="#38bdf8"
-                    stopOpacity="0.22"
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor="#38bdf8"
-                    stopOpacity="0"
-                  />
-                </linearGradient>
-              </defs>
-
-              <path
-                d="M 0 220 C 70 214, 85 190, 145 198 C 205 206, 218 156, 275 166 C 330 176, 344 120, 395 132 C 445 144, 468 92, 510 103 C 555 115, 570 55, 640 30 L 640 250 L 0 250 Z"
-                fill="url(#datalattice-area-gradient)"
-              />
-
-              <motion.path
-                d="M 0 220 C 70 214, 85 190, 145 198 C 205 206, 218 156, 275 166 C 330 176, 344 120, 395 132 C 445 144, 468 92, 510 103 C 555 115, 570 55, 640 30"
-                fill="none"
-                stroke="url(#datalattice-progress-gradient)"
-                strokeWidth="4"
-                strokeLinecap="round"
-                initial={{ pathLength: 0 }}
-                whileInView={{ pathLength: 1 }}
-                viewport={{ once: true, amount: 0.45 }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 1.8,
-                  ease: "easeInOut",
-                }}
-              />
-            </svg>
-
-            {!shouldReduceMotion && (
-              <motion.div
-                className="absolute left-0 top-[72%] h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_20px_rgba(103,232,249,0.9)]"
-                animate={{
-                  left: ["0%", "99%"],
-                  top: ["72%", "12%"],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-            )}
-
-            <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[10px] font-medium uppercase tracking-[0.16em] text-slate-600">
-              <span>Start</span>
-              <span>Practice</span>
-              <span>Build</span>
-              <span>Grow</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-3 gap-3">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-xs text-slate-500">Focus</p>
-            <p className="mt-1 font-semibold">Skills</p>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-xs text-slate-500">Method</p>
-            <p className="mt-1 font-semibold">Practice</p>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-xs text-slate-500">Outcome</p>
-            <p className="mt-1 font-semibold">Capability</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProgressPanel({ shouldReduceMotion }) {
-  return (
-    <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6 sm:p-8">
-      <div className="flex items-start justify-between gap-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-600">
-            The DataLattice approach
-          </p>
-
-          <h3 className="mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
-            Progress should be visible.
-          </h3>
-        </div>
-
-        <div className="hidden h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm sm:flex">
-          <FaChartLine className="text-indigo-600" />
-        </div>
-      </div>
-
-      <p className="mt-4 text-sm leading-6 text-slate-600">
-        Learning becomes more meaningful when students can see how knowledge,
-        practice, projects, and career preparation connect.
-      </p>
-
-      <div className="mt-8 space-y-5">
-        {progressBars.map((item, index) => (
-          <div key={item.label}>
-            <div className="mb-2 flex items-center justify-between gap-4">
-              <span className="text-sm font-semibold text-slate-800">
-                {item.label}
-              </span>
-
-              <span className="text-xs font-bold text-slate-400">
-                {String(item.value).padStart(2, "0")}
-              </span>
-            </div>
-
-            <div className="h-2 overflow-hidden rounded-full bg-slate-200">
-              <motion.div
-                className="h-full rounded-full bg-slate-950"
-                initial={{ width: 0 }}
-                whileInView={{ width: `${item.value}%` }}
-                viewport={{ once: true, amount: 0.7 }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.9,
-                  delay: shouldReduceMotion ? 0 : index * 0.08,
-                  ease: "easeOut",
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 flex items-center gap-3 border-t border-slate-200 pt-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-100">
-          <FaCheck className="text-sm text-indigo-600" />
-        </div>
-
-        <p className="text-sm font-medium leading-5 text-slate-600">
-          Learn something. Apply it. Measure the progress. Build again.
-        </p>
-      </div>
-    </div>
-  );
-}
+/* =========================================================
+   MAIN COMPONENT
+   ========================================================= */
 
 export default function SuccessStories() {
   const shouldReduceMotion = useReducedMotion();
@@ -269,152 +58,939 @@ export default function SuccessStories() {
   return (
     <section
       id="success-stories"
-      className="relative overflow-hidden bg-white py-24 sm:py-28"
+      className="
+        relative
+        overflow-hidden
+        bg-[#F7FAFF]
+        py-16
+        sm:py-20
+        lg:py-24
+      "
     >
-      <div className="absolute left-0 top-24 h-72 w-72 rounded-full bg-indigo-100/60 blur-3xl" />
-      <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-cyan-100/50 blur-3xl" />
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-7xl
+          px-5
+          sm:px-8
+          lg:px-10
+        "
+      >
+        {/* =====================================================
+            INTRO
+        ===================================================== */}
 
-      <div className="relative mx-auto max-w-7xl px-6">
         <motion.div
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.65 }}
-          className="max-w-3xl"
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 20,
+                }
+          }
+          whileInView={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
+          }
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.6,
+          }}
+          className="
+            grid
+            gap-8
+            lg:grid-cols-[0.9fr_1.1fr]
+            lg:items-end
+          "
         >
-          <div className="flex items-center gap-3">
-            <span className="h-px w-10 bg-indigo-600" />
+          {/* left */}
 
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-indigo-600">
+          <div>
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.22em]
+                text-[#0C5FF5]
+              "
+            >
+              <span
+                className="
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#0289F9]
+                "
+              />
+
               Learning outcomes
+            </div>
+
+            <h2
+              className="
+                mt-4
+                max-w-xl
+                text-4xl
+                font-semibold
+                leading-[1.02]
+                tracking-[-0.05em]
+                text-[#0A1832]
+                sm:text-5xl
+                lg:text-[58px]
+              "
+            >
+              Learning should
+              <span
+                className="
+                  block
+                  bg-gradient-to-r
+                  from-[#0C5FF5]
+                  via-[#0289F9]
+                  to-[#3531E7]
+                  bg-clip-text
+                  text-transparent
+                "
+              >
+                leave evidence.
+              </span>
+            </h2>
+          </div>
+
+          {/* right */}
+
+          <div className="lg:pb-1">
+            <p
+              className="
+                max-w-2xl
+                text-sm
+                leading-7
+                text-slate-500
+                sm:text-base
+              "
+            >
+              DataLattice is designed around a simple progression:
+              understand the fundamentals, practice the skill, build
+              meaningful projects, and develop the confidence to take
+              the next step.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* =====================================================
+            FEATURE STATEMENT
+        ===================================================== */}
+
+        <div
+          className="
+            mt-12
+            grid
+            overflow-hidden
+            rounded-[30px]
+            bg-[#0A1832]
+            lg:grid-cols-[1.05fr_0.95fr]
+          "
+        >
+          {/* ===================================================
+              BIG STATEMENT
+          =================================================== */}
+
+          <motion.div
+            initial={
+              shouldReduceMotion
+                ? false
+                : {
+                    opacity: 0,
+                    x: -25,
+                  }
+            }
+            whileInView={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    opacity: 1,
+                    x: 0,
+                  }
+            }
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.7,
+            }}
+            className="
+              relative
+              flex
+              min-h-[390px]
+              flex-col
+              justify-between
+              overflow-hidden
+              p-7
+              sm:p-10
+              lg:p-12
+            "
+          >
+            {/* structural lines */}
+
+            <div
+              aria-hidden="true"
+              className="
+                pointer-events-none
+                absolute
+                inset-0
+                opacity-[0.045]
+              "
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+                backgroundSize: "46px 46px",
+              }}
+            />
+
+            {/* accent line */}
+
+            <div
+              aria-hidden="true"
+              className="
+                absolute
+                left-0
+                top-0
+                h-full
+                w-1
+                bg-gradient-to-b
+                from-[#0C5FF5]
+                via-[#0289F9]
+                to-[#3531E7]
+              "
+            />
+
+            <div className="relative z-10">
+              <p
+                className="
+                  text-[9px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.2em]
+                  text-[#0289F9]
+                "
+              >
+                The outcome
+              </p>
+
+              <h3
+                className="
+                  mt-6
+                  max-w-2xl
+                  text-3xl
+                  font-semibold
+                  leading-[1.08]
+                  tracking-[-0.04em]
+                  text-white
+                  sm:text-4xl
+                  lg:text-[48px]
+                "
+              >
+                Don't just finish a
+                <span className="text-[#0289F9]">
+                  {" "}course.
+                </span>
+                <br />
+                Build something
+                <span className="text-[#3531E7]">
+                  {" "}useful.
+                </span>
+              </h3>
+            </div>
+
+            <div
+              className="
+                relative
+                z-10
+                mt-10
+                flex
+                items-end
+                justify-between
+                gap-6
+              "
+            >
+              <p
+                className="
+                  max-w-md
+                  text-xs
+                  leading-6
+                  text-white/45
+                  sm:text-sm
+                "
+              >
+                A strong learning journey should leave you with
+                practical work, clearer skills, and evidence of what
+                you can actually do.
+              </p>
+
+              <div
+                aria-hidden="true"
+                className="
+                  hidden
+                  h-20
+                  w-20
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#0289F9]/30
+                  sm:flex
+                "
+              >
+                <div
+                  className="
+                    h-10
+                    w-10
+                    rounded-full
+                    bg-gradient-to-br
+                    from-[#0C5FF5]
+                    via-[#0289F9]
+                    to-[#3531E7]
+                    shadow-[0_0_30px_rgba(12,95,245,0.3)]
+                  "
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ===================================================
+              OUTCOME MARKER
+          =================================================== */}
+
+          <motion.div
+            initial={
+              shouldReduceMotion
+                ? false
+                : {
+                    opacity: 0,
+                    x: 25,
+                  }
+            }
+            whileInView={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    opacity: 1,
+                    x: 0,
+                  }
+            }
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.7,
+              delay: shouldReduceMotion ? 0 : 0.1,
+            }}
+            className="
+              relative
+              flex
+              min-h-[390px]
+              items-center
+              overflow-hidden
+              border-t
+              border-white/[0.08]
+              bg-[#0D2040]
+              px-7
+              py-10
+              sm:px-10
+              lg:border-l
+              lg:border-t-0
+              lg:px-12
+            "
+          >
+            {/* large number */}
+
+            <div
+              aria-hidden="true"
+              className="
+                absolute
+                -right-4
+                -top-12
+                select-none
+                text-[190px]
+                font-black
+                leading-none
+                tracking-[-0.08em]
+                text-white/[0.035]
+              "
+            >
+              04
+            </div>
+
+            <div className="relative z-10 w-full">
+              <div
+                className="
+                  flex
+                  items-center
+                  justify-between
+                "
+              >
+                <span
+                  className="
+                    text-[9px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.2em]
+                    text-white/35
+                  "
+                >
+                  What you carry forward
+                </span>
+
+                <span
+                  className="
+                    text-[10px]
+                    font-bold
+                    tracking-[0.16em]
+                    text-[#0289F9]
+                  "
+                >
+                  01 — 04
+                </span>
+              </div>
+
+              <div className="mt-10">
+                <p
+                  className="
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.2em]
+                    text-[#0289F9]
+                  "
+                >
+                  Practical capability
+                </p>
+
+                <p
+                  className="
+                    mt-4
+                    max-w-md
+                    text-2xl
+                    font-semibold
+                    leading-[1.2]
+                    tracking-[-0.03em]
+                    text-white
+                    sm:text-3xl
+                  "
+                >
+                  Knowledge becomes more valuable when
+                  you can demonstrate it.
+                </p>
+              </div>
+
+              {/* small outcome list */}
+
+              <div
+                className="
+                  mt-10
+                  border-t
+                  border-white/10
+                  pt-5
+                "
+              >
+                <div
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                    text-[9px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.16em]
+                  "
+                >
+                  <span className="text-white/30">
+                    Skills
+                  </span>
+
+                  <span className="text-white/55">
+                    Projects
+                  </span>
+
+                  <span className="text-white/75">
+                    Direction
+                  </span>
+                </div>
+
+                <div
+                  className="
+                    mt-4
+                    h-1
+                    overflow-hidden
+                    rounded-full
+                    bg-white/10
+                  "
+                >
+                  <motion.div
+                    initial={{
+                      width: 0,
+                    }}
+                    whileInView={{
+                      width: "82%",
+                    }}
+                    viewport={{
+                      once: true,
+                    }}
+                    transition={{
+                      duration: shouldReduceMotion
+                        ? 0
+                        : 1.2,
+                      ease: "easeOut",
+                    }}
+                    className="
+                      h-full
+                      rounded-full
+                      bg-gradient-to-r
+                      from-[#0C5FF5]
+                      via-[#0289F9]
+                      to-[#3531E7]
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* =====================================================
+            OUTCOME STORY
+        ===================================================== */}
+
+        <div className="mt-14">
+          <div
+            className="
+              flex
+              flex-col
+              gap-2
+              sm:flex-row
+              sm:items-end
+              sm:justify-between
+            "
+          >
+            <div>
+              <p
+                className="
+                  text-[9px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.2em]
+                  text-[#0289F9]
+                "
+              >
+                From learning to doing
+              </p>
+
+              <h3
+                className="
+                  mt-2
+                  text-2xl
+                  font-semibold
+                  tracking-[-0.035em]
+                  text-[#0A1832]
+                  sm:text-3xl
+                "
+              >
+                The work changes as you grow.
+              </h3>
+            </div>
+
+            <p
+              className="
+                text-[10px]
+                text-slate-400
+              "
+            >
+              Four stages of development
             </p>
           </div>
 
-          <h2 className="mt-5 text-4xl font-bold tracking-[-0.04em] text-slate-950 sm:text-5xl lg:text-6xl">
-            Turn learning into{" "}
-            <span className="text-indigo-600">something you can show.</span>
-          </h2>
+          {/* =================================================
+              STORY TIMELINE
+          ================================================= */}
 
-          <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            DataLattice is designed around a simple progression: understand the
-            fundamentals, practice the skill, build meaningful projects, and
-            develop the confidence to take the next step.
-          </p>
-        </motion.div>
-
-        <div className="mt-14 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <motion.div
-            initial={shouldReduceMotion ? false : { opacity: 0, x: -24 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{
-              duration: shouldReduceMotion ? 0 : 0.7,
-              delay: shouldReduceMotion ? 0 : 0.05,
-            }}
+          <div
+            className="
+              relative
+              mt-10
+            "
           >
-            <AnimatedChart shouldReduceMotion={shouldReduceMotion} />
-          </motion.div>
+            {/* animated central line */}
 
-          <motion.div
-            initial={shouldReduceMotion ? false : { opacity: 0, x: 24 }}
-            whileInView={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{
-              duration: shouldReduceMotion ? 0 : 0.7,
-              delay: shouldReduceMotion ? 0 : 0.12,
-            }}
-          >
-            <ProgressPanel shouldReduceMotion={shouldReduceMotion} />
-          </motion.div>
+            <div
+              aria-hidden="true"
+              className="
+                absolute
+                bottom-5
+                left-[18px]
+                top-5
+                w-px
+                bg-slate-200
+                lg:left-1/2
+              "
+            />
+
+            <motion.div
+              aria-hidden="true"
+              initial={{
+                scaleY: 0,
+              }}
+              whileInView={{
+                scaleY: 1,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.15,
+              }}
+              transition={{
+                duration: shouldReduceMotion
+                  ? 0
+                  : 1.5,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="
+                absolute
+                bottom-5
+                left-[18px]
+                top-5
+                w-px
+                origin-top
+                bg-gradient-to-b
+                from-[#0C5FF5]
+                via-[#0289F9]
+                to-[#3531E7]
+                lg:left-1/2
+              "
+            />
+
+            <div className="space-y-10 lg:space-y-14">
+              {learningSignals.map(
+                (signal, index) => (
+                  <OutcomeRow
+                    key={signal.number}
+                    signal={signal}
+                    index={index}
+                    shouldReduceMotion={
+                      shouldReduceMotion
+                    }
+                  />
+                )
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {learningSignals.map((signal, index) => {
-            const Icon = signal.icon;
-
-            return (
-              <motion.article
-                key={signal.number}
-                initial={
-                  shouldReduceMotion
-                    ? false
-                    : { opacity: 0, y: 18 }
-                }
-                whileInView={
-                  shouldReduceMotion
-                    ? undefined
-                    : { opacity: 1, y: 0 }
-                }
-                viewport={{ once: true, amount: 0.35 }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.55,
-                  delay: shouldReduceMotion ? 0 : index * 0.07,
-                }}
-                whileHover={
-                  shouldReduceMotion
-                    ? undefined
-                    : { y: -4 }
-                }
-                className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-xl"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold tracking-[0.18em] text-slate-300">
-                    {signal.number}
-                  </span>
-
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 transition-colors duration-300 group-hover:bg-indigo-50">
-                    <Icon className="text-sm text-slate-700 transition-colors duration-300 group-hover:text-indigo-600" />
-                  </div>
-                </div>
-
-                <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
-                  {signal.label}
-                </p>
-
-                <h3 className="mt-2 text-lg font-bold tracking-tight text-slate-950">
-                  {signal.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-6 text-slate-500">
-                  {signal.description}
-                </p>
-              </motion.article>
-            );
-          })}
-        </div>
+        {/* =====================================================
+            FINAL CTA
+        ===================================================== */}
 
         <motion.div
-          initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
-          className="mt-10 flex flex-col gap-5 rounded-[2rem] border border-slate-200 bg-slate-950 p-7 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8"
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 18,
+                }
+          }
+          whileInView={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
+          }
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.6,
+          }}
+          className="
+            mt-14
+            flex
+            flex-col
+            gap-5
+            border-t
+            border-[#DCE5F1]
+            pt-7
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+          "
         >
-          <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-cyan-300">
-              Build proof, not promises
+          <div>
+            <p
+              className="
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.18em]
+                text-[#0C5FF5]
+              "
+            >
+              Ready to build?
             </p>
 
-            <h3 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-              Your projects become part of the story.
+            <h3
+              className="
+                mt-1.5
+                text-xl
+                font-semibold
+                tracking-[-0.03em]
+                text-[#0A1832]
+                sm:text-2xl
+              "
+            >
+              Explore where your learning can start.
             </h3>
-
-            <p className="mt-3 text-sm leading-6 text-slate-400">
-              A strong learning journey should leave you with practical work,
-              clearer skills, and evidence of what you can actually do.
-            </p>
           </div>
 
           <motion.a
             href="/courses"
-            whileHover={shouldReduceMotion ? undefined : { x: 4 }}
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-slate-950 transition-colors hover:bg-slate-100"
+            whileHover={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    x: 4,
+                  }
+            }
+            className="
+              inline-flex
+              shrink-0
+              items-center
+              gap-3
+              rounded-xl
+              bg-[#0C5FF5]
+              px-5
+              py-3
+              text-xs
+              font-semibold
+              text-white
+              shadow-[0_10px_25px_rgba(12,95,245,0.18)]
+              transition-all
+              duration-200
+              hover:bg-[#0289F9]
+            "
           >
             Explore programs
-            <FaArrowRight className="text-xs" />
+
+            <FaArrowRight size={10} />
           </motion.a>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+/* =========================================================
+   OUTCOME ROW
+   ========================================================= */
+
+function OutcomeRow({
+  signal,
+  index,
+  shouldReduceMotion,
+}) {
+  const Icon = signal.icon;
+
+  const isEven = index % 2 === 0;
+
+  return (
+    <motion.article
+      initial={
+        shouldReduceMotion
+          ? false
+          : {
+              opacity: 0,
+              y: 20,
+            }
+      }
+      whileInView={
+        shouldReduceMotion
+          ? undefined
+          : {
+              opacity: 1,
+              y: 0,
+            }
+      }
+      viewport={{
+        once: true,
+        amount: 0.25,
+      }}
+      transition={{
+        duration: shouldReduceMotion ? 0 : 0.55,
+        delay: shouldReduceMotion
+          ? 0
+          : index * 0.06,
+      }}
+      className="
+        relative
+        grid
+        grid-cols-[38px_1fr]
+        gap-5
+        lg:grid-cols-[1fr_70px_1fr]
+        lg:items-center
+        lg:gap-8
+      "
+    >
+      {/* ===================================================
+          LEFT SIDE
+      =================================================== */}
+
+      <div
+        className={`
+          ${
+            isEven
+              ? "lg:col-start-1 lg:row-start-1"
+              : "lg:col-start-3 lg:row-start-1"
+          }
+          ${
+            isEven
+              ? "lg:text-right"
+              : "lg:text-left"
+          }
+        `}
+      >
+        <p
+          className="
+            text-[9px]
+            font-semibold
+            uppercase
+            tracking-[0.2em]
+            text-[#0289F9]
+          "
+        >
+          {signal.number} · {signal.label}
+        </p>
+
+        <h4
+          className="
+            mt-2
+            text-xl
+            font-semibold
+            tracking-[-0.03em]
+            text-[#0A1832]
+            sm:text-2xl
+          "
+        >
+          {signal.title}
+        </h4>
+
+        <p
+          className="
+            mt-2
+            max-w-lg
+            text-xs
+            leading-6
+            text-slate-500
+            sm:text-sm
+            sm:leading-6
+            lg:ml-auto
+          "
+        >
+          {signal.description}
+        </p>
+      </div>
+
+      {/* ===================================================
+          CENTER MARKER
+      =================================================== */}
+
+      <div
+        className="
+          relative
+          z-10
+          col-start-1
+          row-start-1
+          flex
+          h-[38px]
+          w-[38px]
+          items-center
+          justify-center
+          rounded-full
+          border
+          border-[#CFE0F7]
+          bg-[#F7FAFF]
+          text-[#0C5FF5]
+          lg:col-start-2
+          lg:row-start-1
+          lg:h-[54px]
+          lg:w-[54px]
+        "
+      >
+        <div
+          className="
+            flex
+            h-7
+            w-7
+            items-center
+            justify-center
+            rounded-full
+            bg-gradient-to-br
+            from-[#0C5FF5]
+            via-[#0289F9]
+            to-[#3531E7]
+            text-white
+            shadow-[0_6px_18px_rgba(12,95,245,0.2)]
+            lg:h-9
+            lg:w-9
+          "
+        >
+          <Icon size={11} />
+        </div>
+      </div>
+
+      {/* ===================================================
+          RIGHT SIDE — VISUAL NUMBER
+      =================================================== */}
+
+      <div
+        className={`
+          hidden
+          lg:block
+          ${
+            isEven
+              ? "lg:col-start-3"
+              : "lg:col-start-1"
+          }
+          lg:row-start-1
+        `}
+      >
+        <span
+          className="
+            block
+            select-none
+            text-[80px]
+            font-black
+            leading-none
+            tracking-[-0.08em]
+            text-[#0A1832]/[0.045]
+          "
+        >
+          {signal.number}
+        </span>
+      </div>
+    </motion.article>
   );
 }

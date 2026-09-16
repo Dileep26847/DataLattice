@@ -9,7 +9,6 @@ import HomeAccessGate from "../components/landing/HomeAccessGate";
 
 import Stats from "../components/landing/Stats";
 import WhyDataWave from "../components/landing/WhyDataWave";
-import LearningJourney from "../components/landing/LearningJourney";
 import Mentors from "../components/landing/Mentors";
 import SuccessStories from "../components/landing/SuccessStories";
 import Leadership from "../components/landing/Leadership";
@@ -132,10 +131,6 @@ function Home() {
 
           <WhyDataWave />
 
-          {/* Learning Journey */}
-
-          <LearningJourney />
-
           {/* Mentors */}
 
           <Mentors />
@@ -144,7 +139,7 @@ function Home() {
 
           <Leadership />
 
-          {/* Success Stories */}
+          {/* Learning Outcomes / Success Stories */}
 
           <SuccessStories />
 

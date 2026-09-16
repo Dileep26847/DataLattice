@@ -1,53 +1,55 @@
-import {
-  motion,
-} from "framer-motion";
-
+import { motion } from "framer-motion";
 import {
   FaArrowRight,
   FaChartBar,
   FaChartLine,
   FaDatabase,
+  FaLayerGroup,
   FaProjectDiagram,
   FaPython,
   FaTable,
 } from "react-icons/fa";
-
-import {
-  useNavigate,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   isDemoVerified,
   openHomeSignupGate,
 } from "./landing/HomeAccessGate";
 
+/* =========================================================
+   DATALATTICE DESIGN SYSTEM
 
-// ============================================================
-// DATALATTICE PUBLIC PROGRAMS
-// ============================================================
+   Navy       #0A1832
+   Primary    #0C5FF5
+   Cyan       #0289F9
+   Violet     #3531E7
+   White      #FFFFFF
+
+   Gradient:
+   #0C5FF5 → #0289F9 → #3531E7
+   ========================================================= */
+
+const BRAND_GRADIENT =
+  "linear-gradient(135deg, #0C5FF5 0%, #0289F9 50%, #3531E7 100%)";
+
+/* =========================================================
+   REAL PUBLIC PROGRAMS
+
+   Keep this content aligned with the existing homepage.
+   ========================================================= */
 
 const programs = [
   {
     id: "data-science",
-
     eyebrow: "PROGRAM 01",
-
     title: "Data Science",
 
     description:
       "Build a strong foundation in Python, statistics, machine learning and practical data science through project-based learning.",
 
-    icon: (
-      <FaProjectDiagram
-        size={22}
-      />
-    ),
+    icon: FaProjectDiagram,
 
-    accent:
-      "#1463FF",
-
-    accentSoft:
-      "rgba(20,99,255,0.08)",
+    accent: "#0C5FF5",
 
     skills: [
       "Python",
@@ -56,31 +58,20 @@ const programs = [
       "Real Projects",
     ],
 
-    visualization:
-      "science",
+    visual: "science",
   },
 
   {
     id: "data-analytics",
-
     eyebrow: "PROGRAM 02",
-
     title: "Data Analytics",
 
     description:
       "Learn how to transform business data into useful insights using SQL, dashboards, visualization and analytical thinking.",
 
-    icon: (
-      <FaChartLine
-        size={22}
-      />
-    ),
+    icon: FaChartLine,
 
-    accent:
-      "#06B6D4",
-
-    accentSoft:
-      "rgba(6,182,212,0.08)",
+    accent: "#0289F9",
 
     skills: [
       "SQL",
@@ -89,76 +80,38 @@ const programs = [
       "Business Insights",
     ],
 
-    visualization:
-      "analytics",
+    visual: "analytics",
   },
 ];
 
-
-// ============================================================
-// FEATURED COURSES
-// ============================================================
+/* =========================================================
+   FEATURED COURSES
+   ========================================================= */
 
 function FeaturedCourses() {
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
+  /* =======================================================
+     PROGRAM ACTION
 
-  // ==========================================================
-  // PROTECTED VIEW PROGRAM ACTION
-  //
-  // New visitor:
-  //   → stay on Home
-  //   → open HomeAccessGate
-  //   → show floating HeroSignupCard
-  //
-  // Verified visitor:
-  //   → navigate to /courses
-  // ==========================================================
+     New visitor:
+       → open HomeAccessGate
+
+     Verified visitor:
+       → /courses
+     ======================================================= */
 
   const handleViewProgram = (event) => {
-    /*
-     * This is intentionally handled directly here instead
-     * of wrapping the function with requireHomeDemoAccess.
-     *
-     * That makes every FeaturedCourses button explicitly
-     * follow the same access decision.
-     */
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
 
-    if (event?.preventDefault) {
-      event.preventDefault();
-    }
-
-    if (event?.stopPropagation) {
-      event.stopPropagation();
-    }
-
-    /*
-     * VERIFIED VISITOR
-     *
-     * Allow the original destination.
-     */
     if (isDemoVerified()) {
       navigate("/courses");
       return;
     }
 
-    /*
-     * NEW VISITOR
-     *
-     * Do not navigate.
-     *
-     * The HomeAccessGate mounted around Home.jsx will
-     * receive this event and display the floating
-     * HeroSignupCard with the blurred background.
-     */
     openHomeSignupGate();
   };
-
-
-  // ==========================================================
-  // RENDER
-  // ==========================================================
 
   return (
     <section
@@ -166,242 +119,58 @@ function FeaturedCourses() {
       className="
         relative
         overflow-hidden
-        bg-[#F7FAFF]
-        py-12
-        sm:py-14
-        lg:py-16
+        bg-white
+        py-20
+        sm:py-24
+        lg:py-28
       "
     >
-
-      {/* ======================================================
-          BACKGROUND DATA SYSTEM
-      ====================================================== */}
+      {/* =====================================================
+          VERY SUBTLE BACKGROUND
+          ===================================================== */}
 
       <div
+        aria-hidden="true"
         className="
           pointer-events-none
           absolute
           inset-0
-          overflow-hidden
         "
-        aria-hidden="true"
       >
-
-        {/* ==================================================
-            TECHNICAL GRID
-        ================================================== */}
+        <div
+          className="
+            absolute
+            -right-40
+            top-20
+            h-[420px]
+            w-[420px]
+            rounded-full
+            opacity-[0.055]
+            blur-[110px]
+          "
+          style={{
+            background: BRAND_GRADIENT,
+          }}
+        />
 
         <div
           className="
             absolute
-            inset-0
-            opacity-[0.45]
-          "
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(20,99,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(20,99,255,0.045) 1px, transparent 1px)",
-            backgroundSize:
-              "54px 54px",
-          }}
-        />
-
-
-        {/* ==================================================
-            LEFT ATMOSPHERE
-        ================================================== */}
-
-        <motion.div
-          animate={{
-            x: [
-              0,
-              25,
-              0,
-            ],
-
-            y: [
-              0,
-              -15,
-              0,
-            ],
-
-            scale: [
-              1,
-              1.05,
-              1,
-            ],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="
-            absolute
             -left-48
-            top-16
-            h-[420px]
-            w-[420px]
+            bottom-0
+            h-[360px]
+            w-[360px]
             rounded-full
-            bg-blue-100/45
-            blur-[120px]
+            bg-[#0289F9]
+            opacity-[0.035]
+            blur-[110px]
           "
         />
-
-
-        {/* ==================================================
-            RIGHT ATMOSPHERE
-        ================================================== */}
-
-        <motion.div
-          animate={{
-            x: [
-              0,
-              -25,
-              0,
-            ],
-
-            y: [
-              0,
-              18,
-              0,
-            ],
-
-            scale: [
-              1,
-              1.07,
-              1,
-            ],
-          }}
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="
-            absolute
-            -right-44
-            top-[30%]
-            h-[460px]
-            w-[460px]
-            rounded-full
-            bg-cyan-100/30
-            blur-[120px]
-          "
-        />
-
-
-        {/* ==================================================
-            DATA FLOW
-        ================================================== */}
-
-        <svg
-          className="
-            absolute
-            left-0
-            top-[8%]
-            h-[300px]
-            w-full
-            opacity-[0.55]
-          "
-          viewBox="0 0 1440 300"
-          fill="none"
-          preserveAspectRatio="none"
-        >
-
-          <path
-            d="
-              M-40 245
-              C120 210 190 230 315 175
-              C430 125 485 175 600 125
-              C715 75 770 120 895 80
-              C1020 40 1110 75 1220 38
-              C1310 8 1370 28 1480 -10
-            "
-            stroke="#BFDBFE"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-          />
-
-          <path
-            d="
-              M-40 265
-              C120 230 190 250 315 195
-              C430 145 485 195 600 145
-              C715 95 770 140 895 100
-              C1020 60 1110 95 1220 58
-              C1310 28 1370 48 1480 10
-            "
-            stroke="#DFF6FF"
-            strokeWidth="1"
-            strokeDasharray="5 10"
-            strokeLinecap="round"
-          />
-
-        </svg>
-
-
-        {/* ==================================================
-            DATA NODES
-        ================================================== */}
-
-        <span
-          className="
-            absolute
-            left-[12%]
-            top-[22%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#1463FF]/45
-            shadow-[0_0_0_6px_rgba(20,99,255,0.06)]
-          "
-        />
-
-        <span
-          className="
-            absolute
-            left-[31%]
-            top-[16%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#06B6D4]/45
-            shadow-[0_0_0_6px_rgba(6,182,212,0.06)]
-          "
-        />
-
-        <span
-          className="
-            absolute
-            right-[34%]
-            top-[25%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#1463FF]/40
-            shadow-[0_0_0_6px_rgba(20,99,255,0.05)]
-          "
-        />
-
-        <span
-          className="
-            absolute
-            right-[12%]
-            top-[17%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#06B6D4]/40
-            shadow-[0_0_0_6px_rgba(6,182,212,0.05)]
-          "
-        />
-
       </div>
 
-
-      {/* ======================================================
+      {/* =====================================================
           CONTENT
-      ====================================================== */}
+          ===================================================== */}
 
       <div
         className="
@@ -409,247 +178,200 @@ function FeaturedCourses() {
           z-10
           mx-auto
           w-full
-          max-w-7xl
+          max-w-[1280px]
           px-5
-          sm:px-7
-          lg:px-8
+          sm:px-8
+          lg:px-10
         "
       >
+        {/* ===================================================
+            SECTION INTRO
+            =================================================== */}
 
-        {/* ====================================================
-            SECTION HEADER
-        ==================================================== */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 18,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.55,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.25,
-          }}
+        <div
           className="
-            flex
-            flex-col
-            gap-5
-            lg:flex-row
+            grid
+            gap-8
+            lg:grid-cols-[1fr_auto]
             lg:items-end
-            lg:justify-between
           "
         >
-
-          {/* ==================================================
-              LEFT HEADER
-          ================================================== */}
-
-          <div
-            className="
-              max-w-2xl
-            "
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 18,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.3,
+            }}
+            transition={{
+              duration: 0.6,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
+            {/* Eyebrow */}
 
-            <div
-              className="
-                inline-flex
-                items-center
-                gap-2
-                rounded-full
-                border
-                border-blue-100
-                bg-white
-                px-3.5
-                py-2
-                text-[10px]
-                font-semibold
-                uppercase
-                tracking-[0.18em]
-                text-[#1463FF]
-                shadow-sm
-              "
-            >
+            <div className="flex items-center gap-3">
+              <span
+                className="
+                  h-px
+                  w-9
+                "
+                style={{
+                  background: BRAND_GRADIENT,
+                }}
+              />
 
               <span
                 className="
-                  h-1.5
-                  w-1.5
-                  rounded-full
-                  bg-[#06B6D4]
+                  text-[10px]
+                  font-bold
+                  uppercase
+                  tracking-[0.2em]
+                  text-[#0C5FF5]
                 "
-              />
-
-              Focused Programs
-
+              >
+                Focused programs
+              </span>
             </div>
 
+            {/* Heading */}
 
             <h2
               className="
                 mt-5
-                text-3xl
-                font-semibold
-                leading-[1.08]
-                tracking-[-0.04em]
-                text-[#0B1B3A]
-                sm:text-4xl
-                lg:text-[46px]
+                max-w-[700px]
+                text-[35px]
+                font-black
+                leading-[1.02]
+                tracking-[-0.05em]
+                text-[#0A1832]
+                sm:text-[45px]
+                lg:text-[52px]
               "
             >
-
-              Build skills that
+              Choose a direction.
+              <br />
 
               <span
                 className="
-                  text-[#1463FF]
+                  bg-clip-text
+                  text-transparent
                 "
+                style={{
+                  backgroundImage: BRAND_GRADIENT,
+                }}
               >
-                {" "}move with data.
+                Build the skills.
               </span>
-
             </h2>
-
 
             <p
               className="
-                mt-4
-                max-w-xl
+                mt-5
+                max-w-[590px]
                 text-sm
+                font-medium
                 leading-6
-                text-slate-500
-                sm:text-base
+                text-[#64748B]
+                sm:text-[15px]
                 sm:leading-7
               "
             >
-
-              Two focused learning paths designed around practical
-              tools, real projects and the skills modern data teams
-              expect.
-
+              Focused learning paths for people who want
+              practical data skills, hands-on projects and
+              a clearer path from learning to doing.
             </p>
+          </motion.div>
 
-          </div>
+          {/* =================================================
+              SMALL EDITORIAL NOTE
+              ================================================= */}
 
-
-          {/* ==================================================
-              RIGHT HEADER NOTE
-          ================================================== */}
-
-          <div
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: 15,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              duration: 0.55,
+              delay: 0.1,
+            }}
             className="
               hidden
               items-center
               gap-3
-              rounded-2xl
-              border
-              border-slate-200
-              bg-white
-              px-4
-              py-3
-              shadow-sm
+              border-l
+              border-[#E6EDF7]
+              pl-5
               lg:flex
             "
           >
-
             <div
               className="
                 flex
-                h-9
-                w-9
+                h-10
+                w-10
                 items-center
                 justify-center
                 rounded-xl
-                bg-blue-50
-                text-[#1463FF]
+                bg-[#F5F9FF]
+                text-[#0C5FF5]
               "
             >
-
-              <FaDatabase
-                size={14}
-              />
-
+              <FaLayerGroup size={15} />
             </div>
-
 
             <div>
-
-              <p
-                className="
-                  text-xs
-                  font-semibold
-                  text-[#0B1B3A]
-                "
-              >
-                Practical by design
+              <p className="text-xs font-bold text-[#0A1832]">
+                Two focused paths
               </p>
 
-              <p
-                className="
-                  mt-0.5
-                  text-[10px]
-                  text-slate-400
-                "
-              >
-                Learn → build → apply
+              <p className="mt-1 text-[10px] font-medium text-[#94A3B8]">
+                Learn what matters for your goal.
               </p>
-
             </div>
+          </motion.div>
+        </div>
 
-          </div>
-
-        </motion.div>
-
-
-        {/* ====================================================
+        {/* ===================================================
             PROGRAMS
-        ==================================================== */}
+            =================================================== */}
 
         <div
           className="
-            mt-8
+            mt-12
             grid
-            gap-5
+            gap-6
             lg:grid-cols-2
-            lg:gap-6
+            lg:gap-7
           "
         >
-
-          {programs.map(
-            (
-              program,
-              index
-            ) => (
-
-              <ProgramCard
-                key={
-                  program.id
-                }
-                program={
-                  program
-                }
-                index={
-                  index
-                }
-                onView={
-                  handleViewProgram
-                }
-              />
-
-            )
-          )}
-
+          {programs.map((program, index) => (
+            <ProgramCard
+              key={program.id}
+              program={program}
+              index={index}
+              onView={handleViewProgram}
+            />
+          ))}
         </div>
 
-
-        {/* ====================================================
-            BOTTOM MESSAGE
-        ==================================================== */}
+        {/* ===================================================
+            BOTTOM ACTION
+            =================================================== */}
 
         <motion.div
           initial={{
@@ -660,119 +382,66 @@ function FeaturedCourses() {
             opacity: 1,
             y: 0,
           }}
-          transition={{
-            delay: 0.15,
-            duration: 0.5,
-          }}
           viewport={{
             once: true,
           }}
+          transition={{
+            duration: 0.5,
+            delay: 0.15,
+          }}
           className="
-            mt-5
+            mt-7
             flex
             flex-col
-            items-start
-            justify-between
             gap-4
-            rounded-2xl
+            rounded-[22px]
             border
-            border-slate-200
-            bg-white
+            border-[#E6EDF7]
+            bg-[#F8FBFF]
             px-5
-            py-4
-            shadow-sm
+            py-5
             sm:flex-row
             sm:items-center
-            sm:px-6
+            sm:justify-between
+            sm:px-7
           "
         >
+          <div>
+            <p className="text-sm font-bold text-[#0A1832]">
+              Not sure which path fits you?
+            </p>
 
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-            "
-          >
-
-            <div
-              className="
-                flex
-                h-9
-                w-9
-                shrink-0
-                items-center
-                justify-center
-                rounded-xl
-                bg-cyan-50
-                text-[#06B6D4]
-              "
-            >
-
-              <FaChartBar
-                size={14}
-              />
-
-            </div>
-
-
-            <div>
-
-              <p
-                className="
-                  text-sm
-                  font-semibold
-                  text-[#0B1B3A]
-                "
-              >
-                Start with the path that fits your goal.
-              </p>
-
-              <p
-                className="
-                  mt-0.5
-                  text-[11px]
-                  leading-5
-                  text-slate-400
-                "
-              >
-                Explore the curriculum and choose your direction.
-              </p>
-
-            </div>
-
+            <p className="mt-1 text-[11px] font-medium text-[#64748B]">
+              Explore both programs and compare what you’ll learn.
+            </p>
           </div>
-
 
           <button
             type="button"
-            onClick={
-              handleViewProgram
-            }
+            onClick={handleViewProgram}
             className="
               group
               inline-flex
-              shrink-0
+              w-fit
               items-center
               gap-2
               rounded-full
-              border
-              border-blue-100
-              bg-blue-50
-              px-4
+              px-5
               py-2.5
               text-xs
-              font-semibold
-              text-[#1463FF]
+              font-bold
+              text-white
+              shadow-[0_10px_24px_rgba(12,95,245,0.18)]
               transition-all
               duration-300
-              hover:border-blue-200
-              hover:bg-[#1463FF]
-              hover:text-white
+              hover:-translate-y-0.5
+              hover:shadow-[0_14px_30px_rgba(12,95,245,0.24)]
             "
+            style={{
+              background: BRAND_GRADIENT,
+            }}
           >
-
-            Explore programs
+            Explore all programs
 
             <FaArrowRight
               size={10}
@@ -782,902 +451,391 @@ function FeaturedCourses() {
                 group-hover:translate-x-1
               "
             />
-
           </button>
-
         </motion.div>
-
       </div>
-
     </section>
   );
 }
 
-
-// ============================================================
-// PROGRAM CARD
-// ============================================================
+/* =========================================================
+   PROGRAM CARD
+   ========================================================= */
 
 function ProgramCard({
   program,
   index,
   onView,
 }) {
+  const Icon = program.icon;
+
   return (
     <motion.article
       initial={{
         opacity: 0,
-        y: 22,
+        y: 25,
       }}
       whileInView={{
         opacity: 1,
         y: 0,
       }}
-      transition={{
-        delay:
-          index * 0.1,
-        duration: 0.55,
-        ease: [
-          0.22,
-          1,
-          0.36,
-          1,
-        ],
-      }}
       viewport={{
         once: true,
         amount: 0.2,
       }}
-      whileHover={{
-        y: -4,
+      transition={{
+        duration: 0.65,
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1],
       }}
       className="
         group
-        relative
         overflow-hidden
-        rounded-[24px]
+        rounded-[28px]
         border
-        border-slate-200
+        border-[#E6EDF7]
         bg-white
-        shadow-[0_14px_45px_rgba(11,27,58,0.06)]
-        transition-shadow
+        shadow-[0_12px_45px_rgba(10,24,50,0.055)]
+        transition-all
         duration-500
-        hover:shadow-[0_22px_60px_rgba(11,27,58,0.10)]
+        hover:-translate-y-1
+        hover:shadow-[0_24px_65px_rgba(10,24,50,0.10)]
       "
     >
-
-      {/* ====================================================
-          ACCENT LINE
-      ==================================================== */}
+      {/* ===================================================
+          TOP GRADIENT
+          =================================================== */}
 
       <div
-        className="
-          h-[3px]
-          w-full
-        "
+        className="h-[4px] w-full"
         style={{
-          backgroundColor:
-            program.accent,
+          background: BRAND_GRADIENT,
         }}
       />
 
+      <div className="p-6 sm:p-7 lg:p-8">
+        {/* =================================================
+            CARD HEADER
+            ================================================= */}
 
-      <div
-        className="
-          p-5
-          sm:p-6
-          lg:p-7
-        "
-      >
-
-        {/* ==================================================
-            HEADER
-        ================================================== */}
-
-        <div
-          className="
-            flex
-            items-start
-            justify-between
-            gap-5
-          "
-        >
-
+        <div className="flex items-start justify-between gap-5">
           <div>
-
             <p
               className="
                 text-[9px]
-                font-semibold
+                font-bold
                 uppercase
                 tracking-[0.2em]
-                text-slate-400
+                text-[#94A3B8]
               "
             >
               {program.eyebrow}
             </p>
 
-
             <h3
               className="
-                mt-1.5
-                text-2xl
-                font-semibold
-                tracking-[-0.035em]
-                text-[#0B1B3A]
-                sm:text-3xl
+                mt-2
+                text-[27px]
+                font-black
+                tracking-[-0.04em]
+                text-[#0A1832]
+                sm:text-[31px]
               "
             >
               {program.title}
             </h3>
-
           </div>
-
-
-          {/* ==================================================
-              ICON
-          ================================================== */}
 
           <div
             className="
               flex
-              h-11
-              w-11
+              h-12
+              w-12
               shrink-0
               items-center
               justify-center
-              rounded-xl
-              border
-              border-slate-100
-              text-[#1463FF]
-              transition-transform
-              duration-300
-              group-hover:scale-105
+              rounded-2xl
+              text-white
+              shadow-[0_10px_24px_rgba(12,95,245,0.16)]
             "
             style={{
-              backgroundColor:
-                program.accentSoft,
-
-              color:
-                program.accent,
+              background: BRAND_GRADIENT,
             }}
           >
-
-            {program.icon}
-
+            <Icon size={19} />
           </div>
-
         </div>
 
-
-        {/* ==================================================
+        {/* =================================================
             DESCRIPTION
-        ================================================== */}
+            ================================================= */}
 
         <p
           className="
-            mt-4
-            max-w-xl
+            mt-5
+            max-w-[570px]
             text-sm
+            font-medium
             leading-6
-            text-slate-500
+            text-[#64748B]
           "
         >
           {program.description}
         </p>
 
+        {/* =================================================
+            PROGRAM VISUAL
+            ================================================= */}
 
-        {/* ==================================================
-            DATA VISUALIZATION
-        ================================================== */}
+        <ProgramVisual type={program.visual} />
 
-        <div
-          className="
-            relative
-            mt-5
-            overflow-hidden
-            rounded-2xl
-            border
-            border-slate-200
-            bg-[#F8FBFF]
-            p-4
-          "
-        >
-
-          <ProgramVisualization
-            type={
-              program.visualization
-            }
-          />
-
-        </div>
-
-
-        {/* ==================================================
+        {/* =================================================
             SKILLS
-        ================================================== */}
+            ================================================= */}
 
-        <div
-          className="
-            mt-5
-            flex
-            flex-wrap
-            gap-2
-          "
-        >
+        <div className="mt-6">
+          <p
+            className="
+              text-[9px]
+              font-bold
+              uppercase
+              tracking-[0.16em]
+              text-[#94A3B8]
+            "
+          >
+            What you’ll work with
+          </p>
 
-          {program.skills.map(
-            (
-              skill,
-              skillIndex
-            ) => (
-
-              <motion.span
-                key={
-                  skill
-                }
-                initial={{
-                  opacity: 0,
-                  y: 4,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay:
-                    0.12 +
-                    skillIndex *
-                      0.04,
-                  duration: 0.25,
-                }}
-                viewport={{
-                  once: true,
-                }}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {program.skills.map((skill) => (
+              <span
+                key={skill}
                 className="
                   rounded-full
                   border
-                  border-slate-200
-                  bg-slate-50
+                  border-[#E6EDF7]
+                  bg-[#F8FBFF]
                   px-3
                   py-1.5
                   text-[10px]
-                  font-medium
-                  text-slate-600
+                  font-semibold
+                  text-[#475569]
                 "
               >
                 {skill}
-              </motion.span>
-
-            )
-          )}
-
+              </span>
+            ))}
+          </div>
         </div>
 
-
-        {/* ==================================================
-            ACTION
-        ================================================== */}
+        {/* =================================================
+            FOOTER
+            ================================================= */}
 
         <div
           className="
-            mt-6
+            mt-7
             flex
-            items-center
-            justify-between
+            flex-col
             gap-4
             border-t
-            border-slate-100
+            border-[#E6EDF7]
             pt-5
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
           "
         >
-
           <div>
-
-            <p
-              className="
-                text-[10px]
-                font-medium
-                uppercase
-                tracking-[0.14em]
-                text-slate-400
-              "
-            >
-              Learning path
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#94A3B8]">
+              Learning approach
             </p>
 
-
-            <p
-              className="
-                mt-1
-                text-xs
-                font-medium
-                text-slate-500
-              "
-            >
-              Explore the curriculum
+            <p className="mt-1 text-xs font-semibold text-[#0A1832]">
+              Learn → build → apply
             </p>
-
           </div>
 
-
-          <motion.button
+          <button
             type="button"
-            whileHover={{
-              x: 2,
-            }}
-            whileTap={{
-              scale: 0.97,
-            }}
-            onClick={
-              onView
-            }
+            onClick={onView}
             className="
               group/button
               inline-flex
               items-center
+              justify-center
               gap-2
               rounded-full
-              bg-[#1463FF]
-              px-4
+              border
+              border-[#D8E5F7]
+              bg-white
+              px-5
               py-2.5
               text-xs
-              font-semibold
-              text-white
-              shadow-[0_8px_20px_rgba(20,99,255,0.16)]
+              font-bold
+              text-[#0C5FF5]
               transition-all
               duration-300
-              hover:bg-[#0B1B3A]
-              hover:shadow-[0_10px_25px_rgba(11,27,58,0.16)]
-              sm:px-5
+              hover:border-transparent
+              hover:text-white
             "
+            style={{
+              "--hover-gradient": BRAND_GRADIENT,
+            }}
           >
+            <span
+              className="
+                absolute
+                pointer-events-none
+              "
+            />
 
-            View Program
+            <span className="relative z-10">
+              View Program
+            </span>
 
             <FaArrowRight
               size={10}
               className="
+                relative
+                z-10
                 transition-transform
                 duration-200
                 group-hover/button:translate-x-1
               "
             />
-
-          </motion.button>
-
+          </button>
         </div>
-
       </div>
-
-
-      {/* ====================================================
-          SUBTLE HOVER LIGHT
-      ==================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -right-20
-          -top-20
-          h-40
-          w-40
-          rounded-full
-          bg-blue-100/40
-          opacity-0
-          blur-3xl
-          transition-opacity
-          duration-500
-          group-hover:opacity-100
-        "
-      />
-
     </motion.article>
   );
 }
 
+/* =========================================================
+   PROGRAM VISUAL
+   ========================================================= */
 
-// ============================================================
-// PROGRAM VISUALIZATION
-// ============================================================
-
-function ProgramVisualization({
-  type,
-}) {
-  if (
-    type ===
-    "science"
-  ) {
-    return (
-      <div
-        className="
-          relative
-          h-36
-          sm:h-40
-        "
-      >
-
-        {/* ==================================================
-            DATA NODES
-        ================================================== */}
-
-        <DataNode
-          icon={
-            <FaTable
-              size={12}
-            />
-          }
-          label="DATA"
-          position="left-0 top-4"
-          delay={0}
-        />
-
-
-        <DataNode
-          icon={
-            <FaPython
-              size={12}
-            />
-          }
-          label="PYTHON"
-          position="left-[25%] top-[52%]"
-          delay={0.15}
-        />
-
-
-        <DataNode
-          icon={
-            <FaProjectDiagram
-              size={12}
-            />
-          }
-          label="ML"
-          position="left-[51%] top-3"
-          delay={0.3}
-        />
-
-
-        <DataNode
-          icon={
-            <FaChartLine
-              size={12}
-            />
-          }
-          label="INSIGHT"
-          position="right-0 top-[52%]"
-          delay={0.45}
-        />
-
-
-        {/* ==================================================
-            CONNECTIONS
-        ================================================== */}
-
-        <AnimatedConnection
-          className="
-            left-[12%]
-            top-[38%]
-            w-[19%]
-            rotate-[18deg]
-          "
-          delay={0}
-        />
-
-
-        <AnimatedConnection
-          className="
-            left-[38%]
-            top-[40%]
-            w-[19%]
-            -rotate-[18deg]
-          "
-          delay={0.18}
-        />
-
-
-        <AnimatedConnection
-          className="
-            left-[63%]
-            top-[40%]
-            w-[19%]
-            rotate-[18deg]
-          "
-          delay={0.36}
-        />
-
-
-        {/* ==================================================
-            MOVING DATA PULSE
-        ================================================== */}
-
-        <motion.div
-          animate={{
-            x: [
-              "0%",
-              "100%",
-            ],
-
-            opacity: [
-              0,
-              1,
-              1,
-              0,
-            ],
-          }}
-          transition={{
-            duration: 3.5,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="
-            absolute
-            left-[12%]
-            top-[39%]
-            h-1.5
-            w-1.5
-            rounded-full
-            bg-[#06B6D4]
-            shadow-[0_0_10px_rgba(6,182,212,0.65)]
-          "
-        />
-
-
-        {/* ==================================================
-            MINI CHART
-        ================================================== */}
-
-        <div
-          className="
-            absolute
-            bottom-0
-            left-0
-            right-0
-            flex
-            h-6
-            items-end
-            gap-1
-            opacity-70
-          "
-        >
-
-          {[
-            25,
-            38,
-            31,
-            52,
-            46,
-            67,
-            58,
-            78,
-            70,
-            92,
-          ].map(
-            (
-              height,
-              index
-            ) => (
-
-              <motion.div
-                key={
-                  index
-                }
-                initial={{
-                  height: 0,
-                }}
-                whileInView={{
-                  height:
-                    `${height}%`,
-                }}
-                transition={{
-                  delay:
-                    index *
-                    0.05,
-                  duration:
-                    0.45,
-                  ease:
-                    "easeOut",
-                }}
-                viewport={{
-                  once: true,
-                }}
-                className="
-                  flex-1
-                  rounded-t
-                  bg-gradient-to-t
-                  from-[#1463FF]
-                  to-[#06B6D4]
-                "
-              />
-
-            )
-          )}
-
-        </div>
-
-      </div>
-    );
+function ProgramVisual({ type }) {
+  if (type === "science") {
+    return <DataScienceVisual />;
   }
 
+  return <DataAnalyticsVisual />;
+}
 
-  // ==========================================================
-  // DATA ANALYTICS VISUALIZATION
-  // ==========================================================
+/* =========================================================
+   DATA SCIENCE VISUAL
+   ========================================================= */
 
+function DataScienceVisual() {
   return (
     <div
       className="
         relative
-        h-36
-        sm:h-40
+        mt-6
+        h-[190px]
+        overflow-hidden
+        rounded-[22px]
+        border
+        border-[#E6EDF7]
+        bg-[#F8FBFF]
       "
     >
-
-      {/* ==================================================
-          SQL PANEL
-      ================================================== */}
+      {/* Background grid */}
 
       <div
-        className="
-          absolute
-          left-0
-          top-1
-          h-32
-          w-[46%]
-          rounded-xl
-          border
-          border-slate-200
-          bg-white
-          p-3
-          shadow-sm
-        "
-      >
+        aria-hidden="true"
+        className="absolute inset-0 opacity-50"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(12,95,245,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(12,95,245,0.05) 1px, transparent 1px)
+          `,
+          backgroundSize: "30px 30px",
+        }}
+      />
 
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-          "
-        >
+      {/* Main visual */}
 
-          <span
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative h-[125px] w-[80%]">
+          {/* Connection lines */}
+
+          <div
             className="
-              text-[8px]
-              font-semibold
-              uppercase
-              tracking-[0.12em]
-              text-slate-400
-            "
-          >
-            SQL DATA
-          </span>
-
-
-          <FaDatabase
-            size={10}
-            className="
-              text-[#06B6D4]
+              absolute
+              left-[18%]
+              top-[50%]
+              h-px
+              w-[24%]
+              rotate-[-18deg]
+              bg-[#B9D2FF]
             "
           />
 
-        </div>
-
-
-        <div
-          className="
-            mt-4
-            space-y-2
-          "
-        >
-
-          {[
-            70,
-            48,
-            84,
-            62,
-          ].map(
-            (
-              width,
-              index
-            ) => (
-
-              <motion.div
-                key={
-                  index
-                }
-                initial={{
-                  width: 0,
-                }}
-                whileInView={{
-                  width:
-                    `${width}%`,
-                }}
-                transition={{
-                  delay:
-                    index *
-                    0.08,
-                  duration:
-                    0.65,
-                  ease:
-                    "easeOut",
-                }}
-                viewport={{
-                  once: true,
-                }}
-                className="
-                  h-1.5
-                  rounded-full
-                  bg-gradient-to-r
-                  from-[#1463FF]
-                  to-[#06B6D4]
-                "
-              />
-
-            )
-          )}
-
-        </div>
-
-      </div>
-
-
-      {/* ==================================================
-          INSIGHTS CHART
-      ================================================== */}
-
-      <div
-        className="
-          absolute
-          right-0
-          top-1
-          h-32
-          w-[48%]
-          rounded-xl
-          border
-          border-slate-200
-          bg-white
-          p-3
-          shadow-sm
-        "
-      >
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-          "
-        >
-
-          <span
+          <div
             className="
-              text-[8px]
-              font-semibold
-              uppercase
-              tracking-[0.12em]
-              text-slate-400
-            "
-          >
-            INSIGHTS
-          </span>
-
-
-          <FaChartBar
-            size={10}
-            className="
-              text-[#1463FF]
+              absolute
+              left-[43%]
+              top-[50%]
+              h-px
+              w-[23%]
+              rotate-[18deg]
+              bg-[#B9D2FF]
             "
           />
 
-        </div>
-
-
-        <div
-          className="
-            relative
-            mt-2
-            h-20
-          "
-        >
-
-          <svg
-            viewBox="0 0 220 90"
+          <div
             className="
-              h-full
-              w-full
-              overflow-visible
+              absolute
+              left-[65%]
+              top-[50%]
+              h-px
+              w-[20%]
+              rotate-[-15deg]
+              bg-[#B9D2FF]
             "
-            fill="none"
-          >
+          />
 
-            <motion.path
-              d="
-                M5 72
-                C30 64,
-                35 70,
-                58 55
-                S88 50,
-                105 43
-                S135 48,
-                150 30
-                S180 35,
-                215 12
-              "
-              stroke="#1463FF"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              initial={{
-                pathLength: 0,
-              }}
-              whileInView={{
-                pathLength: 1,
-              }}
-              transition={{
-                duration: 1.7,
-                ease: "easeInOut",
-              }}
-              viewport={{
-                once: true,
-              }}
-            />
+          {/* Data node */}
 
+          <VisualNode
+            icon={<FaTable size={12} />}
+            label="DATA"
+            className="left-0 top-[32%]"
+          />
 
-            <motion.path
-              d="
-                M5 78
-                C35 72,
-                60 74,
-                88 66
-                S125 68,
-                150 55
-                S190 52,
-                215 44
-              "
-              stroke="#DCE7F7"
-              strokeWidth="1"
-              strokeDasharray="4 6"
-              strokeLinecap="round"
-              initial={{
-                pathLength: 0,
-              }}
-              whileInView={{
-                pathLength: 1,
-              }}
-              transition={{
-                delay: 0.15,
-                duration: 1.4,
-              }}
-              viewport={{
-                once: true,
-              }}
-            />
+          {/* Python */}
 
-          </svg>
+          <VisualNode
+            icon={<FaPython size={12} />}
+            label="PYTHON"
+            className="left-[27%] top-[4%]"
+            highlighted
+          />
 
+          {/* ML */}
 
-          {/* ==================================================
-              MOVING POINT
-          ================================================== */}
+          <VisualNode
+            icon={<FaProjectDiagram size={12} />}
+            label="ML"
+            className="left-[51%] top-[51%]"
+          />
+
+          {/* Insight */}
+
+          <VisualNode
+            icon={<FaChartLine size={12} />}
+            label="INSIGHT"
+            className="right-0 top-[4%]"
+            highlighted
+          />
+
+          {/* Center */}
 
           <motion.div
             animate={{
-              x: [
-                "5%",
-                "92%",
-              ],
-
-              y: [
-                "70%",
-                "10%",
-              ],
-
-              opacity: [
-                0,
-                1,
-                1,
-                0,
-              ],
+              scale: [1, 1.08, 1],
             }}
             transition={{
               duration: 2.8,
@@ -1686,228 +844,356 @@ function ProgramVisualization({
             }}
             className="
               absolute
-              left-0
-              top-0
-              h-1.5
-              w-1.5
+              left-1/2
+              top-1/2
+              flex
+              h-12
+              w-12
+              -translate-x-1/2
+              -translate-y-1/2
+              items-center
+              justify-center
+              rounded-2xl
+              text-white
+              shadow-[0_12px_30px_rgba(12,95,245,0.20)]
+            "
+            style={{
+              background: BRAND_GRADIENT,
+            }}
+          >
+            <FaChartBar size={16} />
+          </motion.div>
+
+          {/* Data pulse */}
+
+          <motion.span
+            animate={{
+              opacity: [0.2, 1, 0.2],
+              scale: [0.8, 1.3, 0.8],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+            }}
+            className="
+              absolute
+              left-[22%]
+              top-[43%]
+              h-2
+              w-2
               rounded-full
-              bg-[#06B6D4]
-              shadow-[0_0_10px_rgba(6,182,212,0.65)]
+              bg-[#0289F9]
             "
           />
-
         </div>
-
       </div>
 
+      {/* Caption */}
 
-      {/* ==================================================
-          CENTER CONNECTOR
-      ================================================== */}
-
-      <motion.div
-        animate={{
-          opacity: [
-            0.25,
-            0.7,
-            0.25,
-          ],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+      <div
         className="
           absolute
-          left-1/2
-          top-[46%]
-          h-9
-          w-9
-          -translate-x-1/2
-          -translate-y-1/2
+          bottom-3
+          left-4
           rounded-full
           border
-          border-[#06B6D4]/30
-          bg-cyan-50
+          border-[#DCE8F7]
+          bg-white/90
+          px-3
+          py-1.5
+          text-[8px]
+          font-bold
+          uppercase
+          tracking-[0.12em]
+          text-[#64748B]
         "
       >
-
-        <div
-          className="
-            absolute
-            inset-2
-            rounded-full
-            bg-[#06B6D4]/15
-          "
-        />
-
-      </motion.div>
-
-
-      {/* ==================================================
-          DATA PULSE
-      ================================================== */}
-
-      <motion.div
-        animate={{
-          scale: [
-            0.8,
-            1.4,
-            0.8,
-          ],
-
-          opacity: [
-            0.25,
-            0.8,
-            0.25,
-          ],
-        }}
-        transition={{
-          duration: 2.2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          absolute
-          left-1/2
-          top-[46%]
-          h-1.5
-          w-1.5
-          -translate-x-1/2
-          -translate-y-1/2
-          rounded-full
-          bg-[#1463FF]
-        "
-      />
-
+        From raw data to insight
+      </div>
     </div>
   );
 }
 
+/* =========================================================
+   DATA ANALYTICS VISUAL
+   ========================================================= */
 
-// ============================================================
-// DATA NODE
-// ============================================================
+function DataAnalyticsVisual() {
+  return (
+    <div
+      className="
+        relative
+        mt-6
+        h-[190px]
+        overflow-hidden
+        rounded-[22px]
+        border
+        border-[#E6EDF7]
+        bg-[#F8FBFF]
+        p-4
+      "
+    >
+      <div className="grid h-full grid-cols-[0.8fr_1.2fr] gap-3">
+        {/* SQL panel */}
 
-function DataNode({
+        <div
+          className="
+            rounded-2xl
+            border
+            border-[#E6EDF7]
+            bg-white
+            p-3
+          "
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
+              SQL
+            </span>
+
+            <FaDatabase
+              size={10}
+              className="text-[#0289F9]"
+            />
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {[
+              "72%",
+              "54%",
+              "86%",
+              "63%",
+            ].map((width, index) => (
+              <div
+                key={index}
+                className="h-1.5 overflow-hidden rounded-full bg-[#EEF4FB]"
+              >
+                <motion.div
+                  initial={{
+                    width: 0,
+                  }}
+                  whileInView={{
+                    width,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
+                  transition={{
+                    duration: 0.7,
+                    delay: index * 0.08,
+                  }}
+                  className="h-full rounded-full"
+                  style={{
+                    background: BRAND_GRADIENT,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 flex items-center gap-2">
+            <FaTable
+              size={9}
+              className="text-[#0C5FF5]"
+            />
+
+            <span className="text-[8px] font-semibold text-[#64748B]">
+              Structured data
+            </span>
+          </div>
+        </div>
+
+        {/* Analytics panel */}
+
+        <div
+          className="
+            rounded-2xl
+            border
+            border-[#E6EDF7]
+            bg-white
+            p-3
+          "
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#94A3B8]">
+              INSIGHTS
+            </span>
+
+            <FaChartBar
+              size={10}
+              className="text-[#0C5FF5]"
+            />
+          </div>
+
+          <div className="relative mt-3 h-[72px]">
+            <svg
+              viewBox="0 0 260 80"
+              className="h-full w-full"
+              fill="none"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0 65 C30 60 40 55 70 58 C98 61 108 39 135 44 C160 49 168 28 190 34 C215 40 228 17 260 10"
+                stroke="#DCE7F5"
+                strokeWidth="1"
+              />
+
+              <motion.path
+                d="M0 65 C30 60 40 55 70 58 C98 61 108 39 135 44 C160 49 168 28 190 34 C215 40 228 17 260 10"
+                stroke="url(#analyticsGradient)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                initial={{
+                  pathLength: 0,
+                }}
+                whileInView={{
+                  pathLength: 1,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  duration: 1.5,
+                  ease: "easeInOut",
+                }}
+              />
+
+              <defs>
+                <linearGradient
+                  id="analyticsGradient"
+                  x1="0"
+                  y1="0"
+                  x2="1"
+                  y2="0"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="#0C5FF5"
+                  />
+                  <stop
+                    offset="50%"
+                    stopColor="#0289F9"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor="#3531E7"
+                  />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+
+          <div className="mt-2 flex items-center gap-2">
+            <span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+              "
+              style={{
+                background: BRAND_GRADIENT,
+              }}
+            />
+
+            <span className="text-[8px] font-semibold text-[#64748B]">
+              Turn data into decisions
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Small floating label */}
+
+      <div
+        className="
+          absolute
+          bottom-3
+          left-1/2
+          -translate-x-1/2
+          rounded-full
+          border
+          border-[#DCE8F7]
+          bg-white/95
+          px-3
+          py-1.5
+          text-[8px]
+          font-bold
+          uppercase
+          tracking-[0.12em]
+          text-[#64748B]
+          shadow-sm
+        "
+      >
+        Data → insight → decision
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   VISUAL NODE
+   ========================================================= */
+
+function VisualNode({
   icon,
   label,
-  position,
-  delay,
+  className,
+  highlighted = false,
 }) {
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        scale: 0.9,
-      }}
-      whileInView={{
-        opacity: 1,
-        scale: 1,
+      animate={{
+        y: [0, -3, 0],
       }}
       transition={{
-        delay,
-        duration: 0.4,
-      }}
-      viewport={{
-        once: true,
-      }}
-      animate={{
-        y: [
-          0,
-          -3,
-          0,
-        ],
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut",
       }}
       className={`
         absolute
-        ${position}
-        z-10
+        ${className}
         flex
         items-center
         gap-1.5
-        rounded-lg
+        rounded-xl
         border
-        border-slate-200
-        bg-white
-        px-2
-        py-1.5
+        px-2.5
+        py-2
         shadow-sm
+        ${
+          highlighted
+            ? "border-[#CFE0FF] bg-white"
+            : "border-[#E6EDF7] bg-white/90"
+        }
       `}
     >
-
       <span
         className="
           flex
-          h-5
-          w-5
+          h-6
+          w-6
           items-center
           justify-center
-          rounded-md
-          bg-blue-50
-          text-[#1463FF]
+          rounded-lg
+          bg-[#F0F6FF]
+          text-[#0C5FF5]
         "
       >
         {icon}
       </span>
 
-
       <span
         className="
           text-[8px]
-          font-semibold
+          font-bold
           tracking-[0.06em]
-          text-slate-500
+          text-[#475569]
         "
       >
         {label}
       </span>
-
     </motion.div>
   );
 }
-
-
-// ============================================================
-// ANIMATED CONNECTION
-// ============================================================
-
-function AnimatedConnection({
-  className,
-  delay = 0,
-}) {
-  return (
-    <motion.div
-      initial={{
-        scaleX: 0,
-        opacity: 0,
-      }}
-      whileInView={{
-        scaleX: 1,
-        opacity: 1,
-      }}
-      transition={{
-        delay,
-        duration: 0.6,
-        ease: "easeOut",
-      }}
-      viewport={{
-        once: true,
-      }}
-      className={`
-        absolute
-        z-0
-        h-px
-        origin-left
-        border-t
-        border-dashed
-        border-[#1463FF]/25
-        ${className}
-      `}
-    />
-  );
-}
-
 
 export default FeaturedCourses;

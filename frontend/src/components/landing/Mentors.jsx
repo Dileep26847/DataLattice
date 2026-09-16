@@ -11,157 +11,92 @@ import {
 
 import { getPublicMentors } from "../../services/mentorService";
 
-
 // ============================================================
-// DATALATTICE MENTOR VISUAL SYSTEM
+// DATALATTICE MENTOR ACCENTS
 // ============================================================
 
 const mentorAccents = [
   {
     label: "DATA",
-    icon: <FaDatabase />,
+    icon: FaDatabase,
   },
-
   {
     label: "ANALYTICS",
-    icon: <FaChartLine />,
+    icon: FaChartLine,
   },
-
   {
     label: "PRACTICAL",
-    icon: <FaBriefcase />,
+    icon: FaBriefcase,
   },
-
   {
     label: "GUIDANCE",
-    icon: <FaUserTie />,
+    icon: FaUserTie,
   },
 ];
-
 
 // ============================================================
 // MAIN COMPONENT
 // ============================================================
 
 function Mentors() {
-
-  const [
-    mentors,
-    setMentors,
-  ] = useState([]);
-
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
-    error,
-    setError,
-  ] = useState("");
-
+  const [mentors, setMentors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // ==========================================================
   // LOAD PUBLIC MENTORS
   // ==========================================================
 
   useEffect(() => {
-
     let mounted = true;
 
-
     const loadMentors = async () => {
-
       try {
-
         setLoading(true);
         setError("");
 
-
-        const response =
-          await getPublicMentors();
-
+        const response = await getPublicMentors();
 
         if (!mounted) {
           return;
         }
 
-
         if (
           response?.success &&
-          Array.isArray(
-            response.mentors
-          )
+          Array.isArray(response.mentors)
         ) {
-
-          setMentors(
-            response.mentors
-          );
-
+          setMentors(response.mentors);
         } else {
-
           setMentors([]);
-
         }
-
-      }
-
-      catch (err) {
-
+      } catch (err) {
         console.error(
           "Unable to load public mentors:",
           err
         );
 
-
         if (mounted) {
-
           setError(
             "Mentor information is temporarily unavailable."
           );
-
         }
-
-      }
-
-      finally {
-
+      } finally {
         if (mounted) {
-
           setLoading(false);
-
         }
-
       }
-
     };
-
 
     loadMentors();
 
-
     return () => {
-
       mounted = false;
-
     };
-
   }, []);
 
-
-  // ==========================================================
-  // DISPLAY LIMIT
-  // ==========================================================
-
-  const visibleMentors =
-    mentors.slice(
-      0,
-      4
-    );
-
+  const visibleMentors = mentors.slice(0, 4);
 
   return (
-
     <section
       id="mentors"
       className="
@@ -169,30 +104,22 @@ function Mentors() {
         overflow-hidden
         border-t
         border-slate-200
-        bg-[#F8FBFF]
-        py-12
-        sm:py-14
-        lg:py-16
+        bg-white
+        py-11
+        sm:py-13
+        lg:py-15
       "
     >
-
-      {/* ======================================================
-          CONTENT
-      ====================================================== */}
-
       <div
         className="
-          relative
-          z-10
           mx-auto
           w-full
           max-w-7xl
           px-5
-          sm:px-8
+          sm:px-7
           lg:px-8
         "
       >
-
         {/* ====================================================
             HEADER
         ==================================================== */}
@@ -200,7 +127,7 @@ function Mentors() {
         <motion.div
           initial={{
             opacity: 0,
-            y: 16,
+            y: 12,
           }}
           whileInView={{
             opacity: 1,
@@ -222,79 +149,68 @@ function Mentors() {
             lg:justify-between
           "
         >
-
-          {/* ==================================================
-              HEADER CONTENT
-          ================================================== */}
-
-          <div
-            className="
-              max-w-2xl
-            "
-          >
-
+          <div className="max-w-3xl">
             <div
               className="
-                inline-flex
+                flex
                 items-center
                 gap-2
-                rounded-full
-                border
-                border-blue-100
-                bg-blue-50
-                px-3.5
-                py-2
                 text-[10px]
                 font-semibold
                 uppercase
                 tracking-[0.18em]
-                text-[#1463FF]
+                text-[#0C5FF5]
               "
             >
-
               <span
                 className="
                   h-1.5
                   w-1.5
                   rounded-full
-                  bg-[#06B6D4]
+                  bg-[#0289F9]
                 "
               />
 
               Learn with guidance
-
             </div>
-
 
             <h2
               className="
-                mt-5
+                mt-4
                 text-3xl
                 font-semibold
-                leading-[1.08]
-                tracking-[-0.04em]
-                text-[#0B1B3A]
+                leading-[1.06]
+                tracking-[-0.045em]
+                text-[#0A1832]
                 sm:text-4xl
-                lg:text-[46px]
+                lg:text-[48px]
               "
             >
-
               Meet the people
               <span
                 className="
-                  text-[#1463FF]
+                  block
+                  bg-gradient-to-r
+                  from-[#0C5FF5]
+                  via-[#0289F9]
+                  to-[#3531E7]
+                  bg-clip-text
+                  text-transparent
                 "
               >
-                {" "}behind the learning.
+                behind the learning.
               </span>
-
             </h2>
+          </div>
 
-
+          <div
+            className="
+              max-w-lg
+              lg:ml-auto
+            "
+          >
             <p
               className="
-                mt-4
-                max-w-xl
                 text-sm
                 leading-6
                 text-slate-500
@@ -302,213 +218,55 @@ function Mentors() {
                 sm:leading-7
               "
             >
-
               Learn from mentors whose experience can help connect
               technical concepts with practical problem solving.
-
             </p>
-
-          </div>
-
-
-          {/* ==================================================
-              DIRECTORY STATUS
-          ================================================== */}
-
-          <div
-            className="
-              flex
-              shrink-0
-              items-center
-              gap-3
-              rounded-2xl
-              border
-              border-slate-200
-              bg-white
-              px-4
-              py-3
-              shadow-sm
-            "
-          >
 
             <div
               className="
+                mt-4
                 flex
-                h-9
-                w-9
                 items-center
-                justify-center
-                rounded-xl
-                bg-[#0B1B3A]
-                text-[#67E8F9]
+                gap-3
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.16em]
+                text-slate-400
               "
             >
-
-              <FaUserTie
-                size={14}
+              <span
+                className="
+                  h-px
+                  w-8
+                  bg-gradient-to-r
+                  from-[#0C5FF5]
+                  to-[#3531E7]
+                "
               />
 
-            </div>
+              Public mentor profiles
 
-
-            <div>
-
-              <p
-                className="
-                  text-[9px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.18em]
-                  text-slate-400
-                "
-              >
-                Mentor directory
-              </p>
-
-
-              <p
-                className="
-                  mt-0.5
-                  text-xs
-                  font-semibold
-                  text-[#0B1B3A]
-                "
-              >
-                Live platform profiles
-
-              </p>
-
-            </div>
-
-          </div>
-
-        </motion.div>
-
-
-        {/* ====================================================
-            DATA SIGNAL
-        ==================================================== */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 10,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.45,
-            delay: 0.08,
-          }}
-          viewport={{
-            once: true,
-          }}
-          className="
-            mt-7
-            flex
-            flex-wrap
-            items-center
-            gap-x-5
-            gap-y-3
-            border-y
-            border-slate-200
-            py-3
-          "
-        >
-
-          <span
-            className="
-              text-[9px]
-              font-semibold
-              uppercase
-              tracking-[0.18em]
-              text-slate-400
-            "
-          >
-            MENTOR NETWORK
-          </span>
-
-
-          <div
-            className="
-              hidden
-              h-3
-              w-px
-              bg-slate-200
-              sm:block
-            "
-          />
-
-
-          {mentorAccents.map(
-            (
-              item,
-              index
-            ) => (
-
-              <div
-                key={
-                  item.label
-                }
-                className="
-                  flex
-                  items-center
-                  gap-1.5
-                  text-[9px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.12em]
-                  text-slate-500
-                "
-              >
-
-                <span
-                  className="
-                    text-[#1463FF]
-                  "
-                >
-                  {item.icon}
+              {mentors.length > 0 && (
+                <span className="text-[#0289F9]">
+                  {mentors.length} available
                 </span>
-
-                {item.label}
-
-              </div>
-
-            )
-          )}
-
+              )}
+            </div>
+          </div>
         </motion.div>
 
-
         {/* ====================================================
-            LOADING
+            MENTOR GRID
         ==================================================== */}
 
-        {loading && (
-          <MentorLoadingState />
-        )}
-
-
-        {/* ====================================================
-            ERROR
-        ==================================================== */}
+        {loading && <MentorLoadingState />}
 
         {!loading &&
           error &&
           mentors.length === 0 && (
-            <MentorEmptyState
-              message={
-                error
-              }
-            />
+            <MentorEmptyState message={error} />
           )}
-
-
-        {/* ====================================================
-            EMPTY
-        ==================================================== */}
 
         {!loading &&
           !error &&
@@ -518,188 +276,111 @@ function Mentors() {
             />
           )}
 
-
-        {/* ====================================================
-            MENTOR GRID
-        ==================================================== */}
-
-        {!loading &&
-          mentors.length > 0 && (
-
-            <div
-              className="
-                mt-7
-                grid
-                gap-4
-                sm:grid-cols-2
-                lg:grid-cols-4
-              "
-            >
-
-              {visibleMentors.map(
-                (
-                  mentor,
-                  index
-                ) => (
-
-                  <MentorCard
-                    key={
-                      mentor.id
-                    }
-                    mentor={
-                      mentor
-                    }
-                    index={
-                      index
-                    }
-                  />
-
-                )
-              )}
-
-            </div>
-
-          )}
-
+        {!loading && mentors.length > 0 && (
+          <div
+            className="
+              mt-8
+              grid
+              gap-4
+              sm:grid-cols-2
+              lg:grid-cols-4
+            "
+          >
+            {visibleMentors.map(
+              (mentor, index) => (
+                <MentorCard
+                  key={mentor.id}
+                  mentor={mentor}
+                  index={index}
+                />
+              )
+            )}
+          </div>
+        )}
 
         {/* ====================================================
             BOTTOM INFO
         ==================================================== */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 10,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.45,
-            delay: 0.12,
-          }}
-          viewport={{
-            once: true,
-          }}
-          className="
-            mt-5
-            flex
-            flex-col
-            items-start
-            justify-between
-            gap-4
-            rounded-2xl
-            border
-            border-slate-200
-            bg-white
-            px-5
-            py-4
-            shadow-sm
-            sm:flex-row
-            sm:items-center
-            sm:px-6
-          "
-        >
-
-          <div
+        {!loading && mentors.length > 0 && (
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 8,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.4,
+            }}
+            viewport={{
+              once: true,
+            }}
             className="
+              mt-5
               flex
-              items-center
+              flex-col
               gap-3
+              border-t
+              border-slate-200
+              pt-4
+              sm:flex-row
+              sm:items-center
+              sm:justify-between
             "
           >
+            <div className="flex items-center gap-2.5">
+              <span
+                className="
+                  flex
+                  h-7
+                  w-7
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-[#0A1832]
+                  text-white
+                "
+              >
+                <FaUserTie size={11} />
+              </span>
+
+              <p
+                className="
+                  text-xs
+                  leading-5
+                  text-slate-500
+                "
+              >
+                Guidance is part of the DataLattice learning
+                experience.
+              </p>
+            </div>
 
             <div
               className="
                 flex
-                h-9
-                w-9
-                shrink-0
                 items-center
-                justify-center
-                rounded-xl
-                bg-blue-50
-                text-[#1463FF]
+                gap-2
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.14em]
+                text-[#0C5FF5]
               "
             >
+              Mentor network
 
-              <FaChartLine
-                size={13}
-              />
-
+              <FaArrowRight size={8} />
             </div>
-
-
-            <div>
-
-              <p
-                className="
-                  text-sm
-                  font-semibold
-                  text-[#0B1B3A]
-                "
-              >
-                Guidance is part of the learning system.
-              </p>
-
-
-              <p
-                className="
-                  mt-0.5
-                  text-[11px]
-                  text-slate-400
-                "
-              >
-                Public mentor profiles are connected directly to platform data.
-
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <div
-            className="
-              flex
-              items-center
-              gap-2
-              text-[9px]
-              font-semibold
-              uppercase
-              tracking-[0.16em]
-              text-[#06B6D4]
-            "
-          >
-
-            <span
-              className="
-                h-1.5
-                w-1.5
-                rounded-full
-                bg-[#06B6D4]
-              "
-            />
-
-            Live profile data
-
-            <FaArrowRight
-              size={8}
-            />
-
-          </div>
-
-        </motion.div>
-
+          </motion.div>
+        )}
       </div>
-
     </section>
-
   );
-
 }
-
 
 // ============================================================
 // MENTOR CARD
@@ -709,22 +390,18 @@ function MentorCard({
   mentor,
   index,
 }) {
-
   const accent =
     mentorAccents[
-      index %
-      mentorAccents.length
+      index % mentorAccents.length
     ];
 
+  const Icon = accent.icon;
 
-  const initials =
-    getInitials(
-      mentor.full_name
-    );
-
+  const initials = getInitials(
+    mentor?.full_name
+  );
 
   return (
-
     <motion.article
       initial={{
         opacity: 0,
@@ -736,12 +413,12 @@ function MentorCard({
       }}
       transition={{
         duration: 0.45,
-        delay:
-          index * 0.07,
+        delay: index * 0.06,
+        ease: [0.22, 1, 0.36, 1],
       }}
       viewport={{
         once: true,
-        amount: 0.2,
+        amount: 0.15,
       }}
       whileHover={{
         y: -4,
@@ -749,120 +426,76 @@ function MentorCard({
       className="
         group
         relative
+        flex
+        min-h-[340px]
+        flex-col
         overflow-hidden
         rounded-[22px]
         border
         border-slate-200
         bg-white
-        shadow-[0_10px_35px_rgba(11,27,58,0.055)]
+        shadow-[0_10px_35px_rgba(10,24,50,0.05)]
         transition-all
         duration-300
-        hover:border-blue-100
-        hover:shadow-[0_18px_45px_rgba(11,27,58,0.10)]
+        hover:border-[#0C5FF5]/20
+        hover:shadow-[0_18px_45px_rgba(10,24,50,0.09)]
       "
     >
-
-      {/* ====================================================
-          TOP DATA BAR
-      ==================================================== */}
+      {/* ======================================================
+          TOP ACCENT
+      ====================================================== */}
 
       <div
         className="
-          h-1
+          h-[3px]
           w-full
           bg-gradient-to-r
-          from-[#0B1B3A]
-          via-[#1463FF]
-          to-[#06B6D4]
+          from-[#0C5FF5]
+          via-[#0289F9]
+          to-[#3531E7]
         "
       />
 
-
-      {/* ====================================================
-          PROFILE AREA
-      ==================================================== */}
+      {/* ======================================================
+          CARD CONTENT
+      ====================================================== */}
 
       <div
         className="
-          relative
-          overflow-hidden
-          px-5
-          pb-5
-          pt-5
+          flex
+          flex-1
+          flex-col
+          p-5
         "
       >
-
-        {/* ==================================================
-            SUBTLE DATA VISUAL
-        ================================================== */}
-
-        <div
-          className="
-            pointer-events-none
-            absolute
-            right-[-25px]
-            top-[-25px]
-            h-28
-            w-28
-            rounded-full
-            border
-            border-blue-100
-            bg-blue-50/50
-          "
-        />
-
+        {/* ====================================================
+            CARD TOP
+        ==================================================== */}
 
         <div
           className="
-            pointer-events-none
-            absolute
-            right-4
-            top-4
-            h-16
-            w-16
-            rounded-full
-            border
-            border-cyan-100
-          "
-        />
-
-
-        {/* ==================================================
-            NUMBER
-        ================================================== */}
-
-        <div
-          className="
-            relative
-            z-10
             flex
-            items-center
+            items-start
             justify-between
+            gap-3
           "
         >
-
           <span
             className="
               rounded-full
-              border
-              border-blue-100
-              bg-blue-50
+              bg-[#F1F6FF]
               px-2.5
               py-1.5
               text-[8px]
               font-semibold
+              uppercase
               tracking-[0.14em]
-              text-[#1463FF]
+              text-[#0C5FF5]
             "
           >
-            MENTOR {String(
-              index + 1
-            ).padStart(
-              2,
-              "0"
-            )}
+            Mentor{" "}
+            {String(index + 1).padStart(2, "0")}
           </span>
-
 
           <span
             className="
@@ -875,18 +508,15 @@ function MentorCard({
           >
             {accent.label}
           </span>
-
         </div>
 
-
-        {/* ==================================================
+        {/* ====================================================
             AVATAR
-        ================================================== */}
+        ==================================================== */}
 
         <div
           className="
             relative
-            z-10
             mt-6
             flex
             h-16
@@ -894,16 +524,17 @@ function MentorCard({
             items-center
             justify-center
             rounded-2xl
-            bg-[#0B1B3A]
+            bg-gradient-to-br
+            from-[#0C5FF5]
+            via-[#0289F9]
+            to-[#3531E7]
             text-lg
             font-semibold
             text-white
-            shadow-[0_10px_25px_rgba(11,27,58,0.14)]
+            shadow-[0_10px_25px_rgba(12,95,245,0.20)]
           "
         >
-
           {initials}
-
 
           <span
             className="
@@ -915,38 +546,28 @@ function MentorCard({
               rounded-full
               border-2
               border-white
-              bg-[#06B6D4]
+              bg-[#0289F9]
             "
           />
-
         </div>
 
+        {/* ====================================================
+            NAME
+        ==================================================== */}
 
-        {/* ==================================================
-            NAME + DESIGNATION
-        ================================================== */}
-
-        <div
-          className="
-            relative
-            z-10
-            mt-4
-          "
-        >
-
+        <div className="mt-5">
           <p
             className="
-              text-[9px]
+              text-[8px]
               font-semibold
               uppercase
-              tracking-[0.16em]
-              text-[#1463FF]
+              tracking-[0.15em]
+              text-[#0289F9]
             "
           >
-            {mentor.designation ||
+            {mentor?.designation ||
               "Data Mentor"}
           </p>
-
 
           <h3
             className="
@@ -954,28 +575,22 @@ function MentorCard({
               truncate
               text-lg
               font-semibold
-              tracking-[-0.02em]
-              text-[#0B1B3A]
+              tracking-[-0.025em]
+              text-[#0A1832]
             "
-            title={
-              mentor.full_name
-            }
+            title={mentor?.full_name}
           >
-            {mentor.full_name}
+            {mentor?.full_name}
           </h3>
-
         </div>
 
-
-        {/* ==================================================
+        {/* ====================================================
             SPECIALIZATION
-        ================================================== */}
+        ==================================================== */}
 
         <div
           className="
-            relative
-            z-10
-            mt-4
+            mt-5
             rounded-xl
             border
             border-slate-100
@@ -983,7 +598,6 @@ function MentorCard({
             p-3
           "
         >
-
           <div
             className="
               flex
@@ -991,34 +605,26 @@ function MentorCard({
               gap-2.5
             "
           >
-
             <div
               className="
-                mt-0.5
                 flex
-                h-7
-                w-7
+                h-8
+                w-8
                 shrink-0
                 items-center
                 justify-center
                 rounded-lg
                 bg-white
-                text-[#1463FF]
+                text-[#0C5FF5]
                 shadow-sm
+                ring-1
+                ring-slate-100
               "
             >
-
-              {accent.icon}
-
+              <Icon size={12} />
             </div>
 
-
-            <div
-              className="
-                min-w-0
-              "
-            >
-
+            <div className="min-w-0">
               <p
                 className="
                   text-[8px]
@@ -1031,7 +637,6 @@ function MentorCard({
                 Specialization
               </p>
 
-
               <p
                 className="
                   mt-1
@@ -1041,65 +646,62 @@ function MentorCard({
                   text-slate-600
                 "
               >
-                {mentor.specialization ||
+                {mentor?.specialization ||
                   "Data and technology"}
               </p>
-
             </div>
-
           </div>
-
         </div>
 
-
-        {/* ==================================================
+        {/* ====================================================
             EXPERIENCE
-        ================================================== */}
+        ==================================================== */}
 
         <div
           className="
-            mt-4
-            flex
-            items-center
-            justify-between
-            border-t
-            border-slate-100
-            pt-4
+            mt-auto
+            pt-5
           "
         >
-
-          <span
+          <div
             className="
-              text-[8px]
-              font-semibold
-              uppercase
-              tracking-[0.14em]
-              text-slate-400
+              flex
+              items-center
+              justify-between
+              border-t
+              border-slate-100
+              pt-4
             "
           >
-            Experience
-          </span>
+            <span
+              className="
+                text-[8px]
+                font-semibold
+                uppercase
+                tracking-[0.14em]
+                text-slate-400
+              "
+            >
+              Experience
+            </span>
 
-
-          <span
-            className="
-              text-[11px]
-              font-semibold
-              text-[#0B1B3A]
-            "
-          >
-            {mentor.experience ||
-              "Professional"}
-          </span>
-
+            <span
+              className="
+                text-[11px]
+                font-semibold
+                text-[#0A1832]
+              "
+            >
+              {mentor?.experience ||
+                "Professional"}
+            </span>
+          </div>
         </div>
-
       </div>
 
-
-      {/* ====================================================
+      {/* ======================================================
           CARD FOOTER
-      ==================================================== */}
+      ====================================================== */}
 
       <div
         className="
@@ -1108,205 +710,101 @@ function MentorCard({
           justify-between
           border-t
           border-slate-100
-          bg-slate-50/70
+          bg-[#FAFCFF]
           px-5
           py-3.5
         "
       >
-
         <span
           className="
             text-[8px]
             font-semibold
             uppercase
-            tracking-[0.14em]
+            tracking-[0.13em]
             text-slate-400
           "
         >
           DataLattice Mentor
         </span>
 
-
         <span
           className="
             flex
             items-center
             gap-1.5
-            text-[10px]
+            text-[9px]
             font-semibold
-            text-[#1463FF]
+            text-[#0C5FF5]
             transition-transform
             duration-300
             group-hover:translate-x-0.5
           "
         >
-
           Guidance
 
-          <FaArrowRight
-            size={8}
-          />
-
+          <FaArrowRight size={7} />
         </span>
-
       </div>
-
     </motion.article>
-
   );
-
 }
-
 
 // ============================================================
 // LOADING STATE
 // ============================================================
 
 function MentorLoadingState() {
-
   return (
-
     <div
       className="
-        mt-7
+        mt-8
         grid
         gap-4
         sm:grid-cols-2
         lg:grid-cols-4
       "
     >
+      {[1, 2, 3, 4].map((item) => (
+        <div
+          key={item}
+          className="
+            min-h-[340px]
+            animate-pulse
+            overflow-hidden
+            rounded-[22px]
+            border
+            border-slate-200
+            bg-white
+          "
+        >
+          <div className="h-[3px] bg-slate-100" />
 
-      {[1, 2, 3, 4].map(
-        (
-          item
-        ) => (
-
-          <div
-            key={
-              item
-            }
-            className="
-              overflow-hidden
-              rounded-[22px]
-              border
-              border-slate-200
-              bg-white
-              shadow-sm
-            "
-          >
-
-            <div
-              className="
-                h-1
-                animate-pulse
-                bg-slate-200
-              "
-            />
-
-
-            <div
-              className="
-                space-y-4
-                p-5
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  justify-between
-                "
-              >
-
-                <div
-                  className="
-                    h-5
-                    w-20
-                    animate-pulse
-                    rounded-full
-                    bg-slate-200
-                  "
-                />
-
-
-                <div
-                  className="
-                    h-3
-                    w-14
-                    animate-pulse
-                    rounded-full
-                    bg-slate-100
-                  "
-                />
-
-              </div>
-
-
-              <div
-                className="
-                  h-16
-                  w-16
-                  animate-pulse
-                  rounded-2xl
-                  bg-slate-200
-                "
-              />
-
-
-              <div
-                className="
-                  h-3
-                  w-24
-                  animate-pulse
-                  rounded-full
-                  bg-slate-200
-                "
-              />
-
-
-              <div
-                className="
-                  h-5
-                  w-36
-                  animate-pulse
-                  rounded-full
-                  bg-slate-200
-                "
-              />
-
-
-              <div
-                className="
-                  h-14
-                  animate-pulse
-                  rounded-xl
-                  bg-slate-100
-                "
-              />
-
-
-              <div
-                className="
-                  h-5
-                  animate-pulse
-                  rounded-full
-                  bg-slate-100
-                "
-              />
-
+          <div className="p-5">
+            <div className="flex justify-between">
+              <div className="h-5 w-20 rounded-full bg-slate-100" />
+              <div className="h-3 w-12 rounded-full bg-slate-100" />
             </div>
 
+            <div className="mt-6 h-16 w-16 rounded-2xl bg-slate-100" />
+
+            <div className="mt-5 h-2 w-20 rounded bg-slate-100" />
+
+            <div className="mt-2 h-5 w-32 rounded bg-slate-200" />
+
+            <div className="mt-5 h-[70px] rounded-xl bg-slate-100" />
+
+            <div className="mt-5 border-t border-slate-100 pt-4">
+              <div className="flex justify-between">
+                <div className="h-2 w-16 rounded bg-slate-100" />
+                <div className="h-3 w-20 rounded bg-slate-100" />
+              </div>
+            </div>
           </div>
-
-        )
-      )}
-
+        </div>
+      ))}
     </div>
-
   );
-
 }
-
 
 // ============================================================
 // EMPTY STATE
@@ -1315,14 +813,20 @@ function MentorLoadingState() {
 function MentorEmptyState({
   message,
 }) {
-
   return (
-
-    <div
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 10,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
       className="
-        mt-7
+        mt-8
         flex
-        min-h-[190px]
+        min-h-[180px]
         flex-col
         items-center
         justify-center
@@ -1330,32 +834,25 @@ function MentorEmptyState({
         border
         border-dashed
         border-slate-300
-        bg-white
+        bg-[#F8FBFF]
         px-6
         text-center
-        shadow-sm
       "
     >
-
       <div
         className="
           flex
-          h-12
-          w-12
+          h-11
+          w-11
           items-center
           justify-center
-          rounded-2xl
-          bg-blue-50
-          text-[#1463FF]
+          rounded-xl
+          bg-[#0A1832]
+          text-white
         "
       >
-
-        <FaUserTie
-          size={17}
-        />
-
+        <FaUserTie size={15} />
       </div>
-
 
       <p
         className="
@@ -1368,58 +865,34 @@ function MentorEmptyState({
       >
         {message}
       </p>
-
-    </div>
-
+    </motion.div>
   );
-
 }
-
 
 // ============================================================
 // INITIALS
 // ============================================================
 
-function getInitials(
-  name
-) {
-
+function getInitials(name) {
   if (!name) {
-
     return "DL";
-
   }
 
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
-  const parts =
-    name
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-
-
-  if (
-    parts.length === 1
-  ) {
-
+  if (parts.length === 1) {
     return parts[0]
-      .slice(
-        0,
-        2
-      )
+      .slice(0, 2)
       .toUpperCase();
-
   }
-
 
   return (
     parts[0][0] +
-    parts[
-      parts.length - 1
-    ][0]
+    parts[parts.length - 1][0]
   ).toUpperCase();
-
 }
-
 
 export default Mentors;
