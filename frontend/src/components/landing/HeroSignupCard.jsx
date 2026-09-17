@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaUser,
@@ -8,283 +8,674 @@ import {
   FaShieldHalved,
   FaArrowLeft,
   FaChevronDown,
+  FaRotateRight,
 } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { verifySignupOtp } from "../../services/authService";
+import { successToast } from "../../utils/toast";
 
-import {
-  requestSignupOtp,
-  verifySignupOtp,
-} from "../../services/authService";
+const MSG91_WIDGET_ID = import.meta.env.VITE_MSG91_WIDGET_ID;
+const MSG91_WIDGET_TOKEN = import.meta.env.VITE_MSG91_WIDGET_TOKEN;
 
-import {
-  successToast,
-  errorToast,
-} from "../../utils/toast";
+const MSG91_WIDGET_SCRIPT_ID =
+  "datalattice-msg91-otp-script";
 
-/* =========================================================
-   COUNTRY CODES
+const MSG91_WIDGET_SCRIPT_URL =
+  "https://verify.msg91.com/otp-provider.js";
 
-   India is intentionally first and selected by default.
-   The phone number itself is stored without the country
-   code. The complete international number is generated
-   only when communicating with the OTP API.
-   ========================================================= */
+const MSG91_INIT_KEY =
+  "__datalatticeMsg91Initialized";
 
-const COUNTRY_CODES = [
+const COUNTRIES = [
   {
     code: "IN",
     name: "India",
     dialCode: "+91",
-    flag: "🇮🇳",
     maxLength: 10,
   },
   {
     code: "US",
     name: "United States",
     dialCode: "+1",
-    flag: "🇺🇸",
     maxLength: 10,
   },
   {
     code: "CA",
     name: "Canada",
     dialCode: "+1",
-    flag: "🇨🇦",
     maxLength: 10,
   },
   {
     code: "GB",
     name: "United Kingdom",
     dialCode: "+44",
-    flag: "🇬🇧",
     maxLength: 10,
   },
   {
     code: "AU",
     name: "Australia",
     dialCode: "+61",
-    flag: "🇦🇺",
     maxLength: 9,
   },
   {
     code: "AE",
     name: "United Arab Emirates",
     dialCode: "+971",
-    flag: "🇦🇪",
     maxLength: 9,
   },
   {
     code: "SG",
     name: "Singapore",
     dialCode: "+65",
-    flag: "🇸🇬",
     maxLength: 8,
   },
   {
     code: "MY",
     name: "Malaysia",
     dialCode: "+60",
-    flag: "🇲🇾",
     maxLength: 10,
   },
   {
     code: "DE",
     name: "Germany",
     dialCode: "+49",
-    flag: "🇩🇪",
     maxLength: 11,
   },
   {
     code: "FR",
     name: "France",
     dialCode: "+33",
-    flag: "🇫🇷",
     maxLength: 9,
   },
   {
     code: "IT",
     name: "Italy",
     dialCode: "+39",
-    flag: "🇮🇹",
     maxLength: 10,
   },
   {
     code: "ES",
     name: "Spain",
     dialCode: "+34",
-    flag: "🇪🇸",
     maxLength: 9,
   },
   {
     code: "NZ",
     name: "New Zealand",
     dialCode: "+64",
-    flag: "🇳🇿",
-    maxLength: 10,
+    maxLength: 9,
   },
   {
     code: "JP",
     name: "Japan",
     dialCode: "+81",
-    flag: "🇯🇵",
     maxLength: 10,
   },
   {
     code: "KR",
     name: "South Korea",
     dialCode: "+82",
-    flag: "🇰🇷",
     maxLength: 10,
   },
   {
     code: "BR",
     name: "Brazil",
     dialCode: "+55",
-    flag: "🇧🇷",
     maxLength: 11,
   },
   {
     code: "ZA",
     name: "South Africa",
     dialCode: "+27",
-    flag: "🇿🇦",
     maxLength: 9,
   },
   {
     code: "SA",
     name: "Saudi Arabia",
     dialCode: "+966",
-    flag: "🇸🇦",
     maxLength: 9,
   },
   {
     code: "QA",
     name: "Qatar",
     dialCode: "+974",
-    flag: "🇶🇦",
     maxLength: 8,
   },
   {
     code: "KW",
     name: "Kuwait",
     dialCode: "+965",
-    flag: "🇰🇼",
     maxLength: 8,
   },
 ];
 
-/* =========================================================
-   DATALATTICE HERO SIGNUP CARD
+const OTP_EXPIRY_SECONDS = 15 * 60;
+const RESEND_SECONDS = 60;
 
-   Flow:
-   1. Name + Country Code + Phone
-   2. Send OTP
-   3. OTP verification
-   4. Redirect to Demo Student Panel
+/* ============================================================
+   MSG91 RESPONSE HELPERS
+============================================================ */
 
-   IMPORTANT:
-   This component does NOT create a normal student account.
-   Existing OTP infrastructure is reused.
-   ========================================================= */
+const getNestedValue = (
+  data,
+  paths = []
+) => {
+  for (const path of paths) {
+    let current = data;
 
-function HeroSignupCard() {
+    for (const key of path.split(".")) {
+      if (current == null) {
+        current = undefined;
+        break;
+      }
+
+      current = current[key];
+    }
+
+    if (
+      current !== undefined &&
+      current !== null &&
+      current !== ""
+    ) {
+      return current;
+    }
+  }
+
+  return null;
+};
+
+const extractMsg91RequestId = (
+  data
+) => {
+  if (!data) {
+    return null;
+  }
+
+  if (typeof data === "string") {
+    return data;
+  }
+
+  return getNestedValue(data, [
+    "reqId",
+    "req_id",
+    "request_id",
+    "requestId",
+    "message",
+    "data.reqId",
+    "data.req_id",
+    "data.request_id",
+    "data.requestId",
+    "data.message",
+  ]);
+};
+
+const extractMsg91AccessToken = (
+  data
+) => {
+  if (!data) {
+    return null;
+  }
+
+  if (typeof data === "string") {
+    return data;
+  }
+
+  return getNestedValue(data, [
+    "access-token",
+    "accessToken",
+    "access_token",
+    "token",
+    "data.access-token",
+    "data.accessToken",
+    "data.access_token",
+    "data.token",
+    "message",
+    "data.message",
+  ]);
+};
+
+const areMsg91MethodsReady = () => {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.sendOtp === "function" &&
+    typeof window.verifyOtp === "function" &&
+    typeof window.retryOtp === "function"
+  );
+};
+
+const getFriendlyMsg91Error = (
+  error
+) => {
+  if (!error) {
+    return "Unable to send OTP. Please try again.";
+  }
+
+  if (typeof error === "string") {
+    return error;
+  }
+
+  return (
+    error?.message ||
+    error?.error ||
+    error?.description ||
+    error?.data?.message ||
+    "Unable to send OTP. Please try again."
+  );
+};
+
+/* ============================================================
+   VALIDATION
+============================================================ */
+
+const isValidName = (value) => {
+  return /^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s.'-]{1,49}$/.test(
+    value.trim()
+  );
+};
+
+const isValidIndianPhone = (
+  value
+) => {
+  return /^[6-9]\d{9}$/.test(value);
+};
+
+const isValidPhone = (
+  value,
+  country
+) => {
+  const digits =
+    value.replace(/\D/g, "");
+
+  if (!country) {
+    return false;
+  }
+
+  if (
+    digits.length < 7 ||
+    digits.length > country.maxLength
+  ) {
+    return false;
+  }
+
+  if (country.code === "IN") {
+    return isValidIndianPhone(
+      digits
+    );
+  }
+
+  return true;
+};
+
+const getInternationalPhone = (
+  country,
+  localPhone
+) => {
+  const digits =
+    localPhone.replace(/\D/g, "");
+
+  return `${country.dialCode}${digits}`;
+};
+
+const getMsg91Identifier = (
+  internationalPhone
+) => {
+  return internationalPhone.replace(
+    /\+/g,
+    ""
+  );
+};
+
+/* ============================================================
+   COMPONENT
+============================================================ */
+
+export default function HeroSignupCard() {
   const navigate = useNavigate();
 
-  /* =========================================================
-     FORM STATE
-     ========================================================= */
+  const countryDropdownRef =
+    useRef(null);
 
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
+  const otpInputRef =
+    useRef(null);
 
-  /*
-   * India is the default country.
-   */
-  const [selectedCountry, setSelectedCountry] = useState(
-    COUNTRY_CODES[0]
-  );
+  const [
+    msg91Ready,
+    setMsg91Ready,
+  ] = useState(false);
 
-  const [countryDropdownOpen, setCountryDropdownOpen] =
-    useState(false);
+  const [
+    selectedCountry,
+    setSelectedCountry,
+  ] = useState(COUNTRIES[0]);
 
-  /* =========================================================
-     OTP STATE
-     ========================================================= */
+  const [
+    countryOpen,
+    setCountryOpen,
+  ] = useState(false);
 
-  const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("details");
+  const [
+    fullName,
+    setFullName,
+  ] = useState("");
 
-  const [otpLoading, setOtpLoading] = useState(false);
-  const [otpVerifying, setOtpVerifying] = useState(false);
+  const [
+    localPhone,
+    setLocalPhone,
+  ] = useState("");
 
-  const [verificationExpiresAt, setVerificationExpiresAt] =
-    useState(null);
+  const [otp, setOtp] =
+    useState("");
 
-  const [resendAvailableAt, setResendAvailableAt] =
-    useState(null);
+  const [
+    step,
+    setStep,
+  ] = useState("details");
 
-  const [resendRemaining, setResendRemaining] =
-    useState(0);
+  const [
+    msg91RequestId,
+    setMsg91RequestId,
+  ] = useState(null);
 
-  /* =========================================================
-     ERRORS
-     ========================================================= */
+  const [
+    loading,
+    setLoading,
+  ] = useState(false);
 
-  const [errors, setErrors] = useState({});
+  const [
+    verifyLoading,
+    setVerifyLoading,
+  ] = useState(false);
 
-  /* =========================================================
-     OTP COUNTDOWN
-     ========================================================= */
+  const [
+    resendLoading,
+    setResendLoading,
+  ] = useState(false);
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    otpExpiresAt,
+    setOtpExpiresAt,
+  ] = useState(null);
+
+  const [
+    remainingSeconds,
+    setRemainingSeconds,
+  ] = useState(0);
+
+  const [
+    resendAvailableAt,
+    setResendAvailableAt,
+  ] = useState(null);
+
+  const [
+    resendCountdown,
+    setResendCountdown,
+  ] = useState(0);
+
+  /* ==========================================================
+     MSG91 SDK INITIALIZATION
+  ========================================================== */
 
   useEffect(() => {
-    if (!resendAvailableAt) {
-      setResendRemaining(0);
+    let intervalId;
+    let attempts = 0;
+    let cancelled = false;
+
+    const finishIfReady = () => {
+      if (cancelled) {
+        return true;
+      }
+
+      if (areMsg91MethodsReady()) {
+        setMsg91Ready(true);
+
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+
+        return true;
+      }
+
+      return false;
+    };
+
+    const initialize = () => {
+      if (cancelled) {
+        return;
+      }
+
+      if (finishIfReady()) {
+        return;
+      }
+
+      if (
+        typeof window.initSendOTP !==
+        "function"
+      ) {
+        attempts += 1;
+
+        if (attempts >= 100) {
+          if (intervalId) {
+            clearInterval(
+              intervalId
+            );
+          }
+
+          console.error(
+            "MSG91 OTP SDK initialization function was not found."
+          );
+
+          setMsg91Ready(false);
+        }
+
+        return;
+      }
+
+      try {
+        if (!window[MSG91_INIT_KEY]) {
+          window.initSendOTP({
+            widgetId:
+              MSG91_WIDGET_ID,
+
+            tokenAuth:
+              MSG91_WIDGET_TOKEN,
+
+            identifier: "",
+
+            exposeMethods: true,
+
+            success: () => {},
+
+            failure: (
+              sdkError
+            ) => {
+              console.error(
+                "MSG91 widget initialization error:",
+                sdkError
+              );
+            },
+          });
+
+          window[MSG91_INIT_KEY] =
+            true;
+        }
+      } catch (sdkError) {
+        console.error(
+          "MSG91 widget initialization exception:",
+          sdkError
+        );
+      }
+
+      attempts += 1;
+
+      finishIfReady();
+    };
+
+    const existingScript =
+      document.getElementById(
+        MSG91_WIDGET_SCRIPT_ID
+      );
+
+    if (!existingScript) {
+      const script =
+        document.createElement(
+          "script"
+        );
+
+      script.id =
+        MSG91_WIDGET_SCRIPT_ID;
+
+      script.src =
+        MSG91_WIDGET_SCRIPT_URL;
+
+      script.async = true;
+
+      script.onload = () => {
+        initialize();
+      };
+
+      script.onerror = () => {
+        console.error(
+          "Unable to load MSG91 OTP SDK."
+        );
+
+        setMsg91Ready(false);
+      };
+
+      document.body.appendChild(
+        script
+      );
+    }
+
+    intervalId =
+      window.setInterval(
+        initialize,
+        100
+      );
+
+    initialize();
+
+    return () => {
+      cancelled = true;
+
+      if (intervalId) {
+        clearInterval(
+          intervalId
+        );
+      }
+    };
+  }, []);
+
+  /* ==========================================================
+     OTP TIMER
+  ========================================================== */
+
+  useEffect(() => {
+    if (!otpExpiresAt) {
       return undefined;
     }
 
-    const updateCountdown = () => {
-      const remainingMs = Math.max(
-        0,
-        resendAvailableAt - Date.now()
-      );
+    const updateCountdown =
+      () => {
+        const seconds =
+          Math.max(
+            0,
+            Math.ceil(
+              (otpExpiresAt -
+                Date.now()) /
+                1000
+            )
+          );
 
-      const remainingSeconds = Math.ceil(
-        remainingMs / 1000
-      );
+        setRemainingSeconds(
+          seconds
+        );
 
-      setResendRemaining(remainingSeconds);
-
-      if (remainingSeconds === 0) {
-        setResendAvailableAt(null);
-      }
-    };
+        if (seconds <= 0) {
+          setOtpExpiresAt(
+            null
+          );
+        }
+      };
 
     updateCountdown();
 
-    const interval = window.setInterval(
-      updateCountdown,
-      1000
-    );
+    const interval =
+      window.setInterval(
+        updateCountdown,
+        1000
+      );
 
     return () => {
-      window.clearInterval(interval);
+      clearInterval(interval);
+    };
+  }, [otpExpiresAt]);
+
+  /* ==========================================================
+     RESEND TIMER
+  ========================================================== */
+
+  useEffect(() => {
+    if (!resendAvailableAt) {
+      return undefined;
+    }
+
+    const updateCountdown =
+      () => {
+        const seconds =
+          Math.max(
+            0,
+            Math.ceil(
+              (resendAvailableAt -
+                Date.now()) /
+                1000
+            )
+          );
+
+        setResendCountdown(
+          seconds
+        );
+
+        if (seconds <= 0) {
+          setResendAvailableAt(
+            null
+          );
+        }
+      };
+
+    updateCountdown();
+
+    const interval =
+      window.setInterval(
+        updateCountdown,
+        1000
+      );
+
+    return () => {
+      clearInterval(interval);
     };
   }, [resendAvailableAt]);
 
-  /* =========================================================
-     CLOSE COUNTRY DROPDOWN WHEN CLICKING OUTSIDE
-     ========================================================= */
+  /* ==========================================================
+     COUNTRY DROPDOWN
+  ========================================================== */
 
   useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (
-        !event.target.closest(
-          "[data-country-selector]"
-        )
-      ) {
-        setCountryDropdownOpen(false);
-      }
-    };
+    const handleOutsideClick =
+      (event) => {
+        if (
+          countryDropdownRef.current &&
+          !countryDropdownRef.current.contains(
+            event.target
+          )
+        ) {
+          setCountryOpen(false);
+        }
+      };
 
     document.addEventListener(
       "mousedown",
@@ -299,1243 +690,1411 @@ function HeroSignupCard() {
     };
   }, []);
 
-  /* =========================================================
-     NAME VALIDATION
-     ========================================================= */
+  /* ==========================================================
+     OTP FOCUS
+  ========================================================== */
 
-  const validateName = (value) => {
-    const name = value.trim();
-
-    if (!name) {
-      return "Please enter your name.";
+  useEffect(() => {
+    if (step !== "otp") {
+      return undefined;
     }
 
-    if (name.length < 2) {
-      return "Please enter your full name.";
-    }
+    const timeout =
+      window.setTimeout(
+        () => {
+          otpInputRef.current?.focus();
+        },
+        150
+      );
 
-    if (!/^[A-Za-zÀ-ÿ\s.'-]+$/.test(name)) {
-      return "Please enter a valid name.";
-    }
+    return () =>
+      clearTimeout(timeout);
+  }, [step]);
 
-    return "";
-  };
+  /* ==========================================================
+     VALIDATE DETAILS
+  ========================================================== */
 
-  /* =========================================================
-     PHONE VALIDATION
+  const validateDetails =
+    () => {
+      const name =
+        fullName.trim();
 
-     The phone input contains only the local number.
-     The country dial code is handled separately.
-     ========================================================= */
+      const phone =
+        localPhone.replace(
+          /\D/g,
+          ""
+        );
 
-  const validatePhone = (value) => {
-    const phoneValue = value.replace(/\D/g, "");
+      if (!name) {
+        return "Please enter your name.";
+      }
 
-    if (!phoneValue) {
-      return "Please enter your phone number.";
-    }
+      if (!isValidName(name)) {
+        return "Please enter a valid name.";
+      }
 
-    if (
-      phoneValue.length < 7 ||
-      phoneValue.length > selectedCountry.maxLength
-    ) {
-      return `Please enter a valid ${selectedCountry.name} phone number.`;
-    }
+      if (!phone) {
+        return "Please enter your phone number.";
+      }
 
-    /*
-     * Indian mobile numbers should normally start with
-     * 6, 7, 8 or 9.
-     */
-    if (
-      selectedCountry.code === "IN" &&
-      !/^[6-9]\d{9}$/.test(phoneValue)
-    ) {
-      return "Please enter a valid 10-digit Indian mobile number.";
-    }
+      if (
+        !isValidPhone(
+          phone,
+          selectedCountry
+        )
+      ) {
+        if (
+          selectedCountry.code ===
+          "IN"
+        ) {
+          return "Please enter a valid 10-digit Indian mobile number.";
+        }
 
-    return "";
-  };
+        return `Please enter a valid ${selectedCountry.name} phone number.`;
+      }
 
-  /* =========================================================
-     BUILD COMPLETE INTERNATIONAL PHONE NUMBER
-     ========================================================= */
+      return "";
+    };
 
-  const getInternationalPhone = () => {
-    const localPhone = phone
-      .replace(/\D/g, "")
-      .trim();
+  /* ==========================================================
+     SEND OTP
+  ========================================================== */
 
-    return `${selectedCountry.dialCode}${localPhone}`;
-  };
-
-  /* =========================================================
-     NAME CHANGE
-     ========================================================= */
-
-  const handleNameChange = (event) => {
-    const value = event.target.value;
-
-    setFullName(value);
-
-    setErrors((previous) => ({
-      ...previous,
-      fullName: "",
-      form: "",
-    }));
-  };
-
-  /* =========================================================
-     PHONE CHANGE
-
-     Only numeric digits are stored.
-     ========================================================= */
-
-  const handlePhoneChange = (event) => {
-    const value = event.target.value
-      .replace(/\D/g, "")
-      .slice(0, selectedCountry.maxLength);
-
-    setPhone(value);
-
-    setErrors((previous) => ({
-      ...previous,
-      phone: "",
-      form: "",
-    }));
-  };
-
-  /* =========================================================
-     COUNTRY CHANGE
-     ========================================================= */
-
-  const handleCountryChange = (country) => {
-    setSelectedCountry(country);
-    setCountryDropdownOpen(false);
-
-    /*
-     * Re-trim the existing phone number according to the
-     * newly selected country's expected local length.
-     */
-    setPhone((previous) =>
-      previous
-        .replace(/\D/g, "")
-        .slice(0, country.maxLength)
-    );
-
-    setErrors((previous) => ({
-      ...previous,
-      phone: "",
-      form: "",
-    }));
-  };
-
-  /* =========================================================
-     REQUEST OTP
-     ========================================================= */
-
-  const handleRequestOtp = async (event) => {
+  const handleRequestOtp = (
+    event
+  ) => {
     event.preventDefault();
 
-    const nameError = validateName(fullName);
-    const phoneError = validatePhone(phone);
+    setError("");
 
-    const newErrors = {};
+    const validationError =
+      validateDetails();
 
-    if (nameError) {
-      newErrors.fullName = nameError;
-    }
-
-    if (phoneError) {
-      newErrors.phone = phoneError;
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (validationError) {
+      setError(
+        validationError
+      );
       return;
     }
 
-    setOtpLoading(true);
+    if (
+      !MSG91_WIDGET_ID ||
+      !MSG91_WIDGET_TOKEN
+    ) {
+      setError(
+        "OTP service is not configured. Please contact support."
+      );
 
-    setErrors({});
+      console.error(
+        "Missing VITE_MSG91_WIDGET_ID or VITE_MSG91_WIDGET_TOKEN."
+      );
+
+      return;
+    }
+
+    if (
+      !msg91Ready ||
+      !areMsg91MethodsReady()
+    ) {
+      setError(
+        "OTP service is still loading. Please wait a moment and try again."
+      );
+
+      return;
+    }
 
     const internationalPhone =
-      getInternationalPhone();
+      getInternationalPhone(
+        selectedCountry,
+        localPhone
+      );
 
-    try {
-      const data = await requestSignupOtp(
+    const identifier =
+      getMsg91Identifier(
         internationalPhone
       );
 
-      /*
-       * Keep the lead information locally for the next
-       * demo-panel step.
-       *
-       * This does NOT replace backend lead creation.
-       */
-      sessionStorage.setItem(
-        "datalattice_demo_lead",
-        JSON.stringify({
-          full_name: fullName.trim(),
-          phone: internationalPhone,
-          country_code: selectedCountry.code,
-          dial_code: selectedCountry.dialCode,
-          local_phone: phone.trim(),
-          created_at: new Date().toISOString(),
-        })
-      );
-
-      setOtp("");
-      setStep("otp");
-
-      setVerificationExpiresAt(
-        data?.expiresAt || null
-      );
-
-      setResendAvailableAt(
-        Date.now() + 60000
-      );
-
-      successToast(
-        data?.message ||
-          "OTP sent successfully."
-      );
-    } catch (error) {
-      console.error(
-        "DATALATTICE OTP REQUEST ERROR:",
-        error
-      );
-
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Unable to send OTP. Please try again.";
-
-      setErrors({
-        phone: message,
-      });
-
-      errorToast(message);
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  /* =========================================================
-     VERIFY OTP
-     ========================================================= */
-
-  const handleVerifyOtp = async (event) => {
-    event.preventDefault();
-
-    if (!/^\d{6}$/.test(otp)) {
-      setErrors({
-        otp: "Please enter the 6-digit OTP.",
-      });
-
-      return;
-    }
-
-    setOtpVerifying(true);
-
-    setErrors({});
-
-    const internationalPhone =
-      getInternationalPhone();
+    setLoading(true);
 
     try {
-      const data = await verifySignupOtp(
-        internationalPhone,
-        otp
+      window.sendOtp(
+        identifier,
+
+        (data) => {
+          console.log(
+            "MSG91 OTP REQUEST SUCCESS:",
+            data
+          );
+
+          const requestId =
+            extractMsg91RequestId(
+              data
+            );
+
+          if (!requestId) {
+            console.error(
+              "MSG91 OTP response did not contain a request ID:",
+              data
+            );
+
+            setLoading(false);
+
+            setError(
+              "OTP was sent, but the verification session could not be created. Please try again."
+            );
+
+            return;
+          }
+
+          sessionStorage.setItem(
+            "datalattice_demo_lead",
+            JSON.stringify({
+              fullName:
+                fullName.trim(),
+
+              phone:
+                internationalPhone,
+
+              country:
+                selectedCountry.code,
+
+              dialCode:
+                selectedCountry.dialCode,
+            })
+          );
+
+          setMsg91RequestId(
+            requestId
+          );
+
+          setOtp("");
+
+          setOtpExpiresAt(
+            Date.now() +
+              OTP_EXPIRY_SECONDS *
+                1000
+          );
+
+          setResendAvailableAt(
+            Date.now() +
+              RESEND_SECONDS *
+                1000
+          );
+
+          setRemainingSeconds(
+            OTP_EXPIRY_SECONDS
+          );
+
+          setResendCountdown(
+            RESEND_SECONDS
+          );
+
+          setStep("otp");
+
+          setLoading(false);
+
+          successToast(
+            "OTP sent successfully."
+          );
+        },
+
+        (sdkError) => {
+          console.error(
+            "MSG91 OTP REQUEST ERROR:",
+            sdkError
+          );
+
+          setLoading(false);
+
+          setError(
+            getFriendlyMsg91Error(
+              sdkError
+            )
+          );
+        }
+      );
+    } catch (sdkError) {
+      console.error(
+        "MSG91 sendOtp exception:",
+        sdkError
       );
 
-      /*
-       * Save verification information for the demo panel.
-       *
-       * The demo panel can use this temporary session state
-       * until we connect the proper Lead backend flow.
-       */
-      sessionStorage.setItem(
-        "datalattice_demo_verification",
-        JSON.stringify({
-          verified: true,
-          verificationToken:
-            data?.verificationToken || "",
-          verified_at: new Date().toISOString(),
-        })
-      );
+      setLoading(false);
 
-      /*
-       * Tell HomeAccessGate that OTP verification has
-       * completed successfully.
-       *
-       * HomeAccessGate uses this event to close the
-       * floating signup modal.
-       */
-      window.dispatchEvent(
-        new CustomEvent(
-          "datalattice:demo-verified"
+      setError(
+        getFriendlyMsg91Error(
+          sdkError
         )
       );
-
-      successToast(
-        data?.message ||
-          "Phone number verified successfully."
-      );
-
-      /*
-       * Redirect the visitor to the DataLattice demo
-       * student experience.
-       */
-      window.setTimeout(() => {
-        navigate("/demo/student", {
-          replace: true,
-        });
-      }, 500);
-    } catch (error) {
-      console.error(
-        "DATALATTICE OTP VERIFICATION ERROR:",
-        error
-      );
-
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "OTP verification failed. Please try again.";
-
-      setErrors({
-        otp: message,
-      });
-
-      errorToast(message);
-    } finally {
-      setOtpVerifying(false);
     }
   };
 
-  /* =========================================================
-     CHANGE PHONE
-     ========================================================= */
+  /* ==========================================================
+     VERIFY OTP
+  ========================================================== */
 
-  const handleChangePhone = () => {
-    setStep("details");
-    setOtp("");
-    setVerificationExpiresAt(null);
-    setResendAvailableAt(null);
+  const handleVerifyOtp = (
+    event
+  ) => {
+    event.preventDefault();
 
-    setErrors({});
-  };
+    setError("");
 
-  /* =========================================================
-     RESEND OTP
-     ========================================================= */
+    const cleanOtp =
+      otp.replace(/\D/g, "");
 
-  const handleResendOtp = async () => {
-    if (resendRemaining > 0 || otpLoading) {
-      return;
-    }
-
-    const phoneError = validatePhone(phone);
-
-    if (phoneError) {
-      setErrors({
-        phone: phoneError,
-      });
+    if (
+      cleanOtp.length !== 4 &&
+      cleanOtp.length !== 6
+    ) {
+      setError(
+        "Please enter the OTP sent to your phone."
+      );
 
       return;
     }
 
-    setOtpLoading(true);
+    if (!msg91RequestId) {
+      setError(
+        "Your OTP session has expired. Please request a new OTP."
+      );
 
-    setErrors({});
+      return;
+    }
+
+    if (
+      otpExpiresAt &&
+      Date.now() > otpExpiresAt
+    ) {
+      setError(
+        "This OTP has expired. Please request a new OTP."
+      );
+
+      return;
+    }
+
+    if (
+      typeof window.verifyOtp !==
+      "function"
+    ) {
+      setError(
+        "OTP verification service is not ready. Please refresh and try again."
+      );
+
+      return;
+    }
 
     const internationalPhone =
-      getInternationalPhone();
+      getInternationalPhone(
+        selectedCountry,
+        localPhone
+      );
+
+    setVerifyLoading(true);
 
     try {
-      const data = await requestSignupOtp(
-        internationalPhone
+      window.verifyOtp(
+        Number(cleanOtp),
+
+        (data) => {
+          console.log(
+            "MSG91 OTP VERIFY SUCCESS:",
+            data
+          );
+
+          const accessToken =
+            extractMsg91AccessToken(
+              data
+            );
+
+          if (!accessToken) {
+            console.error(
+              "MSG91 verification succeeded but access token was not found:",
+              data
+            );
+
+            setVerifyLoading(
+              false
+            );
+
+            setError(
+              "OTP was verified, but the verification token was not returned. Please try again."
+            );
+
+            return;
+          }
+
+          verifySignupOtp(
+            internationalPhone,
+            cleanOtp,
+            accessToken
+          )
+            .then(
+              (response) => {
+                if (
+                  !response?.verificationToken
+                ) {
+                  throw new Error(
+                    "DataLattice verification token was not returned."
+                  );
+                }
+
+                sessionStorage.setItem(
+                  "datalattice_demo_verification",
+                  JSON.stringify({
+                    verificationToken:
+                      response.verificationToken,
+
+                    phone:
+                      internationalPhone,
+
+                    fullName:
+                      fullName.trim(),
+
+                    verifiedAt:
+                      new Date().toISOString(),
+                  })
+                );
+
+                window.dispatchEvent(
+                  new CustomEvent(
+                    "datalattice:demo-verified"
+                  )
+                );
+
+                setVerifyLoading(
+                  false
+                );
+
+                successToast(
+                  "Phone number verified successfully."
+                );
+
+                navigate(
+                  "/demo/student"
+                );
+              }
+            )
+            .catch(
+              (backendError) => {
+                console.error(
+                  "DataLattice OTP verification error:",
+                  backendError
+                );
+
+                setVerifyLoading(
+                  false
+                );
+
+                setError(
+                  backendError
+                    ?.response
+                    ?.data
+                    ?.message ||
+                    backendError?.message ||
+                    "Phone verification could not be completed. Please try again."
+                );
+              }
+            );
+        },
+
+        (sdkError) => {
+          console.error(
+            "MSG91 OTP VERIFY ERROR:",
+            sdkError
+          );
+
+          setVerifyLoading(
+            false
+          );
+
+          setError(
+            getFriendlyMsg91Error(
+              sdkError
+            )
+          );
+        },
+
+        msg91RequestId
       );
+    } catch (sdkError) {
+      console.error(
+        "MSG91 verifyOtp exception:",
+        sdkError
+      );
+
+      setVerifyLoading(false);
+
+      setError(
+        getFriendlyMsg91Error(
+          sdkError
+        )
+      );
+    }
+  };
+
+  /* ==========================================================
+     RESEND OTP
+  ========================================================== */
+
+  const handleResendOtp =
+    () => {
+      setError("");
+
+      if (!msg91RequestId) {
+        setError(
+          "Your OTP session is no longer available. Please request a new OTP."
+        );
+
+        return;
+      }
+
+      if (resendCountdown > 0) {
+        return;
+      }
+
+      if (
+        typeof window.retryOtp !==
+        "function"
+      ) {
+        setError(
+          "OTP resend service is not ready. Please try again."
+        );
+
+        return;
+      }
+
+      setResendLoading(true);
+
+      try {
+        window.retryOtp(
+          "11",
+
+          (data) => {
+            console.log(
+              "MSG91 OTP RESEND SUCCESS:",
+              data
+            );
+
+            const newRequestId =
+              extractMsg91RequestId(
+                data
+              );
+
+            if (newRequestId) {
+              setMsg91RequestId(
+                newRequestId
+              );
+            }
+
+            setOtp("");
+
+            setOtpExpiresAt(
+              Date.now() +
+                OTP_EXPIRY_SECONDS *
+                  1000
+            );
+
+            setResendAvailableAt(
+              Date.now() +
+                RESEND_SECONDS *
+                  1000
+            );
+
+            setRemainingSeconds(
+              OTP_EXPIRY_SECONDS
+            );
+
+            setResendCountdown(
+              RESEND_SECONDS
+            );
+
+            setResendLoading(
+              false
+            );
+
+            successToast(
+              "A new OTP has been sent."
+            );
+          },
+
+          (sdkError) => {
+            console.error(
+              "MSG91 OTP RESEND ERROR:",
+              sdkError
+            );
+
+            setResendLoading(
+              false
+            );
+
+            setError(
+              getFriendlyMsg91Error(
+                sdkError
+              )
+            );
+          },
+
+          msg91RequestId
+        );
+      } catch (sdkError) {
+        console.error(
+          "MSG91 retryOtp exception:",
+          sdkError
+        );
+
+        setResendLoading(false);
+
+        setError(
+          getFriendlyMsg91Error(
+            sdkError
+          )
+        );
+      }
+    };
+
+  /* ==========================================================
+     CHANGE PHONE
+  ========================================================== */
+
+  const handleChangePhone =
+    () => {
+      setStep("details");
 
       setOtp("");
 
-      setVerificationExpiresAt(
-        data?.expiresAt || null
-      );
+      setError("");
+
+      setMsg91RequestId(null);
+
+      setOtpExpiresAt(null);
 
       setResendAvailableAt(
-        Date.now() + 60000
+        null
       );
 
-      successToast(
-        data?.message ||
-          "A new OTP has been sent."
-      );
-    } catch (error) {
-      console.error(
-        "DATALATTICE OTP RESEND ERROR:",
-        error
-      );
+      setRemainingSeconds(0);
 
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Unable to resend OTP.";
+      setResendCountdown(0);
+    };
 
-      setErrors({
-        otp: message,
-      });
+  /* ==========================================================
+     TIMER FORMAT
+  ========================================================== */
 
-      errorToast(message);
-    } finally {
-      setOtpLoading(false);
-    }
-  };
+  const formattedExpiry =
+    () => {
+      const minutes =
+        Math.floor(
+          remainingSeconds /
+            60
+        );
 
-  /* =========================================================
-     SHARED INPUT STYLE
-     ========================================================= */
+      const seconds =
+        remainingSeconds % 60;
 
-  const inputClass = `
-    w-full
-    rounded-full
-    border
-    border-[#E6EDF7]
-    bg-white
-    py-3.5
-    pl-12
-    pr-5
-    text-sm
-    font-medium
-    text-[#111827]
-    outline-none
-    placeholder:text-[#94A3B8]
-    transition-all
-    duration-200
-    hover:border-[#C9D7EA]
-    focus:border-[#1463FF]
-    focus:ring-4
-    focus:ring-[#1463FF]/10
-  `;
+      return `${minutes}:${String(
+        seconds
+      ).padStart(2, "0")}`;
+    };
 
-  /* =========================================================
-     RENDER
-     ========================================================= */
+  /* ==========================================================
+     UI
+  ========================================================== */
 
   return (
     <motion.div
       initial={{
         opacity: 0,
-        y: 18,
-        scale: 0.98,
+        y: 12,
       }}
       animate={{
         opacity: 1,
         y: 0,
-        scale: 1,
       }}
       transition={{
         duration: 0.45,
         ease: "easeOut",
       }}
-      className="
-        relative
-        z-20
-        w-full
-        max-w-[430px]
-        rounded-[26px]
-        border
-        border-[#E6EDF7]
-        bg-white
-        px-5
-        py-6
-        shadow-[0_24px_70px_rgba(11,27,58,0.12)]
-        sm:px-7
-        sm:py-7
-      "
+      className="w-full max-w-[374px]"
     >
-      {/* =====================================================
-          HEADER
-          ===================================================== */}
+      <div
+        className="relative overflow-visible rounded-[24px] border bg-white"
+        style={{
+          borderColor:
+            "#DCE6F5",
+          boxShadow:
+            "0 22px 55px rgba(10,24,50,0.13)",
+        }}
+      >
+        
 
-      <div className="text-center">
-        <div
-          className="
-            mx-auto
-            mb-3
-            flex
-            h-11
-            w-11
-            items-center
-            justify-center
-            rounded-2xl
-          "
-          style={{
-            backgroundColor: "#EAF2FF",
-            color: "#1463FF",
-          }}
-        >
-          {step === "details" ? (
-            <FaUser size={17} />
-          ) : (
-            <FaShieldHalved size={17} />
-          )}
-        </div>
-
-        <h2
-          className="
-            text-[25px]
-            font-black
-            tracking-[-0.035em]
-            text-[#0B1B3A]
-            sm:text-[27px]
-          "
-        >
-          {step === "details" ? (
-            <>
-              Explore{" "}
-              <span className="text-[#1463FF]">
-                DataLattice
-              </span>
-            </>
-          ) : (
-            <>
-              Verify Your{" "}
-              <span className="text-[#1463FF]">
-                Number
-              </span>
-            </>
-          )}
-        </h2>
-
-        <p className="mt-1.5 text-xs font-medium leading-5 text-[#64748B]">
-          {step === "details"
-            ? "Enter your details to start exploring our learning experience."
-            : `Enter the 6-digit OTP sent to ${getInternationalPhone()}.`}
-        </p>
-      </div>
-
-      {/* =====================================================
-          FORM ERROR
-          ===================================================== */}
-
-      <AnimatePresence>
-        {errors.form && (
-          <motion.div
-            initial={{
-              opacity: 0,
-              height: 0,
-            }}
-            animate={{
-              opacity: 1,
-              height: "auto",
-            }}
-            exit={{
-              opacity: 0,
-              height: 0,
-            }}
-            className="
-              mt-4
-              rounded-2xl
-              border
-              border-red-200
-              bg-red-50
-              px-4
-              py-3
-              text-xs
-              font-medium
-              text-red-600
-            "
-          >
-            {errors.form}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* =====================================================
-          DETAILS STEP
-          ===================================================== */}
-
-      {step === "details" && (
-        <motion.form
-          key="details"
-          initial={{
-            opacity: 0,
-            x: -12,
-          }}
-          animate={{
-            opacity: 1,
-            x: 0,
-          }}
-          exit={{
-            opacity: 0,
-            x: 12,
-          }}
-          onSubmit={handleRequestOtp}
-          noValidate
-          className="mt-6 space-y-4"
-        >
-          {/* FULL NAME */}
-
-          <div>
-            <div className="relative">
-              <FaUser
-                className="
-                  pointer-events-none
-                  absolute
-                  left-5
-                  top-1/2
-                  -translate-y-1/2
-                  text-[#94A3B8]
-                "
-                size={15}
-              />
-
-              <input
-                type="text"
-                name="full_name"
-                value={fullName}
-                onChange={handleNameChange}
-                placeholder="Full Name"
-                autoComplete="name"
-                autoFocus
-                className={inputClass}
-              />
-            </div>
-
-            {errors.fullName && (
-              <p className="mt-1.5 px-3 text-[11px] text-red-500">
-                {errors.fullName}
-              </p>
-            )}
-          </div>
-
-          {/* PHONE */}
-
-          <div>
-            <div
-              data-country-selector
-              className="
-                relative
-                flex
-                w-full
-                overflow-visible
-                rounded-full
-                border
-                border-[#E6EDF7]
-                bg-white
-                transition-all
-                duration-200
-                hover:border-[#C9D7EA]
-                focus-within:border-[#1463FF]
-                focus-within:ring-4
-                focus-within:ring-[#1463FF]/10
-              "
-            >
-              {/* PHONE ICON */}
-
-              <div
-                className="
-                  pointer-events-none
-                  flex
-                  shrink-0
-                  items-center
-                  pl-5
-                  text-[#94A3B8]
-                "
+        <div className="px-6 pb-6 pt-7 sm:px-7">
+          <AnimatePresence mode="wait">
+            {step === "details" ? (
+              <motion.div
+                key="details"
+                initial={{
+                  opacity: 0,
+                  y: 5,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -5,
+                }}
+                transition={{
+                  duration: 0.22,
+                }}
               >
-                <FaPhone size={15} />
-              </div>
+                {/* =================================================
+                   ICON
+                ================================================= */}
 
-              {/* COUNTRY SELECTOR */}
+                <div
+                  className="mb-4 flex h-11 w-11 items-center justify-center rounded-[14px]"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #0C5FF5 0%, #0289F9 100%)",
+                    boxShadow:
+                      "0 8px 18px rgba(12,95,245,0.20)",
+                  }}
+                >
+                  <FaUser
+                    className="text-white"
+                    size={16}
+                  />
+                </div>
 
-              <button
-                type="button"
-                onClick={() =>
-                  setCountryDropdownOpen(
-                    (previous) => !previous
-                  )
-                }
-                aria-label="Select country code"
-                aria-expanded={
-                  countryDropdownOpen
-                }
-                className="
-                  ml-2
-                  flex
-                  shrink-0
-                  items-center
-                  gap-1.5
-                  border-r
-                  border-[#E6EDF7]
-                  px-3
-                  py-1
-                  text-sm
-                  font-semibold
-                  text-[#0B1B3A]
-                  outline-none
-                "
-              >
-                <span className="text-base leading-none">
-                  {selectedCountry.flag}
-                </span>
+                {/* =================================================
+                   HEADING
+                ================================================= */}
 
-                <span>
-                  {selectedCountry.dialCode}
-                </span>
-
-                <FaChevronDown
-                  size={9}
-                  className={`ml-0.5 text-[#94A3B8] transition-transform duration-200 ${
-                    countryDropdownOpen
-                      ? "rotate-180"
-                      : ""
-                  }`}
-                />
-              </button>
-
-              {/* PHONE INPUT */}
-
-              <input
-                type="tel"
-                name="phone"
-                value={phone}
-                onChange={handlePhoneChange}
-                placeholder="Phone Number"
-                autoComplete="tel-national"
-                inputMode="numeric"
-                maxLength={
-                  selectedCountry.maxLength
-                }
-                className="
-                  min-w-0
-                  flex-1
-                  rounded-r-full
-                  bg-transparent
-                  py-3.5
-                  pl-3
-                  pr-5
-                  text-sm
-                  font-medium
-                  text-[#111827]
-                  outline-none
-                  placeholder:text-[#94A3B8]
-                "
-              />
-
-              {/* COUNTRY DROPDOWN */}
-
-              <AnimatePresence>
-                {countryDropdownOpen && (
-                  <motion.div
-                    initial={{
-                      opacity: 0,
-                      y: -6,
-                      scale: 0.98,
+                <h3
+                  className="text-[24px] font-extrabold leading-[1.15] tracking-[-0.035em]"
+                  style={{
+                    color:
+                      "#0A1832",
+                  }}
+                >
+                  Explore{" "}
+                  <span
+                    style={{
+                      background:
+                        "linear-gradient(90deg, #0C5FF5 0%, #0289F9 55%, #3531E7 100%)",
+                      WebkitBackgroundClip:
+                        "text",
+                      WebkitTextFillColor:
+                        "transparent",
                     }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                    }}
-                    exit={{
-                      opacity: 0,
-                      y: -6,
-                      scale: 0.98,
-                    }}
-                    transition={{
-                      duration: 0.16,
-                    }}
-                    className="
-                      absolute
-                      left-0
-                      right-0
-                      top-[calc(100%+8px)]
-                      z-[60]
-                      max-h-64
-                      overflow-y-auto
-                      rounded-2xl
-                      border
-                      border-[#E6EDF7]
-                      bg-white
-                      p-1.5
-                      shadow-[0_20px_50px_rgba(11,27,58,0.16)]
-                    "
                   >
-                    {COUNTRY_CODES.map(
-                      (country) => {
-                        const isSelected =
-                          selectedCountry.code ===
-                          country.code;
+                    DataLattice
+                  </span>
+                </h3>
 
-                        return (
-                          <button
-                            key={country.code}
-                            type="button"
-                            onClick={() =>
-                              handleCountryChange(
-                                country
-                              )
+                <p
+                  className="mt-2 max-w-[310px] text-[12px] leading-[1.65]"
+                  style={{
+                    color:
+                      "#748399",
+                  }}
+                >
+                  Enter your details to
+                  start exploring our
+                  learning experience.
+                </p>
+
+                {/* =================================================
+                   FORM
+                ================================================= */}
+
+                <form
+                  onSubmit={
+                    handleRequestOtp
+                  }
+                  className="mt-6"
+                >
+                  {/* NAME */}
+                  <div>
+                    <label
+                      className="sr-only"
+                      htmlFor="hero-full-name"
+                    >
+                      Full Name
+                    </label>
+
+                    <div className="relative">
+                      <FaUser
+                        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2"
+                        style={{
+                          color:
+                            "#92A0B3",
+                        }}
+                        size={13}
+                      />
+
+                      <input
+                        id="hero-full-name"
+                        type="text"
+                        value={
+                          fullName
+                        }
+                        onChange={(
+                          event
+                        ) => {
+                          setFullName(
+                            event.target
+                              .value
+                          );
+
+                          setError(
+                            ""
+                          );
+                        }}
+                        placeholder="Full Name"
+                        autoComplete="name"
+                        className="h-[49px] w-full rounded-[16px] border bg-white pl-11 pr-4 text-[13px] outline-none transition focus:border-[#0C5FF5] focus:ring-4 focus:ring-[#0C5FF5]/10"
+                        style={{
+                          borderColor:
+                            "#DCE6F5",
+                          color:
+                            "#0A1832",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* PHONE */}
+                  <div className="mt-3.5">
+                    <label
+                      className="sr-only"
+                      htmlFor="hero-phone"
+                    >
+                      Phone Number
+                    </label>
+
+                    <div
+                      className="relative flex h-[49px] w-full rounded-[16px] border bg-white transition focus-within:border-[#0C5FF5] focus-within:ring-4 focus-within:ring-[#0C5FF5]/10"
+                      style={{
+                        borderColor:
+                          "#DCE6F5",
+                      }}
+                    >
+                      {/* COUNTRY SELECTOR */}
+                      <div
+                        ref={
+                          countryDropdownRef
+                        }
+                        className="relative flex shrink-0 items-center"
+                      >
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setCountryOpen(
+                              (
+                                previous
+                              ) =>
+                                !previous
+                            )
+                          }
+                          className="flex h-full items-center gap-2 rounded-l-[16px] px-4 text-[12px] font-semibold"
+                          style={{
+                            color:
+                              "#0A1832",
+                          }}
+                        >
+                          <span>
+                            {
+                              selectedCountry.code
                             }
-                            className={`
-                              flex
-                              w-full
-                              items-center
-                              gap-3
-                              rounded-xl
-                              px-3
-                              py-2.5
-                              text-left
-                              transition-colors
-                              ${
-                                isSelected
-                                  ? "bg-[#EAF2FF]"
-                                  : "hover:bg-[#F5F9FF]"
-                              }
-                            `}
+                          </span>
+
+                          <span
+                            style={{
+                              color:
+                                "#718096",
+                            }}
                           >
-                            <span className="text-lg leading-none">
-                              {country.flag}
-                            </span>
+                            {
+                              selectedCountry.dialCode
+                            }
+                          </span>
 
-                            <span className="min-w-0 flex-1">
-                              <span
-                                className={`
-                                  block
-                                  truncate
-                                  text-xs
-                                  font-semibold
-                                  ${
-                                    isSelected
-                                      ? "text-[#1463FF]"
-                                      : "text-[#0B1B3A]"
-                                  }
-                                `}
-                              >
-                                {country.name}
-                              </span>
-                            </span>
+                          <FaChevronDown
+                            size={8}
+                            style={{
+                              color:
+                                "#8C9AAF",
+                            }}
+                          />
+                        </button>
 
-                            <span
-                              className="
-                                shrink-0
-                                text-xs
-                                font-bold
-                                text-[#64748B]
-                              "
+                        {/* COUNTRY MENU */}
+                        <AnimatePresence>
+                          {countryOpen && (
+                            <motion.div
+                              initial={{
+                                opacity: 0,
+                                y: 4,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                y: 0,
+                              }}
+                              exit={{
+                                opacity: 0,
+                                y: 4,
+                              }}
+                              className="absolute left-0 top-[54px] z-[100] max-h-[245px] w-[225px] overflow-y-auto rounded-[14px] border bg-white p-1.5 shadow-[0_18px_45px_rgba(10,24,50,0.16)]"
+                              style={{
+                                borderColor:
+                                  "#DCE6F5",
+                              }}
                             >
-                              {country.dialCode}
-                            </span>
+                              {COUNTRIES.map(
+                                (
+                                  country
+                                ) => (
+                                  <button
+                                    key={
+                                      country.code
+                                    }
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedCountry(
+                                        country
+                                      );
 
-                            {isSelected && (
-                              <FaCheck
-                                size={11}
-                                className="shrink-0 text-[#1463FF]"
-                              />
-                            )}
-                          </button>
-                        );
-                      }
+                                      setLocalPhone(
+                                        ""
+                                      );
+
+                                      setCountryOpen(
+                                        false
+                                      );
+
+                                      setError(
+                                        ""
+                                      );
+                                    }}
+                                    className="flex w-full items-center justify-between rounded-[9px] px-3 py-2 text-left text-[11px] transition hover:bg-[#F4F7FB]"
+                                    style={{
+                                      color:
+                                        "#0A1832",
+                                    }}
+                                  >
+                                    <span>
+                                      {
+                                        country.name
+                                      }
+                                    </span>
+
+                                    <span
+                                      style={{
+                                        color:
+                                          "#718096",
+                                      }}
+                                    >
+                                      {
+                                        country.dialCode
+                                      }
+                                    </span>
+                                  </button>
+                                )
+                              )}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* DIVIDER */}
+                      <div
+                        className="my-2.5 w-px"
+                        style={{
+                          background:
+                            "#E5EBF3",
+                        }}
+                      />
+
+                      {/* PHONE INPUT */}
+                      <div className="relative flex min-w-0 flex-1 items-center">
+                        <FaPhone
+                          className="pointer-events-none absolute left-3"
+                          style={{
+                            color:
+                              "#92A0B3",
+                          }}
+                          size={11}
+                        />
+
+                        <input
+                          id="hero-phone"
+                          type="tel"
+                          value={
+                            localPhone
+                          }
+                          onChange={(
+                            event
+                          ) => {
+                            const digits =
+                              event.target.value.replace(
+                                /\D/g,
+                                ""
+                              );
+
+                            setLocalPhone(
+                              digits.slice(
+                                0,
+                                selectedCountry.maxLength
+                              )
+                            );
+
+                            setError(
+                              ""
+                            );
+                          }}
+                          placeholder="Phone Number"
+                          autoComplete="tel"
+                          inputMode="numeric"
+                          className="h-full min-w-0 flex-1 rounded-r-[16px] bg-transparent pl-8 pr-3 text-[13px] outline-none"
+                          style={{
+                            color:
+                              "#0A1832",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ERROR */}
+                  {error && (
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        height: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                      }}
+                      className="mt-3 rounded-[12px] border px-3 py-2.5 text-[11px] leading-4"
+                      style={{
+                        borderColor:
+                          "#FFCACA",
+                        background:
+                          "#FFF5F5",
+                        color:
+                          "#D92D20",
+                      }}
+                    >
+                      {error}
+                    </motion.div>
+                  )}
+
+                  {/* SIGN UP */}
+                  <button
+                    type="submit"
+                    disabled={
+                      loading
+                    }
+                    className="group mt-3.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-[16px] text-[13px] font-bold text-white transition duration-200 hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-60"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, #0C5FF5 0%, #0289F9 50%, #3531E7 100%)",
+                      boxShadow:
+                        "0 12px 25px rgba(12,95,245,0.20)",
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <FaRotateRight
+                          className="animate-spin"
+                          size={12}
+                        />
+
+                        Sending OTP...
+                      </>
+                    ) : (
+                      <>
+                        SIGN UP
+
+                        <FaArrowRight
+                          className="transition-transform duration-200 group-hover:translate-x-1"
+                          size={11}
+                        />
+                      </>
                     )}
-                  </motion.div>
+                  </button>
+                </form>
+
+                {/* =================================================
+                   PRIVACY MESSAGE
+                ================================================= */}
+
+                <div
+                  className="mt-4 flex items-start gap-2.5 rounded-[14px] px-3.5 py-3"
+                  style={{
+                    background:
+                      "#F3F7FD",
+                  }}
+                >
+                  <div className="mt-0.5 shrink-0">
+                    <FaShieldHalved
+                      style={{
+                        color:
+                          "#0C5FF5",
+                      }}
+                      size={11}
+                    />
+                  </div>
+
+                  <p
+                    className="text-[9px] leading-[1.5]"
+                    style={{
+                      color:
+                        "#718096",
+                    }}
+                  >
+                    Your phone number is
+                    used only to verify your
+                    access and provide the
+                    DataLattice learning
+                    experience.
+                  </p>
+                </div>
+
+                {!msg91Ready && (
+                  <p
+                    className="mt-2 text-center text-[9px]"
+                    style={{
+                      color:
+                        "#9AA7B7",
+                    }}
+                  >
+                    Preparing secure
+                    verification...
+                  </p>
                 )}
-              </AnimatePresence>
-            </div>
-
-            {errors.phone && (
-              <p className="mt-1.5 px-3 text-[11px] text-red-500">
-                {errors.phone}
-              </p>
-            )}
-          </div>
-
-          {/* SIGN UP / CONTINUE */}
-
-          <motion.button
-            type="submit"
-            disabled={otpLoading}
-            whileHover={
-              otpLoading
-                ? undefined
-                : {
-                    y: -1,
-                  }
-            }
-            whileTap={
-              otpLoading
-                ? undefined
-                : {
-                    scale: 0.985,
-                  }
-            }
-            className="
-              group
-              mx-auto
-              flex
-              w-full
-              items-center
-              justify-center
-              gap-2
-              rounded-full
-              bg-[#1463FF]
-              px-7
-              py-3.5
-              text-sm
-              font-bold
-              text-white
-              shadow-[0_12px_28px_rgba(20,99,255,0.22)]
-              transition-all
-              duration-200
-              hover:bg-[#0F57E6]
-              hover:shadow-[0_16px_34px_rgba(20,99,255,0.28)]
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
-          >
-            {otpLoading
-              ? "SENDING OTP..."
-              : "SIGN UP"}
-
-            {!otpLoading && (
-              <FaArrowRight
-                size={12}
-                className="
-                  transition-transform
-                  duration-200
-                  group-hover:translate-x-1
-                "
-              />
-            )}
-          </motion.button>
-
-          {/* PRIVACY NOTE */}
-
-          <div
-            className="
-              flex
-              items-start
-              gap-2
-              rounded-2xl
-              bg-[#F5F9FF]
-              px-3.5
-              py-3
-            "
-          >
-            <FaShieldHalved
-              className="mt-0.5 shrink-0 text-[#1463FF]"
-              size={12}
-            />
-
-            <p className="text-[10px] leading-[1.5] text-[#64748B]">
-              Your phone number is used only to verify
-              your access and provide the DataLattice
-              learning experience.
-            </p>
-          </div>
-        </motion.form>
-      )}
-
-      {/* =====================================================
-          OTP STEP
-          ===================================================== */}
-
-      {step === "otp" && (
-        <motion.form
-          key="otp"
-          initial={{
-            opacity: 0,
-            x: 12,
-          }}
-          animate={{
-            opacity: 1,
-            x: 0,
-          }}
-          exit={{
-            opacity: 0,
-            x: -12,
-          }}
-          onSubmit={handleVerifyOtp}
-          noValidate
-          className="mt-6"
-        >
-          {/* VERIFIED PHONE */}
-
-          <div
-            className="
-              mb-4
-              flex
-              items-center
-              justify-between
-              rounded-2xl
-              border
-              border-[#E6EDF7]
-              bg-[#F8FBFF]
-              px-4
-              py-3
-            "
-          >
-            <div className="flex min-w-0 items-center gap-3">
-              <div
-                className="
-                  flex
-                  h-9
-                  w-9
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-xl
-                  bg-[#EAF2FF]
-                  text-[#1463FF]
-                "
-              >
-                <FaPhone size={13} />
-              </div>
-
-              <div className="min-w-0">
-                <p className="text-[10px] font-medium text-[#64748B]">
-                  OTP sent to
-                </p>
-
-                <p className="truncate text-xs font-bold text-[#0B1B3A]">
-                  {getInternationalPhone()}
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleChangePhone}
-              className="
-                shrink-0
-                text-[10px]
-                font-bold
-                text-[#1463FF]
-                hover:underline
-              "
-            >
-              Change
-            </button>
-          </div>
-
-          {/* OTP INPUT */}
-
-          <div>
-            <label
-              htmlFor="datalattice-hero-otp"
-              className="
-                mb-2
-                block
-                px-2
-                text-xs
-                font-semibold
-                text-[#334155]
-              "
-            >
-              Enter OTP
-            </label>
-
-            <input
-              id="datalattice-hero-otp"
-              type="text"
-              value={otp}
-              onChange={(event) => {
-                const value =
-                  event.target.value
-                    .replace(/\D/g, "")
-                    .slice(0, 6);
-
-                setOtp(value);
-
-                setErrors((previous) => ({
-                  ...previous,
-                  otp: "",
-                }));
-              }}
-              placeholder="••••••"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              autoFocus
-              className="
-                w-full
-                rounded-2xl
-                border
-                border-[#E6EDF7]
-                bg-white
-                px-5
-                py-4
-                text-center
-                text-xl
-                font-extrabold
-                tracking-[0.45em]
-                text-[#0B1B3A]
-                outline-none
-                placeholder:tracking-[0.35em]
-                placeholder:text-[#CBD5E1]
-                transition-all
-                focus:border-[#1463FF]
-                focus:ring-4
-                focus:ring-[#1463FF]/10
-              "
-            />
-
-            {errors.otp && (
-              <p className="mt-1.5 px-2 text-[11px] text-red-500">
-                {errors.otp}
-              </p>
-            )}
-          </div>
-
-          {/* VERIFY */}
-
-          <motion.button
-            type="submit"
-            disabled={
-              otpVerifying ||
-              otp.length !== 6
-            }
-            whileHover={
-              otpVerifying ||
-              otp.length !== 6
-                ? undefined
-                : {
-                    y: -1,
-                  }
-            }
-            whileTap={
-              otpVerifying ||
-              otp.length !== 6
-                ? undefined
-                : {
-                    scale: 0.985,
-                  }
-            }
-            className="
-              group
-              mt-4
-              flex
-              w-full
-              items-center
-              justify-center
-              gap-2
-              rounded-full
-              bg-[#1463FF]
-              px-7
-              py-3.5
-              text-sm
-              font-bold
-              text-white
-              shadow-[0_12px_28px_rgba(20,99,255,0.22)]
-              transition-all
-              duration-200
-              hover:bg-[#0F57E6]
-              disabled:cursor-not-allowed
-              disabled:opacity-50
-            "
-          >
-            {otpVerifying
-              ? "VERIFYING..."
-              : "VERIFY & EXPLORE"}
-
-            {!otpVerifying && (
-              <FaArrowRight
-                size={12}
-                className="
-                  transition-transform
-                  duration-200
-                  group-hover:translate-x-1
-                "
-              />
-            )}
-          </motion.button>
-
-          {/* RESEND */}
-
-          <div className="mt-4 text-center">
-            {resendRemaining > 0 ? (
-              <p className="text-[11px] text-[#94A3B8]">
-                Resend OTP{" "}
-                in{" "}
-                <span className="font-bold text-[#64748B]">
-                  {resendRemaining}s
-                </span>
-              </p>
+              </motion.div>
             ) : (
-              <button
-                type="button"
-                onClick={handleResendOtp}
-                disabled={otpLoading}
-                className="
-                  text-[11px]
-                  font-bold
-                  text-[#1463FF]
-                  hover:underline
-                  disabled:cursor-not-allowed
-                  disabled:opacity-50
-                "
+              /* =================================================
+                 OTP SCREEN
+              ================================================= */
+
+              <motion.div
+                key="otp"
+                initial={{
+                  opacity: 0,
+                  x: 8,
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  x: -8,
+                }}
+                transition={{
+                  duration: 0.22,
+                }}
               >
-                {otpLoading
-                  ? "Sending..."
-                  : "Resend OTP"}
-              </button>
+                {/* BACK */}
+                <button
+                  type="button"
+                  onClick={
+                    handleChangePhone
+                  }
+                  className="mb-5 inline-flex items-center gap-1.5 text-[11px] font-semibold"
+                  style={{
+                    color:
+                      "#0C5FF5",
+                  }}
+                >
+                  <FaArrowLeft
+                    size={9}
+                  />
+
+                  Change number
+                </button>
+
+                {/* OTP ICON */}
+                <div
+                  className="mb-4 flex h-11 w-11 items-center justify-center rounded-[14px]"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #0C5FF5, #3531E7)",
+                    boxShadow:
+                      "0 8px 18px rgba(12,95,245,0.18)",
+                  }}
+                >
+                  <FaCheck
+                    className="text-white"
+                    size={16}
+                  />
+                </div>
+
+                {/* OTP HEADING */}
+                <h3
+                  className="text-[24px] font-extrabold leading-[1.15] tracking-[-0.035em]"
+                  style={{
+                    color:
+                      "#0A1832",
+                  }}
+                >
+                  Verify your{" "}
+                  <span
+                    style={{
+                      background:
+                        "linear-gradient(90deg, #0C5FF5, #0289F9, #3531E7)",
+                      WebkitBackgroundClip:
+                        "text",
+                      WebkitTextFillColor:
+                        "transparent",
+                    }}
+                  >
+                    number
+                  </span>
+                </h3>
+
+                <p
+                  className="mt-2 text-[12px] leading-5"
+                  style={{
+                    color:
+                      "#748399",
+                  }}
+                >
+                  Enter the verification
+                  code sent to
+                </p>
+
+                <p
+                  className="mt-1 text-[13px] font-bold"
+                  style={{
+                    color:
+                      "#0A1832",
+                  }}
+                >
+                  {
+                    selectedCountry.dialCode
+                  }{" "}
+                  {localPhone}
+                </p>
+
+                {/* OTP FORM */}
+                <form
+                  onSubmit={
+                    handleVerifyOtp
+                  }
+                  className="mt-6"
+                >
+                  <label
+                    className="sr-only"
+                    htmlFor="hero-otp"
+                  >
+                    Verification code
+                  </label>
+
+                  <input
+                    ref={
+                      otpInputRef
+                    }
+                    id="hero-otp"
+                    type="text"
+                    value={otp}
+                    onChange={(
+                      event
+                    ) => {
+                      const digits =
+                        event.target.value.replace(
+                          /\D/g,
+                          ""
+                        );
+
+                      setOtp(
+                        digits.slice(
+                          0,
+                          6
+                        )
+                      );
+
+                      setError(
+                        ""
+                      );
+                    }}
+                    placeholder="Enter verification code"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    className="h-[52px] w-full rounded-[16px] border bg-white px-4 text-center text-lg font-bold tracking-[0.3em] outline-none transition focus:border-[#0C5FF5] focus:ring-4 focus:ring-[#0C5FF5]/10"
+                    style={{
+                      borderColor:
+                        "#DCE6F5",
+                      color:
+                        "#0A1832",
+                    }}
+                  />
+
+                  {/* OTP META */}
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <span
+                      className="text-[10px]"
+                      style={{
+                        color:
+                          "#7C899B",
+                      }}
+                    >
+                      {remainingSeconds >
+                      0
+                        ? `Expires in ${formattedExpiry()}`
+                        : "OTP expired"}
+                    </span>
+
+                    {resendCountdown >
+                    0 ? (
+                      <span
+                        className="text-[10px]"
+                        style={{
+                          color:
+                            "#9AA7B7",
+                        }}
+                      >
+                        Resend in{" "}
+                        {
+                          resendCountdown
+                        }
+                        s
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={
+                          handleResendOtp
+                        }
+                        disabled={
+                          resendLoading
+                        }
+                        className="inline-flex items-center gap-1.5 text-[10px] font-bold disabled:opacity-50"
+                        style={{
+                          color:
+                            "#0C5FF5",
+                        }}
+                      >
+                        <FaRotateRight
+                          className={
+                            resendLoading
+                              ? "animate-spin"
+                              : ""
+                          }
+                          size={9}
+                        />
+
+                        {resendLoading
+                          ? "Sending..."
+                          : "Resend OTP"}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* OTP ERROR */}
+                  {error && (
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        height: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                      }}
+                      className="mt-3 rounded-[12px] border px-3 py-2.5 text-[11px] leading-4"
+                      style={{
+                        borderColor:
+                          "#FFCACA",
+                        background:
+                          "#FFF5F5",
+                        color:
+                          "#D92D20",
+                      }}
+                    >
+                      {error}
+                    </motion.div>
+                  )}
+
+                  {/* VERIFY BUTTON */}
+                  <button
+                    type="submit"
+                    disabled={
+                      verifyLoading ||
+                      otp.length < 4
+                    }
+                    className="group mt-4 flex h-[50px] w-full items-center justify-center gap-2 rounded-[16px] text-[13px] font-bold text-white transition duration-200 hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-60"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, #0C5FF5 0%, #0289F9 50%, #3531E7 100%)",
+                      boxShadow:
+                        "0 12px 25px rgba(12,95,245,0.20)",
+                    }}
+                  >
+                    {verifyLoading ? (
+                      <>
+                        <FaRotateRight
+                          className="animate-spin"
+                          size={12}
+                        />
+
+                        Verifying...
+                      </>
+                    ) : (
+                      <>
+                        VERIFY
+
+                        <FaArrowRight
+                          className="transition-transform group-hover:translate-x-1"
+                          size={11}
+                        />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                {/* SECURITY */}
+                <div
+                  className="mt-4 flex items-start gap-2.5 rounded-[14px] px-3.5 py-3"
+                  style={{
+                    background:
+                      "#F3F7FD",
+                  }}
+                >
+                  <FaShieldHalved
+                    className="mt-0.5 shrink-0"
+                    style={{
+                      color:
+                        "#0C5FF5",
+                    }}
+                    size={11}
+                  />
+
+                  <p
+                    className="text-[9px] leading-[1.5]"
+                    style={{
+                      color:
+                        "#718096",
+                    }}
+                  >
+                    Your verification is
+                    handled securely through
+                    DataLattice and MSG91.
+                  </p>
+                </div>
+              </motion.div>
             )}
-          </div>
-
-          {/* BACK */}
-
-          <button
-            type="button"
-            onClick={handleChangePhone}
-            className="
-              mx-auto
-              mt-4
-              flex
-              items-center
-              gap-1.5
-              text-[11px]
-              font-semibold
-              text-[#64748B]
-              transition-colors
-              hover:text-[#0B1B3A]
-            "
-          >
-            <FaArrowLeft size={9} />
-            Use a different number
-          </button>
-
-          {/* SECURITY NOTE */}
-
-          <div
-            className="
-              mt-5
-              flex
-              items-start
-              gap-2
-              rounded-2xl
-              bg-[#F5F9FF]
-              px-3.5
-              py-3
-            "
-          >
-            <FaCheck
-              className="mt-0.5 shrink-0 text-[#1463FF]"
-              size={12}
-            />
-
-            <p className="text-[10px] leading-[1.5] text-[#64748B]">
-              Your number is securely verified before
-              giving you access to the DataLattice demo
-              learning experience.
-            </p>
-          </div>
-
-          {/* Keep variable intentionally referenced so
-              expiry information from the existing OTP
-              service remains available for future UI. */}
-          {verificationExpiresAt && null}
-        </motion.form>
-      )}
+          </AnimatePresence>
+        </div>
+      </div>
     </motion.div>
   );
 }
-
-export default HeroSignupCard;

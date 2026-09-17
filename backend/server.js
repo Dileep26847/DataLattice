@@ -211,46 +211,53 @@ const PORT =
 // CORS
 // ======================================
 //
-// Supports:
+// Production frontend:
+// https://datalattice.in
+//
+// Optional www frontend:
+// https://www.datalattice.in
+//
 // Local development:
 // http://localhost:5173
 //
-// Production:
-// https://datalattice.in
-// https://www.datalattice.in
-//
-// Additional origins can still be supplied
-// through CORS_ORIGINS as a comma-separated list.
+// Additional origins may be supplied through
+// CORS_ORIGINS as a comma-separated list.
 //
 
 const configuredOrigins = (
     process.env.CORS_ORIGINS ||
-    "http://localhost:5173"
+    ""
 )
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
 
 const allowedOrigins = new Set([
-    ...configuredOrigins,
-
-    // ======================================
-    // DATAlattice PRODUCTION FRONTEND
-    // ======================================
-
+    // Production
     "https://datalattice.in",
     "https://www.datalattice.in",
+
+    // Local development
+    "http://localhost:5173",
+
+    // Environment-configured origins
+    ...configuredOrigins,
 ]);
+
+console.log(
+    "Allowed CORS origins:",
+    Array.from(allowedOrigins)
+);
 
 app.use(
     cors({
         origin: (origin, callback) => {
 
             // ======================================
-            // ALLOW REQUESTS WITHOUT ORIGIN
+            // REQUESTS WITHOUT AN ORIGIN
             // ======================================
             //
-            // Examples:
+            // Allows:
             // Postman
             // Server-to-server requests
             // Some backend integrations
@@ -261,7 +268,7 @@ app.use(
             }
 
             // ======================================
-            // ALLOWED ORIGIN
+            // ALLOWED FRONTEND
             // ======================================
 
             if (allowedOrigins.has(origin)) {
@@ -282,6 +289,25 @@ app.use(
         },
 
         credentials: true,
+
+        methods: [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "OPTIONS",
+        ],
+
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization",
+            "Accept",
+            "Origin",
+            "X-Requested-With",
+        ],
+
+        optionsSuccessStatus: 204,
     })
 );
 
@@ -396,15 +422,13 @@ app.use(
 // PAYMENT
 // ======================================
 //
-// IMPORTANT:
-//
 // paymentRoutes contains:
 //
 // POST /create-order
 // POST /verify
 // GET  /history
 //
-// Mounted here:
+// Mounted as:
 //
 // /api/payment/create-order
 // /api/payment/verify

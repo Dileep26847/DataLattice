@@ -21,33 +21,26 @@ export const registerUser = async (
 
 
 // ============================================================
-// REQUEST SIGNUP OTP
+// VERIFY MSG91 SIGNUP TOKEN
 // ============================================================
-
-export const requestSignupOtp = async (
-  phone
-) => {
-
-  const response =
-    await api.post(
-      "/auth/otp/request",
-      {
-        phone,
-      }
-    );
-
-  return response.data;
-
-};
-
-
-// ============================================================
-// VERIFY SIGNUP OTP
+//
+// OTP sending and OTP verification are now handled by the
+// MSG91 OTP Widget on the frontend.
+//
+// After MSG91 successfully verifies the OTP, the widget
+// returns an access token.
+//
+// That access token is sent to our backend.
+//
+// The backend verifies the token directly with MSG91 before
+// creating our own signup verification proof.
+//
 // ============================================================
 
 export const verifySignupOtp = async (
   phone,
-  otp
+  otp,
+  accessToken
 ) => {
 
   const response =
@@ -56,6 +49,7 @@ export const verifySignupOtp = async (
       {
         phone,
         otp,
+        accessToken,
       }
     );
 

@@ -20,6 +20,8 @@ import {
   FaXmark,
 } from "react-icons/fa6";
 
+import dataLatticeLogo from "../assets/datalattice-logo.png";
+
 // ============================================================
 // DATALATTICE PUBLIC NAVIGATION
 // ============================================================
@@ -379,104 +381,23 @@ function Navbar() {
               -translate-y-1
             "
           >
-            {/* Logo mark */}
+            {/* Final DataLattice logo */}
 
-            <div
+            <img
+              src={dataLatticeLogo}
+              alt="DataLattice"
               className="
-                relative
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                overflow-hidden
-                rounded-xl
-                border
-                border-white/75
-                bg-white/60
-                shadow-[0_8px_24px_rgba(11,27,58,0.08)]
-                backdrop-blur-md
-                transition-all
-                duration-300
-                group-hover:bg-white/80
-                group-hover:shadow-[0_10px_28px_rgba(20,99,255,0.12)]
+                h-[48px]
+                w-auto
+                max-w-[188px]
+                object-contain
+                object-left
+                transition-transform
+                duration-200
+                group-hover:scale-[1.01]
               "
-            >
-              <div
-                className="
-                  absolute
-                  h-5
-                  w-5
-                  rounded-full
-                  border-[2px]
-                  border-[#1463FF]
-                "
-              />
+            />
 
-              <div
-                className="
-                  absolute
-                  h-2
-                  w-2
-                  rounded-full
-                  bg-[#06B6D4]
-                "
-              />
-
-              <span
-                className="
-                  absolute
-                  left-[7px]
-                  top-[8px]
-                  h-1.5
-                  w-1.5
-                  rounded-full
-                  bg-[#1463FF]
-                "
-              />
-
-              <span
-                className="
-                  absolute
-                  bottom-[8px]
-                  right-[7px]
-                  h-1.5
-                  w-1.5
-                  rounded-full
-                  bg-[#1463FF]
-                "
-              />
-            </div>
-
-            {/* Wordmark */}
-
-            <div>
-              <div
-                className="
-                  text-[20px]
-                  font-extrabold
-                  leading-none
-                  tracking-[-0.045em]
-                  text-[#0B1B3A]
-                "
-              >
-                DataLattice
-              </div>
-
-              <div
-                className="
-                  mt-1
-                  text-[8px]
-                  font-bold
-                  uppercase
-                  leading-none
-                  tracking-[0.18em]
-                  text-[#64748B]
-                "
-              >
-                Learn • Build • Grow
-              </div>
-            </div>
           </Link>
 
           {/* ==================================================

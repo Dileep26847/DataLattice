@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 const userModel = require("../models/userModel");
 const otpService = require("../services/otpService");
-const otpDeliveryService = require("../services/otpDeliveryService");
 const signupVerificationService =
     require("../services/signupVerificationService");
 
@@ -22,10 +22,6 @@ exports.register = async (req, res) => {
             verificationToken
         } = req.body;
 
-
-        // ----------------------------------------------------
-        // Validate required signup fields.
-        // ----------------------------------------------------
 
         if (
             !full_name ||
@@ -46,11 +42,6 @@ exports.register = async (req, res) => {
 
         }
 
-
-        // ----------------------------------------------------
-        // Normalize and validate the phone number before any
-        // database operation.
-        // ----------------------------------------------------
 
         let normalizedPhone;
 
@@ -75,13 +66,6 @@ exports.register = async (req, res) => {
 
         }
 
-
-        // ----------------------------------------------------
-        // Verify the server-side signup verification proof.
-        //
-        // The browser cannot bypass phone verification by
-        // sending a simple "phoneVerified: true" flag.
-        // ----------------------------------------------------
 
         let verification;
 
@@ -130,10 +114,6 @@ exports.register = async (req, res) => {
         }
 
 
-        // ----------------------------------------------------
-        // Check whether the email already exists.
-        // ----------------------------------------------------
-
         userModel.findUserByEmail(
             email,
             async (err, users) => {
@@ -169,15 +149,6 @@ exports.register = async (req, res) => {
 
                     }
 
-
-                    // ------------------------------------------------
-                    // Check whether the phone already belongs to
-                    // another account.
-                    //
-                    // The database also enforces the unique index,
-                    // but checking here gives the user a clean
-                    // application-level response.
-                    // ------------------------------------------------
 
                     userModel.findUserByPhone(
                         normalizedPhone,
@@ -220,20 +191,12 @@ exports.register = async (req, res) => {
                                 }
 
 
-                                // ----------------------------------------
-                                // Hash password.
-                                // ----------------------------------------
-
                                 const hashedPassword =
                                     await bcrypt.hash(
                                         password,
                                         10
                                     );
 
-
-                                // ----------------------------------------
-                                // Create verified student account.
-                                // ----------------------------------------
 
                                 userModel.createUser(
                                     {
@@ -270,9 +233,6 @@ exports.register = async (req, res) => {
                                             );
 
 
-                                            // MySQL duplicate-key
-                                            // protection remains the
-                                            // final database safeguard.
                                             if (
                                                 createError.code ===
                                                 "ER_DUP_ENTRY"
@@ -297,16 +257,10 @@ exports.register = async (req, res) => {
                                                 message:
                                                     "Unable to complete registration."
 
-                                                });
+                                            });
 
                                         }
 
-
-                                        // --------------------------------
-                                        // Consume the signup verification
-                                        // proof only after successful user
-                                        // creation.
-                                        // --------------------------------
 
                                         try {
 
@@ -316,15 +270,6 @@ exports.register = async (req, res) => {
                                                 );
 
                                         } catch (verificationError) {
-
-                                            /*
-                                             * The user has already been
-                                             * created at this point.
-                                             *
-                                             * Log the operational error
-                                             * without exposing internal
-                                             * database details.
-                                             */
 
                                             console.error(
                                                 "Signup verification consumption error:",
@@ -430,167 +375,44 @@ exports.register = async (req, res) => {
 
 
 // ================= REQUEST OTP =================
+//
+// OTP sending is now handled by the MSG91 OTP Widget
+// on the frontend.
+//
+// This endpoint is kept so the existing route does not
+// break. The frontend should NOT call this endpoint for
+// the new MSG91 signup flow.
+//
 
 exports.requestOtp = async (req, res) => {
 
-    try {
+    return res.status(410).json({
 
-        const { phone } = req.body;
+        success: false,
 
+        message:
+            "OTP sending is now handled by the MSG91 OTP Widget. Please use the current signup interface."
 
-        if (!phone) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message:
-                    "Phone number is required"
-
-            });
-
-        }
-
-
-        const result =
-            await otpService.requestOtp({
-
-                phone,
-
-                purpose:
-                    otpService.OTP_PURPOSE_SIGNUP
-
-            });
-
-
-        // ----------------------------------------------------
-        // Deliver OTP through the configured provider.
-        //
-        // The OTP itself is never returned to the frontend.
-        // ----------------------------------------------------
-
-        await otpDeliveryService.sendOtp({
-
-            phone:
-                result.phone,
-
-            otp:
-                result.otp,
-
-            purpose:
-                otpService.OTP_PURPOSE_SIGNUP,
-
-            expiresAt:
-                result.expiresAt,
-
-            challengeId:
-                result.challengeId
-
-        });
-
-
-        /*
-         * IMPORTANT:
-         *
-         * The OTP itself is intentionally NOT returned
-         * to the frontend.
-         */
-
-        return res.status(200).json({
-
-            success: true,
-
-            message:
-                "OTP sent successfully",
-
-            phone:
-                result.phone,
-
-            expiresAt:
-                result.expiresAt,
-
-            challengeId:
-                result.challengeId
-
-        });
-
-    } catch (error) {
-
-        if (
-            error.code ===
-            "OTP_RESEND_COOLDOWN"
-        ) {
-
-            return res.status(429).json({
-
-                success: false,
-
-                message:
-                    error.message,
-
-                retryAfterSeconds:
-                    error.retryAfterSeconds
-
-            });
-
-        }
-
-
-        if (
-            error.code ===
-            "WHATSAPP_PROVIDER_NOT_CONFIGURED"
-        ) {
-
-            return res.status(503).json({
-
-                success: false,
-
-                message:
-                    "OTP delivery service is not configured."
-
-            });
-
-        }
-
-
-        if (
-            error.code ===
-            "OTP_PROVIDER_UNSUPPORTED"
-        ) {
-
-            return res.status(503).json({
-
-                success: false,
-
-                message:
-                    "OTP delivery provider is not supported."
-
-            });
-
-        }
-
-
-        console.error(
-            "OTP request error:",
-            error.message
-        );
-
-
-        return res.status(400).json({
-
-            success: false,
-
-            message:
-                error.message
-
-        });
-
-    }
+    });
 
 };
 
 
 // ================= VERIFY OTP =================
+//
+// MSG91 OTP Widget flow:
+//
+// 1. Frontend calls MSG91 sendOtp()
+// 2. MSG91 sends the OTP
+// 3. User enters OTP
+// 4. Frontend calls MSG91 verifyOtp()
+// 5. MSG91 returns an access token
+// 6. Frontend sends phone + OTP + accessToken here
+// 7. Backend verifies the access token with MSG91
+// 8. DataLattice creates its own verification proof
+//
+// The MSG91 AuthKey NEVER goes to the frontend.
+//
 
 exports.verifyOtp = async (req, res) => {
 
@@ -598,13 +420,15 @@ exports.verifyOtp = async (req, res) => {
 
         const {
             phone,
-            otp
+            otp,
+            accessToken
         } = req.body;
 
 
         if (
             !phone ||
-            !otp
+            !otp ||
+            !accessToken
         ) {
 
             return res.status(400).json({
@@ -612,24 +436,265 @@ exports.verifyOtp = async (req, res) => {
                 success: false,
 
                 message:
-                    "Phone number and OTP are required"
+                    "Phone number, OTP and MSG91 access token are required"
 
             });
 
         }
 
 
-        const result =
-            await otpService.verifyOtp({
+        // ----------------------------------------------------
+        // Normalize phone number using the existing
+        // DataLattice OTP service.
+        // ----------------------------------------------------
 
-                phone,
+        let normalizedPhone;
 
-                otp,
 
-                purpose:
-                    otpService.OTP_PURPOSE_SIGNUP
+        try {
+
+            normalizedPhone =
+                otpService.normalizePhoneNumber(
+                    phone
+                );
+
+        } catch (error) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    error.message
 
             });
+
+        }
+
+
+        // ----------------------------------------------------
+        // MSG91 AuthKey must exist on the backend.
+        // ----------------------------------------------------
+
+        const authKey =
+            process.env.MSG91_AUTHKEY;
+
+
+        if (!authKey) {
+
+            console.error(
+                "MSG91_AUTHKEY is not configured."
+            );
+
+
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "MSG91 OTP verification is not configured on the server."
+
+            });
+
+        }
+
+
+        // ----------------------------------------------------
+        // Verify MSG91 Widget access token.
+        // ----------------------------------------------------
+
+        let msg91Response;
+
+
+        try {
+
+            msg91Response =
+                await axios.post(
+
+                    "https://control.msg91.com/api/v5/widget/verifyAccessToken",
+
+                    new URLSearchParams({
+
+                        authkey:
+                            authKey,
+
+                        "access-token":
+                            accessToken
+
+                    }).toString(),
+
+                    {
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/x-www-form-urlencoded"
+
+                        },
+
+                        timeout:
+                            15000
+
+                    }
+
+                );
+
+        } catch (error) {
+
+            console.error(
+
+                "MSG91 access-token verification failed:",
+
+                error.response?.data ||
+                error.message
+
+            );
+
+
+            return res.status(401).json({
+
+                success: false,
+
+                message:
+                    "MSG91 could not verify the OTP. Please try again."
+
+            });
+
+        }
+
+
+        const providerData =
+            msg91Response?.data || {};
+
+
+        // ----------------------------------------------------
+        // Check MSG91 response.
+        //
+        // MSG91 widget/API responses can differ depending
+        // on the current widget/API version, so handle the
+        // common successful response formats.
+        // ----------------------------------------------------
+
+        const providerType =
+            String(
+                providerData?.type || ""
+            ).toLowerCase();
+
+
+        const providerMessage =
+            String(
+                providerData?.message || ""
+            ).toLowerCase();
+
+
+        const providerSucceeded =
+
+            providerType ===
+            "success"
+
+            ||
+
+            providerData?.success ===
+            true
+
+            ||
+
+            (
+                msg91Response.status >=
+                    200 &&
+
+                msg91Response.status <
+                    300 &&
+
+                !providerData?.error &&
+
+                !providerData?.errors &&
+
+                (
+                    providerMessage.includes(
+                        "success"
+                    )
+
+                    ||
+
+                    providerMessage.includes(
+                        "verified"
+                    )
+
+                    ||
+
+                    Object.keys(
+                        providerData
+                    ).length > 0
+                )
+            );
+
+
+        if (
+            !providerSucceeded
+        ) {
+
+            console.error(
+
+                "MSG91 rejected access token:",
+
+                providerData
+
+            );
+
+
+            return res.status(401).json({
+
+                success: false,
+
+                message:
+                    providerData?.message ||
+                    "OTP verification failed. Please try again."
+
+            });
+
+        }
+
+
+        // ----------------------------------------------------
+        // MSG91 has successfully verified the OTP.
+        //
+        // Now create the existing DataLattice
+        // signup verification proof.
+        // ----------------------------------------------------
+
+        let verificationProof;
+
+
+        try {
+
+            verificationProof =
+                await signupVerificationService
+                    .createVerificationProof(
+                        normalizedPhone
+                    );
+
+        } catch (error) {
+
+            console.error(
+
+                "Signup verification proof creation error:",
+
+                error.message
+
+            );
+
+
+            return res.status(500).json({
+
+                success: false,
+
+                message:
+                    "Phone verification was successful, but DataLattice could not create the verification proof."
+
+            });
+
+        }
 
 
         return res.status(200).json({
@@ -640,75 +705,33 @@ exports.verifyOtp = async (req, res) => {
                 "Phone number verified successfully",
 
             phone:
-                result.phone,
-
-            challengeId:
-                result.challengeId,
-
-            // -----------------------------------------------
-            // This token proves successful phone verification
-            // to the registration endpoint.
-            //
-            // It is NOT the OTP and cannot be used to verify
-            // another phone number.
-            // -----------------------------------------------
+                normalizedPhone,
 
             verificationToken:
-                result.verificationToken,
+                verificationProof.verificationToken,
 
             verificationExpiresAt:
-                result.verificationExpiresAt
+                verificationProof.expiresAt
 
         });
 
     } catch (error) {
 
-        if (
-            error.code ===
-            "OTP_ATTEMPTS_EXCEEDED"
-        ) {
-
-            return res.status(429).json({
-
-                success: false,
-
-                message:
-                    error.message
-
-            });
-
-        }
-
-
-        if (
-            error.code ===
-            "OTP_EXPIRED"
-        ) {
-
-            return res.status(410).json({
-
-                success: false,
-
-                message:
-                    error.message
-
-            });
-
-        }
-
-
         console.error(
+
             "OTP verification error:",
+
             error.message
+
         );
 
 
-        return res.status(400).json({
+        return res.status(500).json({
 
             success: false,
 
             message:
-                error.message
+                "OTP verification failed"
 
         });
 
@@ -721,7 +744,10 @@ exports.verifyOtp = async (req, res) => {
 
 exports.login = (req, res) => {
 
-    const { email, password } = req.body;
+    const {
+        email,
+        password
+    } = req.body;
 
 
     if (
