@@ -7,13 +7,21 @@ import Footer from "../components/Footer";
 import Hero from "../components/landing/Hero";
 import HomeAccessGate from "../components/landing/HomeAccessGate";
 
-import Stats from "../components/landing/Stats";
 import WhyDataWave from "../components/landing/WhyDataWave";
-import Mentors from "../components/landing/Mentors";
+import LearningJourney from "../components/landing/LearningJourney";
+import RealProjects from "../components/landing/RealProjects";
 import SuccessStories from "../components/landing/SuccessStories";
+
+
+import Mentors from "../components/landing/Mentors";
+import LearningOutcomes from "../components/landing/LearningOutcomes";
+import CareerSupport from "../components/landing/CareerSupport";
 import Leadership from "../components/landing/Leadership";
+
+import Stats from "../components/landing/Stats";
 import FAQ from "../components/landing/FAQ";
 import CTA from "../components/landing/CTA";
+import Newsletter from "../components/landing/Newsletter";
 
 import FeaturedCourses from "../components/FeaturedCourses";
 
@@ -104,6 +112,7 @@ function Home() {
   return (
     <HomeAccessGate>
       <div className="min-h-screen bg-white">
+
         {/* ===================================================
             PUBLIC NAVBAR
             =================================================== */}
@@ -115,41 +124,90 @@ function Home() {
             =================================================== */}
 
         <main>
-          {/* Hero */}
+
+          {/* =================================================
+              01. HERO
+              ================================================= */}
 
           <Hero />
 
-          {/* Stats */}
-
-          <Stats />
-
-          {/* Featured Programs */}
+          {/* =================================================
+              02. FEATURED COURSES
+              ================================================= */}
 
           <FeaturedCourses />
 
-          {/* Why DataLattice */}
+          {/* =================================================
+              03. WHY DATALATTICE
+              ================================================= */}
 
           <WhyDataWave />
 
-          {/* Mentors */}
+          {/* =================================================
+              04. LEARNING JOURNEY
+              ================================================= */}
 
-          <Mentors />
+          <LearningJourney />
 
-          {/* Leadership */}
+          {/* =================================================
+              05. REAL PROJECTS
+              ================================================= */}
 
-          <Leadership />
+          <RealProjects />
 
-          {/* Learning Outcomes / Success Stories */}
+          {/* =================================================
+              08. LEARNING OUTCOMES / SUCCESS STORIES
+              ================================================= */}
 
           <SuccessStories />
 
-          {/* FAQ */}
+          {/* =================================================
+              06. MENTORS
+              ================================================= */}
+
+          <Mentors />
+
+          <LearningOutcomes />
+
+          <CareerSupport />
+
+          {/* =================================================
+              07. LEADERSHIP
+              ================================================= */}
+
+          <Leadership />
+
+          
+
+          {/* =================================================
+              09. STATS
+
+              Stats has been moved here so it appears
+              immediately before FAQ.
+              ================================================= */}
+
+          <Stats />
+
+          {/* =================================================
+              10. FAQ
+              ================================================= */}
 
           <FAQ />
 
-          {/* Final CTA */}
+          {/* =================================================
+              11. FINAL CTA
+              ================================================= */}
 
           <CTA />
+
+          <Newsletter />
+
+          {/* =================================================
+              11. FINAL CTA
+              ================================================= */}
+
+          
+
         </main>
 
         {/* ===================================================
@@ -161,11 +219,12 @@ function Home() {
         {/* ===================================================
             HOME-PAGE-ONLY WHATSAPP BUTTON
 
-            Mounted here so it stays fixed while the user
-            scrolls through the entire homepage.
+            Stays fixed while the user scrolls through the
+            entire homepage.
             =================================================== */}
 
         <WhatsAppButton />
+
       </div>
     </HomeAccessGate>
   );

@@ -18,9 +18,6 @@ import {
 
 /* =========================================================
    DATALATTICE STATS
-
-   IMPORTANT:
-   These values are kept from the existing website content.
    ========================================================= */
 
 const stats = [
@@ -29,29 +26,34 @@ const stats = [
     number: "150+",
     title: "Students",
     description: "Learning with DataLattice",
+    color: "#0C5FF5",
   },
   {
     icon: FaBookOpen,
     number: "15+",
     title: "Courses",
     description: "Career-focused programs",
+    color: "#0289F9",
   },
   {
     icon: FaBriefcase,
     number: "95%",
     title: "Placement",
     description: "Career outcomes",
+    color: "#3531E7",
   },
   {
     icon: FaChalkboard,
     number: "15+",
     title: "Mentors",
     description: "Industry professionals",
+    color: "#0BA978",
   },
 ];
 
 /* =========================================================
-   STATISTICS SECTION
+   STATS
+   Compact proof section — intentionally NOT full page
    ========================================================= */
 
 function Stats() {
@@ -59,307 +61,311 @@ function Stats() {
     <section
       className="
         relative
-        overflow-hidden
-        bg-[#0A1832]
+        bg-white
+        px-5
+        py-10
+        sm:px-7
+        sm:py-12
+        lg:px-8
+        lg:py-14
       "
     >
-      {/* =====================================================
-          SUBTLE BACKGROUND
-          ===================================================== */}
-
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-        "
-      >
-        {/* Main blue glow */}
-
-        <div
-          className="
-            absolute
-            -left-40
-            top-1/2
-            h-[420px]
-            w-[420px]
-            -translate-y-1/2
-            rounded-full
-            opacity-20
-            blur-[120px]
-          "
-          style={{
-            background:
-              "linear-gradient(135deg, #0C5FF5, #0289F9)",
-          }}
-        />
-
-        {/* Small violet glow */}
-
-        <div
-          className="
-            absolute
-            -right-32
-            bottom-[-160px]
-            h-[380px]
-            w-[380px]
-            rounded-full
-            opacity-20
-            blur-[110px]
-          "
-          style={{
-            background: "#3531E7",
-          }}
-        />
-
-        {/* Very subtle grid */}
-
-        <div
-          className="
-            absolute
-            inset-0
-            opacity-[0.025]
-          "
-          style={{
-            backgroundImage: `
-              linear-gradient(
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              ),
-              linear-gradient(
-                90deg,
-                rgba(255,255,255,0.7) 1px,
-                transparent 1px
-              )
-            `,
-            backgroundSize: "64px 64px",
-          }}
-        />
-      </div>
-
-      {/* =====================================================
-          CONTENT
-          ===================================================== */}
-
       <div
         className="
           relative
-          z-10
           mx-auto
-          max-w-[1280px]
-          px-5
-          py-16
-          sm:px-8
-          sm:py-20
-          lg:px-10
-          lg:py-[92px]
+          max-w-7xl
         "
       >
-        <div
+        {/* =================================================
+            MAIN STATS PANEL
+            ================================================= */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
+          transition={{
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="
-            grid
-            items-center
-            gap-12
-            lg:grid-cols-[0.82fr_1.18fr]
-            lg:gap-16
-            xl:gap-24
+            relative
+            overflow-hidden
+            rounded-[28px]
+            border
+            border-slate-200
+            bg-[#F7FAFF]
+            shadow-[0_20px_60px_rgba(10,24,50,0.07)]
           "
         >
           {/* =================================================
-              LEFT EDITORIAL CONTENT
+              BACKGROUND DETAILS
               ================================================= */}
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -20,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.25,
-            }}
-            transition={{
-              duration: 0.65,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            {/* Eyebrow */}
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              -left-24
+              -top-24
+              h-64
+              w-64
+              rounded-full
+              bg-[#0C5FF5]/[0.06]
+              blur-3xl
+            "
+          />
 
-            <div className="flex items-center gap-3">
-              <span
-                className="
-                  h-px
-                  w-8
-                  bg-[#0289F9]
-                "
-              />
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              -bottom-32
+              right-0
+              h-72
+              w-72
+              rounded-full
+              bg-[#3531E7]/[0.045]
+              blur-3xl
+            "
+          />
 
-              <span
-                className="
-                  text-[10px]
-                  font-bold
-                  uppercase
-                  tracking-[0.2em]
-                  text-[#7DD3FC]
-                "
-              >
-                DataLattice by the numbers
-              </span>
-            </div>
+          {/* subtle grid */}
 
-            {/* Heading */}
-
-            <h2
-              className="
-                mt-5
-                max-w-[500px]
-                text-[34px]
-                font-black
-                leading-[1.02]
-                tracking-[-0.045em]
-                text-white
-                sm:text-[42px]
-                lg:text-[46px]
-              "
-            >
-              A growing community
-              <br />
-
-              <span
-                className="
-                  bg-clip-text
-                  text-transparent
-                "
-                style={{
-                  backgroundImage:
-                    "linear-gradient(100deg, #0C5FF5 0%, #0289F9 50%, #7C73FF 100%)",
-                }}
-              >
-                learning with purpose.
-              </span>
-            </h2>
-
-            {/* Description */}
-
-            <p
-              className="
-                mt-5
-                max-w-[450px]
-                text-sm
-                font-medium
-                leading-6
-                text-white/55
-                sm:text-[15px]
-                sm:leading-7
-              "
-            >
-              DataLattice brings together learners,
-              focused programs, experienced mentors,
-              and career-oriented learning in one
-              growing ecosystem.
-            </p>
-
-            {/* Small supporting line */}
-
-            <div
-              className="
-                mt-7
-                flex
-                items-center
-                gap-3
-              "
-            >
-              <div
-                className="
-                  flex
-                  h-8
-                  w-8
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-white/[0.05]
-                "
-              >
-                <span
-                  className="
-                    h-2
-                    w-2
-                    rounded-full
-                  "
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #0C5FF5, #0289F9, #3531E7)",
-                  }}
-                />
-              </div>
-
-              <p
-                className="
-                  text-[10px]
-                  font-semibold
-                  leading-4
-                  text-white/45
-                "
-              >
-                Learn practical skills.
-                <br />
-                Build work you can show.
-              </p>
-            </div>
-          </motion.div>
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              opacity-[0.025]
+              [background-image:linear-gradient(#0A1832_1px,transparent_1px),linear-gradient(90deg,#0A1832_1px,transparent_1px)]
+              [background-size:40px_40px]
+            "
+          />
 
           {/* =================================================
-              RIGHT — STATISTICS
+              CONTENT
               ================================================= */}
 
           <div
             className="
+              relative
+              z-10
               grid
-              grid-cols-1
-              border-t
-              border-white/10
-              sm:grid-cols-2
-              sm:border-l
-              sm:border-t-0
+              lg:grid-cols-[0.75fr_1.25fr]
             "
           >
-            {stats.map((item, index) => (
-              <StatItem
-                key={item.title}
-                item={item}
-                index={index}
-              />
-            ))}
+            {/* =================================================
+                LEFT INTRO
+                ================================================= */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: -15,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                duration: 0.55,
+              }}
+              className="
+                flex
+                flex-col
+                justify-center
+                border-b
+                border-slate-200
+                px-6
+                py-7
+                sm:px-8
+                sm:py-8
+                lg:border-b-0
+                lg:border-r
+                lg:px-9
+                lg:py-9
+              "
+            >
+              {/* eyebrow */}
+
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[#0C5FF5]
+                    shadow-[0_0_10px_rgba(12,95,245,0.45)]
+                  "
+                />
+
+                <span
+                  className="
+                    text-[9px]
+                    font-bold
+                    uppercase
+                    tracking-[0.18em]
+                    text-[#0C5FF5]
+                  "
+                >
+                  DataLattice by the numbers
+                </span>
+              </div>
+
+              {/* heading */}
+
+              <h2
+                className="
+                  mt-3
+                  text-2xl
+                  font-bold
+                  leading-[1.08]
+                  tracking-[-0.04em]
+                  text-[#0A1832]
+                  sm:text-[28px]
+                "
+              >
+                Built around
+                <span
+                  className="
+                    block
+                    bg-gradient-to-r
+                    from-[#0C5FF5]
+                    via-[#0289F9]
+                    to-[#3531E7]
+                    bg-clip-text
+                    text-transparent
+                  "
+                >
+                  real outcomes.
+                </span>
+              </h2>
+
+              <p
+                className="
+                  mt-3
+                  max-w-[330px]
+                  text-[11px]
+                  font-medium
+                  leading-5
+                  text-slate-500
+                  sm:text-xs
+                "
+              >
+                A growing learning ecosystem connecting
+                students, courses, mentors and career
+                opportunities.
+              </p>
+
+              {/* tiny live indicator */}
+
+              <div
+                className="
+                  mt-5
+                  flex
+                  items-center
+                  gap-2
+                "
+              >
+                <span className="relative flex h-2 w-2">
+                  <span
+                    className="
+                      absolute
+                      inline-flex
+                      h-full
+                      w-full
+                      animate-ping
+                      rounded-full
+                      bg-[#0BA978]
+                      opacity-40
+                    "
+                  />
+
+                  <span
+                    className="
+                      relative
+                      inline-flex
+                      h-2
+                      w-2
+                      rounded-full
+                      bg-[#0BA978]
+                    "
+                  />
+                </span>
+
+                <span
+                  className="
+                    text-[8px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.14em]
+                    text-slate-400
+                  "
+                >
+                  Growing every day
+                </span>
+              </div>
+            </motion.div>
+
+            {/* =================================================
+                RIGHT STATS
+                ================================================= */}
+
+            <div
+              className="
+                grid
+                grid-cols-2
+                sm:grid-cols-4
+              "
+            >
+              {stats.map((item, index) => (
+                <StatItem
+                  key={item.title}
+                  item={item}
+                  index={index}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+
+          {/* =================================================
+              BOTTOM ACCENT
+              ================================================= */}
+
+          <div
+            aria-hidden="true"
+            className="
+              absolute
+              bottom-0
+              left-0
+              h-[2px]
+              w-full
+              bg-gradient-to-r
+              from-[#0C5FF5]
+              via-[#0289F9]
+              to-[#3531E7]
+              opacity-70
+            "
+          />
+        </motion.div>
       </div>
-
-      {/* =====================================================
-          BOTTOM ACCENT
-          ===================================================== */}
-
-      <div
-        aria-hidden="true"
-        className="
-          absolute
-          bottom-0
-          left-0
-          h-px
-          w-full
-          opacity-60
-        "
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, #0C5FF5, #0289F9, #3531E7, transparent)",
-        }}
-      />
     </section>
   );
 }
@@ -378,7 +384,7 @@ function StatItem({
     <motion.div
       initial={{
         opacity: 0,
-        y: 18,
+        y: 15,
       }}
       whileInView={{
         opacity: 1,
@@ -386,48 +392,45 @@ function StatItem({
       }}
       viewport={{
         once: true,
-        amount: 0.25,
+        amount: 0.3,
       }}
       transition={{
-        duration: 0.55,
+        duration: 0.5,
         delay: index * 0.08,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="
+      whileHover={{
+        y: -3,
+      }}
+      className={`
         group
         relative
         border-b
-        border-white/10
-        px-1
-        py-7
-        sm:border-b
-        sm:px-7
-        sm:py-8
-        lg:px-9
-        lg:py-9
-      "
+        border-slate-200
+        px-5
+        py-6
+        transition-colors
+        duration-300
+        hover:bg-white
+        sm:px-5
+        lg:border-b-0
+        lg:border-l
+        lg:px-6
+        lg:py-8
+        ${index >= 2 ? "sm:border-b-0" : ""}
+      `}
     >
-      {/* Desktop vertical separator */}
+      {/* =================================================
+          ICON + INDEX
+          ================================================= */}
 
-      {index % 2 === 1 && (
-        <div
-          aria-hidden="true"
-          className="
-            absolute
-            bottom-8
-            left-0
-            top-8
-            hidden
-            w-px
-            bg-white/10
-            sm:block
-          "
-        />
-      )}
-
-      {/* Icon */}
-
-      <div className="flex items-center justify-between">
+      <div
+        className="
+          flex
+          items-center
+          justify-between
+        "
+      >
         <div
           className="
             flex
@@ -437,83 +440,94 @@ function StatItem({
             justify-center
             rounded-xl
             border
-            border-white/10
-            bg-white/[0.045]
-            text-[#7DD3FC]
+            border-slate-200
+            bg-white
+            shadow-[0_5px_15px_rgba(10,24,50,0.04)]
             transition-all
             duration-300
-            group-hover:border-[#0289F9]/40
-            group-hover:bg-[#0289F9]/10
-            group-hover:text-white
+            group-hover:scale-105
           "
+          style={{
+            color: item.color,
+          }}
         >
-          <Icon size={14} />
+          <Icon size={13} />
         </div>
 
         <span
           className="
-            text-[9px]
+            text-[8px]
             font-bold
-            uppercase
             tracking-[0.14em]
-            text-white/20
+            text-slate-300
           "
         >
-          0{index + 1}
+          {String(index + 1).padStart(2, "0")}
         </span>
       </div>
 
-      {/* Number */}
+      {/* =================================================
+          NUMBER
+          ================================================= */}
 
-      <div className="mt-6">
+      <div className="mt-5">
         <AnimatedNumber value={item.number} />
       </div>
 
-      {/* Title */}
+      {/* =================================================
+          TITLE
+          ================================================= */}
 
       <h3
         className="
-          mt-2
-          text-sm
+          mt-1.5
+          text-xs
           font-bold
-          text-white
-          sm:text-[15px]
+          tracking-[-0.01em]
+          text-[#0A1832]
+          sm:text-sm
         "
       >
         {item.title}
       </h3>
 
-      {/* Description */}
+      {/* =================================================
+          DESCRIPTION
+          ================================================= */}
 
       <p
         className="
-          mt-1.5
-          max-w-[190px]
-          text-[10px]
+          mt-1
+          max-w-[145px]
+          text-[9px]
           font-medium
           leading-4
-          text-white/40
+          text-slate-400
+          sm:text-[10px]
         "
       >
         {item.description}
       </p>
 
-      {/* Small hover accent */}
+      {/* =================================================
+          HOVER LINE
+          ================================================= */}
 
-      <div
+      <motion.div
+        initial={{
+          width: 0,
+        }}
+        whileHover={{
+          width: 42,
+        }}
         className="
           absolute
           bottom-0
           left-0
-          h-px
-          w-0
-          transition-all
-          duration-500
-          group-hover:w-20
+          h-[2px]
         "
         style={{
-          background:
-            "linear-gradient(90deg, #0C5FF5, #0289F9, #3531E7)",
+          backgroundColor: item.color,
         }}
       />
     </motion.div>
@@ -576,6 +590,8 @@ function AnimatedNumber({
         1
       );
 
+      /* smooth ease-out */
+
       const eased =
         1 -
         Math.pow(
@@ -619,13 +635,13 @@ function AnimatedNumber({
       ref={numberRef}
       className="
         block
-        text-[42px]
+        text-[32px]
         font-black
         leading-none
         tracking-[-0.055em]
-        text-white
-        sm:text-[48px]
-        lg:text-[52px]
+        text-[#0A1832]
+        sm:text-[36px]
+        lg:text-[40px]
       "
     >
       {displayValue}

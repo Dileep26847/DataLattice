@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+} from "framer-motion";
 import {
   FiArrowRight,
-  FiArrowUpRight,
-  FiCheck,
   FiMinus,
   FiPlus,
 } from "react-icons/fi";
@@ -14,46 +16,39 @@ import {
 
 const faqs = [
   {
-    number: "01",
-    question: "What is DataLattice?",
+    question: "What are the prerequisites for these programs?",
     answer:
-      "DataLattice is a practical learning platform focused on helping learners build real skills in data science, data analytics and related career paths through structured learning and project-based practice.",
+      "Our programs are designed to be accessible to learners at different stages. The specific prerequisites may vary depending on the program, but you can begin with the fundamentals and build your skills progressively.",
   },
   {
-    number: "02",
-    question: "What programs are available?",
+    question: "Are the classes live or recorded?",
     answer:
-      "Our current programs include Data Science and Data Analytics. Each program focuses on building strong fundamentals, practical skills and project experience.",
+      "The learning experience can include structured sessions and recorded learning resources so that learners can follow the material and revisit important concepts when needed.",
   },
   {
-    number: "03",
-    question: "Are the programs suitable for beginners?",
+    question: "Will I work on real-world projects?",
     answer:
-      "Yes. The learning journey is designed to start with the fundamentals and gradually move toward practical application and project work.",
+      "Yes. Practical project work is an important part of the learning experience. You will have opportunities to apply what you learn to projects that demonstrate your skills.",
   },
   {
-    number: "04",
-    question: "Will I work on real projects?",
+    question: "Will I receive a certificate after completion?",
     answer:
-      "Yes. Practical project work is an important part of the learning experience. The goal is to help you turn what you learn into work you can actually demonstrate.",
+      "Program completion and certificate details depend on the specific learning path. You will receive the relevant information before enrolling.",
   },
   {
-    number: "05",
-    question: "Do I need prior programming experience?",
+    question: "Do you provide placement assistance?",
     answer:
-      "Prior experience can be helpful, but it is not required for starting from the fundamentals. The appropriate starting point depends on the program and your current skill level.",
+      "Career support may include guidance around portfolios, interview preparation, career direction and other practical steps that can help you prepare for opportunities.",
   },
   {
-    number: "06",
-    question: "How do I choose between Data Science and Data Analytics?",
+    question: "Can I switch my batch if needed?",
     answer:
-      "Data Analytics focuses more on working with business data, SQL, visualization, dashboards and insights. Data Science goes further into Python, statistics, machine learning and practical data science workflows.",
+      "Batch changes may be possible depending on availability and the circumstances. Please contact the team to discuss your requirements.",
   },
   {
-    number: "07",
-    question: "Can I explore the programs before enrolling?",
+    question: "What is the refund policy?",
     answer:
-      "Yes. You can explore the available programs and understand what each learning path covers before deciding to continue.",
+      "Refund eligibility depends on the applicable program terms. Please review the specific refund conditions before completing your enrollment.",
   },
 ];
 
@@ -75,7 +70,7 @@ function FAQItem({
           ? false
           : {
               opacity: 0,
-              y: 16,
+              y: 10,
             }
       }
       whileInView={
@@ -88,90 +83,81 @@ function FAQItem({
       }
       viewport={{
         once: true,
-        amount: 0.15,
+        amount: 0.2,
       }}
       transition={{
-        duration: shouldReduceMotion ? 0 : 0.45,
-        delay: shouldReduceMotion ? 0 : index * 0.04,
+        duration: shouldReduceMotion ? 0 : 0.4,
+        delay: shouldReduceMotion ? 0 : index * 0.035,
+        ease: [0.22, 1, 0.36, 1],
       }}
-      className="border-b border-[#DCE5F1] last:border-b-0"
+      className="border-b border-[#E5EBF3]"
     >
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="group flex w-full items-start gap-4 py-5 text-left sm:gap-6 sm:py-6"
+        className="
+          group
+          flex
+          w-full
+          items-center
+          justify-between
+          gap-6
+          py-5
+          text-left
+          sm:py-[18px]
+        "
       >
-        {/* Number */}
+        {/* Question */}
 
         <span
           className={`
-            mt-0.5
-            w-7
-            shrink-0
-            text-[10px]
-            font-bold
-            tracking-[0.12em]
+            text-[13px]
+            font-semibold
+            leading-6
+            tracking-[-0.01em]
             transition-colors
             duration-200
+            sm:text-[14px]
             ${
               isOpen
                 ? "text-[#0C5FF5]"
-                : "text-[#9AA8BA] group-hover:text-[#0C5FF5]"
+                : "text-[#172B4D] group-hover:text-[#0C5FF5]"
             }
           `}
         >
-          {item.number}
+          {item.question}
         </span>
 
-        {/* Question */}
-
-        <span className="flex-1 pr-2">
-          <span
-            className={`
-              block
-              text-base
-              font-semibold
-              leading-7
-              tracking-[-0.015em]
-              transition-colors
-              duration-200
-              sm:text-[17px]
-              ${
-                isOpen
-                  ? "text-[#0C5FF5]"
-                  : "text-[#0A1832] group-hover:text-[#0C5FF5]"
-              }
-            `}
-          >
-            {item.question}
-          </span>
-        </span>
-
-        {/* Icon */}
+        {/* Plus / Minus */}
 
         <span
           className={`
             flex
-            h-8
-            w-8
+            h-6
+            w-6
             shrink-0
             items-center
             justify-center
             rounded-full
-            border
             transition-all
             duration-200
             ${
               isOpen
-                ? "border-[#0C5FF5] bg-[#0C5FF5] text-white"
-                : "border-[#CBD7E5] bg-white text-[#0A1832] group-hover:border-[#0C5FF5]"
+                ? "bg-[#0C5FF5] text-white"
+                : "bg-[#EEF5FF] text-[#0C5FF5] group-hover:bg-[#E4EFFF]"
             }
           `}
         >
-          {isOpen ? <FiMinus size={14} /> : <FiPlus size={14} />}
+          {isOpen ? (
+            <FiMinus size={12} />
+          ) : (
+            <FiPlus size={12} />
+          )}
         </span>
       </button>
+
+      {/* Answer */}
 
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -189,13 +175,13 @@ function FAQItem({
               opacity: 0,
             }}
             transition={{
-              duration: shouldReduceMotion ? 0 : 0.24,
+              duration: shouldReduceMotion ? 0 : 0.25,
               ease: "easeOut",
             }}
             className="overflow-hidden"
           >
-            <div className="ml-11 max-w-2xl pb-6 pr-10 sm:ml-[52px]">
-              <p className="text-sm leading-7 text-[#5E6D81] sm:text-[15px]">
+            <div className="pb-5 pr-10">
+              <p className="max-w-2xl text-[13px] leading-6 text-[#6B7A90]">
                 {item.answer}
               </p>
             </div>
@@ -207,165 +193,43 @@ function FAQItem({
 }
 
 /* =========================================================
-   MAIN COMPONENT
+   MAIN FAQ
    ========================================================= */
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(-1);
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <section
       id="faq"
-      className="relative overflow-hidden bg-[#F7FAFF] py-20 sm:py-24 lg:py-28"
+      className="
+        relative
+        w-full
+        overflow-hidden
+        bg-white
+        px-5
+        py-16
+        sm:px-8
+        sm:py-20
+        lg:px-10
+        lg:py-24
+      "
     >
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-        {/* ===================================================
-            MAIN FAQ FRAME
-        =================================================== */}
+      {/* =====================================================
+          FAQ CONTENT
+      ===================================================== */}
 
-        <div className="overflow-hidden rounded-[30px] bg-[#0A1832]">
-          <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
-            {/* =================================================
-                LEFT EDITORIAL PANEL
-            ================================================= */}
-
-            <div className="relative overflow-hidden p-7 sm:p-10 lg:p-12">
-              {/* Subtle grid */}
-
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-[0.035]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
-                  backgroundSize: "44px 44px",
-                }}
-              />
-
-              {/* Gradient glow */}
-
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full blur-3xl"
-                style={{
-                  background:
-                    "radial-gradient(circle, rgba(12,95,245,0.25) 0%, rgba(12,95,245,0) 70%)",
-                }}
-              />
-
-              <div className="relative z-10 flex min-h-[470px] flex-col">
-                {/* Label */}
-
-                <div className="flex items-center gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#0289F9]" />
-
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#4CA7FF]">
-                    Before you start
-                  </span>
-                </div>
-
-                {/* Heading */}
-
-                <h2 className="mt-7 max-w-md text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-white sm:text-5xl lg:text-[52px]">
-                  Questions
-                  <br />
-                  <span className="bg-gradient-to-r from-[#0C5FF5] via-[#0289F9] to-[#3531E7] bg-clip-text text-transparent">
-                    before you
-                  </span>
-                  <br />
-                  begin?
-                </h2>
-
-                <p className="mt-6 max-w-sm text-sm leading-7 text-white/55">
-                  Choosing a learning path is easier when you know what to
-                  expect. We have answered some of the questions learners ask
-                  before getting started.
-                </p>
-
-                {/* Small checklist */}
-
-                <div className="mt-8 space-y-3">
-                  {[
-                    "Understand the learning paths",
-                    "Know what practical work involves",
-                    "Choose where to begin",
-                  ].map((text) => (
-                    <div
-                      key={text}
-                      className="flex items-center gap-3 text-xs text-white/70"
-                    >
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0C5FF5]/15 text-[#4CA7FF]">
-                        <FiCheck size={11} />
-                      </span>
-
-                      {text}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Bottom marker */}
-
-                <div className="mt-auto pt-10">
-                  <div className="flex items-end justify-between border-t border-white/10 pt-5">
-                    <div>
-                      <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/30">
-                        DataLattice
-                      </p>
-
-                      <p className="mt-1 text-xs text-white/50">
-                        Learn. Build. Grow.
-                      </p>
-                    </div>
-
-                    <span className="text-5xl font-black leading-none tracking-[-0.08em] text-white/[0.06]">
-                      FAQ
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* =================================================
-                RIGHT QUESTIONS PANEL
-            ================================================= */}
-
-            <div className="bg-white p-6 sm:p-8 lg:p-10">
-              {/* Header */}
-
-              <div className="mb-2 flex items-center justify-between">
-                <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#0C5FF5]">
-                  Common questions
-                </p>
-
-                <span className="text-[10px] font-medium text-[#9AA8BA]">
-                  {String(faqs.length).padStart(2, "0")} answers
-                </span>
-              </div>
-
-              {/* FAQ list */}
-
-              <div className="border-t border-[#DCE5F1]">
-                {faqs.map((item, index) => (
-                  <FAQItem
-                    key={item.question}
-                    item={item}
-                    index={index}
-                    isOpen={openIndex === index}
-                    onToggle={() =>
-                      setOpenIndex(openIndex === index ? -1 : index)
-                    }
-                    shouldReduceMotion={shouldReduceMotion}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ===================================================
-            BOTTOM CTA
-        =================================================== */}
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-[760px]
+        "
+      >
+        {/* =================================================
+            HEADER
+        ================================================= */}
 
         <motion.div
           initial={
@@ -373,7 +237,7 @@ export default function FAQ() {
               ? false
               : {
                   opacity: 0,
-                  y: 15,
+                  y: 12,
                 }
           }
           whileInView={
@@ -389,85 +253,175 @@ export default function FAQ() {
             amount: 0.3,
           }}
           transition={{
-            duration: shouldReduceMotion ? 0 : 0.5,
+            duration: shouldReduceMotion ? 0 : 0.55,
+            ease: [0.22, 1, 0.36, 1],
           }}
-          className="
-            mt-6
-            flex
-            flex-col
-            gap-5
-            rounded-2xl
-            border
-            border-[#DCE5F1]
-            bg-white
-            px-6
-            py-6
-            sm:flex-row
-            sm:items-center
-            sm:justify-between
-            sm:px-8
-          "
+          className="text-center"
         >
-          <div>
-            <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#0289F9]">
-              Ready when you are
-            </p>
+          {/* Eyebrow */}
 
-            <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.025em] text-[#0A1832] sm:text-xl">
-              Explore the learning paths.
-            </h3>
+          <div
+            className="
+              inline-flex
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-[#CFE0FF]
+              bg-[#F5F9FF]
+              px-3
+              py-1.5
+            "
+          >
+            <span
+              className="
+                text-[8px]
+                font-bold
+                uppercase
+                tracking-[0.16em]
+                text-[#0C5FF5]
+                sm:text-[9px]
+              "
+            >
+              Frequently Asked Questions
+            </span>
           </div>
 
+          {/* Heading */}
+
+          <h2
+            className="
+              mt-5
+              text-[32px]
+              font-black
+              leading-[1.05]
+              tracking-[-0.045em]
+              text-[#0A1832]
+              sm:text-[38px]
+              lg:text-[40px]
+            "
+          >
+            Got Questions? We've Got Answers.
+          </h2>
+
+          {/* Description */}
+
+          <p
+            className="
+              mx-auto
+              mt-4
+              max-w-[620px]
+              text-[12px]
+              font-medium
+              leading-6
+              text-[#8290A4]
+              sm:text-[13px]
+            "
+          >
+            Everything you need to know about our technology
+            programs, mentorship structure, and support model.
+          </p>
+        </motion.div>
+
+        {/* =================================================
+            QUESTIONS
+        ================================================= */}
+
+        <div
+          className="
+            mt-12
+            border-t
+            border-[#E5EBF3]
+            sm:mt-14
+          "
+        >
+          {faqs.map((item, index) => (
+            <FAQItem
+              key={item.question}
+              item={item}
+              index={index}
+              isOpen={openIndex === index}
+              onToggle={() =>
+                setOpenIndex(
+                  openIndex === index ? -1 : index
+                )
+              }
+              shouldReduceMotion={shouldReduceMotion}
+            />
+          ))}
+        </div>
+
+        {/* =================================================
+            VIEW ALL FAQS
+        ================================================= */}
+
+        <motion.div
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 8,
+                }
+          }
+          whileInView={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
+          }
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.45,
+          }}
+          className="mt-8 flex justify-center"
+        >
           <motion.a
-            href="/courses"
+            href="/faq"
             whileHover={
               shouldReduceMotion
                 ? undefined
                 : {
-                    x: 3,
+                    y: -1,
+                  }
+            }
+            whileTap={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    scale: 0.98,
                   }
             }
             className="
               inline-flex
-              shrink-0
               items-center
               justify-center
               gap-2
-              rounded-xl
-              bg-[#0C5FF5]
+              rounded-full
+              border
+              border-[#CFE0FF]
+              bg-[#F5F9FF]
               px-5
-              py-3
-              text-xs
+              py-2.5
+              text-[10px]
               font-semibold
-              text-white
-              shadow-[0_10px_24px_rgba(12,95,245,0.18)]
-              transition-colors
+              text-[#0C5FF5]
+              transition-all
               duration-200
-              hover:bg-[#0289F9]
+              hover:border-[#0C5FF5]
+              hover:bg-[#EEF5FF]
             "
           >
-            Explore programs
-            <FiArrowRight size={13} />
+            View All FAQs
+
+            <FiArrowRight size={12} />
           </motion.a>
         </motion.div>
-
-        {/* ===================================================
-            SMALL NAVIGATION HINT
-        =================================================== */}
-
-        <div className="mt-5 flex justify-end">
-          <a
-            href="/courses"
-            className="group inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7B8A9E] transition-colors hover:text-[#0C5FF5]"
-          >
-            View all programs
-
-            <FiArrowUpRight
-              size={12}
-              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            />
-          </a>
-        </div>
       </div>
     </section>
   );

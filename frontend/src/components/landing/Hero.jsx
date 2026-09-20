@@ -1,763 +1,207 @@
 import React from "react";
 import { motion } from "framer-motion";
+
+import heroImage from "../../assets/hero-woman.png";
+
 import {
   FaArrowRight,
-  FaChartLine,
-  FaDatabase,
+  FaChartSimple,
   FaCode,
-  FaBrain,
+  FaDatabase,
   FaPlay,
   FaCheck,
-  FaRobot,
-  FaLayerGroup,
-  FaBolt,
-  FaCircleCheck,
 } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
-
-import { requireHomeDemoAccess } from "./HomeAccessGate";
-import HeroSignupCard from "./HeroSignupCard";
 
 /* =========================================================
-   DATALATTICE HERO
+   FEATURE PILL
    ========================================================= */
 
-const COLORS = {
-  navy: "#0A1832",
-  blue: "#0C5FF5",
-  cyan: "#0289F9",
-  violet: "#3531E7",
-  white: "#FFFFFF",
-};
-
-/* =========================================================
-   BACKGROUND
-   ========================================================= */
-
-function HeroBackground() {
+function FeaturePill({ icon, children }) {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Soft blue glow */}
-      <div
-        className="
-          absolute
-          -left-40
-          -top-40
-          h-[420px]
-          w-[420px]
-          rounded-full
-          opacity-30
-          blur-3xl
-        "
-        style={{
-          background:
-            "radial-gradient(circle, rgba(12,95,245,0.18) 0%, rgba(12,95,245,0) 70%)",
-        }}
-      />
+    <div
+      className="
+        inline-flex
+        h-[28px]
+        items-center
+        gap-2
+        rounded-full
+        border
+        border-slate-200
+        bg-white
+        px-3
+        text-[10px]
+        font-semibold
+        text-slate-600
+        shadow-[0_5px_16px_rgba(15,23,42,0.07)]
+        whitespace-nowrap
+      "
+    >
+      <span className="flex items-center justify-center text-[#1463FF]">
+        {icon || <FaCheck size={8} />}
+      </span>
 
-      {/* Cyan glow */}
-      <div
-        className="
-          absolute
-          right-[22%]
-          top-[12%]
-          h-[300px]
-          w-[300px]
-          rounded-full
-          opacity-25
-          blur-3xl
-        "
-        style={{
-          background:
-            "radial-gradient(circle, rgba(2,137,249,0.16) 0%, rgba(2,137,249,0) 70%)",
-        }}
-      />
-
-      {/* Violet glow */}
-      <div
-        className="
-          absolute
-          bottom-[-180px]
-          right-[-100px]
-          h-[420px]
-          w-[420px]
-          rounded-full
-          opacity-20
-          blur-3xl
-        "
-        style={{
-          background:
-            "radial-gradient(circle, rgba(53,49,231,0.18) 0%, rgba(53,49,231,0) 70%)",
-        }}
-      />
-
-      {/* Technical grid */}
-      <div
-        className="
-          absolute
-          inset-0
-          opacity-[0.035]
-        "
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(10,24,50,0.8) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(10,24,50,0.8) 1px, transparent 1px)
-          `,
-          backgroundSize: "48px 48px",
-        }}
-      />
-
-      {/* Fine grid */}
-      <div
-        className="
-          absolute
-          inset-0
-          opacity-[0.018]
-        "
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(12,95,245,0.7) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(12,95,245,0.7) 1px, transparent 1px)
-          `,
-          backgroundSize: "12px 12px",
-        }}
-      />
+      {children}
     </div>
   );
 }
 
 /* =========================================================
-   FLOATING BADGE
+   FLOATING IMAGE LABEL
    ========================================================= */
 
-function FloatingBadge({
+function FloatingLabel({
   icon,
   title,
   subtitle,
   className = "",
-  delay = 0,
+  variant = "white",
 }) {
   return (
     <motion.div
       initial={{
         opacity: 0,
-        y: 12,
+        scale: 0.94,
+        y: 8,
       }}
       animate={{
         opacity: 1,
+        scale: 1,
         y: 0,
       }}
       transition={{
-        duration: 0.55,
-        delay,
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
       }}
       className={`
         absolute
-        z-20
-        hidden
+        z-30
+        flex
         items-center
-        gap-2.5
-        rounded-2xl
+        gap-2
+        rounded-xl
         border
-        border-white/70
-        bg-white/90
+        border-white
         px-3
-        py-2.5
-        shadow-[0_14px_35px_rgba(10,24,50,0.10)]
-        backdrop-blur-md
-        sm:flex
+        py-2
+        shadow-[0_10px_28px_rgba(15,23,42,0.12)]
+        ${variant === "blue"
+          ? "bg-[#1463FF] text-white"
+          : "bg-white text-[#0B1B3A]"
+        }
         ${className}
       `}
     >
-      <div
-        className="
+      <span
+        className={`
           flex
-          h-8
-          w-8
-          shrink-0
+          h-5
+          w-5
           items-center
           justify-center
-          rounded-xl
-          text-white
-        "
-        style={{
-          background:
-            "linear-gradient(135deg, #0C5FF5 0%, #0289F9 55%, #3531E7 100%)",
-        }}
+          rounded-full
+          ${variant === "blue"
+            ? "bg-white/15 text-white"
+            : "bg-blue-50 text-[#1463FF]"
+          }
+        `}
       >
         {icon}
-      </div>
+      </span>
 
-      <div>
-        <p className="text-[10px] font-bold text-[#0A1832]">
+      <div className="leading-none">
+        <p
+          className={`
+            whitespace-nowrap
+            text-[9px]
+            font-bold
+            ${variant === "blue"
+              ? "text-white"
+              : "text-[#0B1B3A]"
+            }
+          `}
+        >
           {title}
         </p>
 
-        <p className="mt-0.5 text-[9px] font-medium text-[#64748B]">
-          {subtitle}
-        </p>
+        {subtitle && (
+          <p
+            className={`
+              mt-1
+              whitespace-nowrap
+              text-[7px]
+              font-medium
+              ${variant === "blue"
+                ? "text-white/80"
+                : "text-slate-400"
+              }
+            `}
+          >
+            {subtitle}
+          </p>
+        )}
       </div>
     </motion.div>
   );
 }
 
 /* =========================================================
-   HERO PRODUCT VISUAL
+   HERO BACKGROUND
    ========================================================= */
 
-function LearningPlatformVisual() {
+function HeroBackground() {
   return (
-    <div className="relative mx-auto w-full max-w-[540px]">
-      {/* Ambient glow */}
+    <div
+      aria-hidden="true"
+      className="
+        pointer-events-none
+        absolute
+        inset-0
+        overflow-hidden
+      "
+    >
+      {/* Main blue atmosphere */}
+
       <div
         className="
           absolute
-          left-1/2
-          top-1/2
-          h-[390px]
-          w-[390px]
-          -translate-x-1/2
-          -translate-y-1/2
+          -left-[180px]
+          top-[80px]
+          h-[520px]
+          w-[520px]
           rounded-full
-          opacity-20
-          blur-3xl
+          bg-blue-100/40
+          blur-[110px]
         "
-        style={{
-          background:
-            "linear-gradient(135deg, #0C5FF5 0%, #0289F9 50%, #3531E7 100%)",
-        }}
       />
 
-      {/* Floating badges */}
-      <FloatingBadge
-        icon={<FaCode size={12} />}
-        title="Python"
-        subtitle="Core skill"
-        className="-left-2 top-[16%]"
-        delay={0.2}
-      />
-
-      <FloatingBadge
-        icon={<FaDatabase size={12} />}
-        title="SQL"
-        subtitle="Data foundations"
-        className="-right-2 top-[27%]"
-        delay={0.35}
-      />
-
-      <FloatingBadge
-        icon={<FaBrain size={12} />}
-        title="AI & ML"
-        subtitle="Technology track"
-        className="-left-5 bottom-[20%]"
-        delay={0.5}
-      />
-
-      <FloatingBadge
-        icon={<FaLayerGroup size={12} />}
-        title="Projects"
-        subtitle="Build real work"
-        className="-right-4 bottom-[12%]"
-        delay={0.65}
-      />
-
-      {/* Main product frame */}
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 25,
-          scale: 0.96,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          scale: 1,
-        }}
-        transition={{
-          duration: 0.75,
-          ease: "easeOut",
-        }}
-        className="
-          relative
-          z-10
-          overflow-hidden
-          rounded-[30px]
-          border
-          border-white/80
-          bg-white
-          shadow-[0_35px_90px_rgba(10,24,50,0.15)]
-        "
-      >
-        {/* Top browser bar */}
-        <div
-          className="
-            flex
-            h-11
-            items-center
-            justify-between
-            border-b
-            border-[#EAF0F7]
-            bg-[#FBFDFF]
-            px-4
-          "
-        >
-          <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#E2E8F0]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#E2E8F0]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#E2E8F0]" />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="hidden text-[8px] font-bold text-[#94A3B8] sm:block">
-              DATALATTICE
-            </span>
-
-            <div
-              className="
-                flex
-                h-6
-                w-6
-                items-center
-                justify-center
-                rounded-lg
-                text-white
-              "
-              style={{
-                background:
-                  "linear-gradient(135deg, #0C5FF5, #0289F9, #3531E7)",
-              }}
-            >
-              <FaBolt size={9} />
-            </div>
-          </div>
-        </div>
-
-        {/* Dashboard body */}
-        <div className="p-4 sm:p-5">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#64748B]">
-                My Learning
-              </p>
-
-              <h3 className="mt-1 text-base font-black tracking-[-0.025em] text-[#0A1832] sm:text-lg">
-                Build your data skills.
-              </h3>
-            </div>
-
-            <div
-              className="
-                hidden
-                rounded-full
-                px-3
-                py-1.5
-                text-[9px]
-                font-bold
-                text-white
-                sm:block
-              "
-              style={{
-                background:
-                  "linear-gradient(90deg, #0C5FF5, #0289F9, #3531E7)",
-              }}
-            >
-              Learning
-            </div>
-          </div>
-
-          {/* Progress card */}
-          <div
-            className="
-              mt-4
-              rounded-[20px]
-              p-4
-              text-white
-            "
-            style={{
-              background:
-                "linear-gradient(135deg, #0A1832 0%, #102D60 55%, #3531E7 100%)",
-            }}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-[9px] font-medium text-white/60">
-                  Current progress
-                </p>
-
-                <p className="mt-1 text-xl font-black tracking-[-0.03em]">
-                  82%
-                </p>
-              </div>
-
-              <div
-                className="
-                  flex
-                  h-9
-                  w-9
-                  items-center
-                  justify-center
-                  rounded-xl
-                  bg-white/10
-                  text-[#7DD3FC]
-                "
-              >
-                <FaChartLine size={14} />
-              </div>
-            </div>
-
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "82%" }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.5,
-                  ease: "easeOut",
-                }}
-                className="h-full rounded-full"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #0C5FF5, #0289F9, #7C73FF)",
-                }}
-              />
-            </div>
-
-            <div className="mt-2 flex justify-between">
-              <span className="text-[8px] text-white/50">
-                18 lessons completed
-              </span>
-
-              <span className="text-[8px] font-bold text-white/70">
-                Keep going
-              </span>
-            </div>
-          </div>
-
-          {/* Skills */}
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {/* Python */}
-            <SkillCard
-              icon={<FaCode size={12} />}
-              title="Python"
-              value="92%"
-              progress="92%"
-            />
-
-            {/* SQL */}
-            <SkillCard
-              icon={<FaDatabase size={12} />}
-              title="SQL"
-              value="78%"
-              progress="78%"
-            />
-          </div>
-
-          {/* Chart + next lesson */}
-          <div className="mt-4 grid grid-cols-[1.1fr_0.9fr] gap-3">
-            {/* Chart */}
-            <div className="rounded-[18px] border border-[#EAF0F7] bg-[#FBFDFF] p-3">
-              <div className="flex items-center justify-between">
-                <p className="text-[9px] font-bold text-[#0A1832]">
-                  Learning activity
-                </p>
-
-                <span className="text-[8px] font-semibold text-[#0289F9]">
-                  This week
-                </span>
-              </div>
-
-              <div className="relative mt-3 h-[70px] overflow-hidden">
-                {/* Horizontal guides */}
-                <div className="absolute left-0 right-0 top-[15%] border-t border-[#EEF3F8]" />
-                <div className="absolute left-0 right-0 top-[50%] border-t border-[#EEF3F8]" />
-                <div className="absolute left-0 right-0 top-[85%] border-t border-[#EEF3F8]" />
-
-                <svg
-                  viewBox="0 0 240 70"
-                  className="absolute inset-0 h-full w-full"
-                  preserveAspectRatio="none"
-                >
-                  <defs>
-                    <linearGradient
-                      id="heroLineGradient"
-                      x1="0"
-                      y1="0"
-                      x2="1"
-                      y2="0"
-                    >
-                      <stop
-                        offset="0%"
-                        stopColor="#0C5FF5"
-                      />
-                      <stop
-                        offset="50%"
-                        stopColor="#0289F9"
-                      />
-                      <stop
-                        offset="100%"
-                        stopColor="#3531E7"
-                      />
-                    </linearGradient>
-
-                    <linearGradient
-                      id="heroAreaGradient"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="0%"
-                        stopColor="#0C5FF5"
-                        stopOpacity="0.16"
-                      />
-                      <stop
-                        offset="100%"
-                        stopColor="#0C5FF5"
-                        stopOpacity="0"
-                      />
-                    </linearGradient>
-                  </defs>
-
-                  <path
-                    d="
-                      M0 58
-                      C18 54, 25 48, 42 51
-                      C58 54, 65 34, 82 38
-                      C99 42, 105 24, 123 29
-                      C141 34, 150 18, 166 24
-                      C184 31, 192 12, 208 18
-                      C222 23, 231 12, 240 8
-                      L240 70
-                      L0 70 Z
-                    "
-                    fill="url(#heroAreaGradient)"
-                  />
-
-                  <path
-                    d="
-                      M0 58
-                      C18 54, 25 48, 42 51
-                      C58 54, 65 34, 82 38
-                      C99 42, 105 24, 123 29
-                      C141 34, 150 18, 166 24
-                      C184 31, 192 12, 208 18
-                      C222 23, 231 12, 240 8
-                    "
-                    fill="none"
-                    stroke="url(#heroLineGradient)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-
-                  <circle
-                    cx="208"
-                    cy="18"
-                    r="4"
-                    fill="#FFFFFF"
-                    stroke="#3531E7"
-                    strokeWidth="3"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Next lesson */}
-            <div className="rounded-[18px] bg-[#F5F9FF] p-3">
-              <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#64748B]">
-                Next lesson
-              </p>
-
-              <div className="mt-2 flex h-7 w-7 items-center justify-center rounded-lg bg-[#E7F1FF] text-[#0C5FF5]">
-                <FaBrain size={11} />
-              </div>
-
-              <p className="mt-2 text-[9px] font-black leading-3.5 text-[#0A1832]">
-                Machine Learning
-                <br />
-                Foundations
-              </p>
-
-              <div className="mt-2 flex items-center gap-1">
-                <FaPlay
-                  size={7}
-                  className="text-[#0289F9]"
-                />
-
-                <span className="text-[7px] font-semibold text-[#64748B]">
-                  24 min
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom learning features */}
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            <MiniFeature
-              icon={<FaCircleCheck size={9} />}
-              text="Mentorship"
-            />
-
-            <MiniFeature
-              icon={<FaLayerGroup size={9} />}
-              text="Projects"
-            />
-
-            <MiniFeature
-              icon={<FaRobot size={9} />}
-              text="AI Skills"
-            />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Floating gradient orb */}
-      <motion.div
-        animate={{
-          y: [0, -10, 0],
-          rotate: [0, 4, 0],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+      <div
         className="
           absolute
-          -bottom-5
-          left-[18%]
-          z-0
-          h-12
-          w-12
+          right-[-180px]
+          top-[-80px]
+          h-[560px]
+          w-[560px]
           rounded-full
-          opacity-70
-          blur-xl
+          bg-sky-100/45
+          blur-[120px]
         "
-        style={{
-          background:
-            "linear-gradient(135deg, #0C5FF5, #3531E7)",
-        }}
       />
 
-      <motion.div
-        animate={{
-          y: [0, 9, 0],
-          rotate: [0, -5, 0],
-        }}
-        transition={{
-          duration: 4.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.5,
-        }}
+      {/* Bottom grid */}
+
+      <div
         className="
           absolute
-          -right-1
-          top-[8%]
-          z-0
-          h-10
-          w-10
-          rounded-full
-          opacity-60
-          blur-xl
+          bottom-0
+          left-0
+          right-0
+          h-[150px]
+          opacity-[0.55]
+          [background-image:linear-gradient(to_right,rgba(148,163,184,0.10)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.10)_1px,transparent_1px)]
+          [background-size:72px_72px]
+          [mask-image:linear-gradient(to_bottom,transparent,black)]
         "
-        style={{
-          background: "#0289F9",
-        }}
       />
-    </div>
-  );
-}
-
-/* =========================================================
-   SKILL CARD
-   ========================================================= */
-
-function SkillCard({
-  icon,
-  title,
-  value,
-  progress,
-}) {
-  return (
-    <div
-      className="
-        rounded-[18px]
-        border
-        border-[#EAF0F7]
-        bg-white
-        p-3
-      "
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div
-            className="
-              flex
-              h-7
-              w-7
-              items-center
-              justify-center
-              rounded-lg
-              bg-[#EAF2FF]
-              text-[#0C5FF5]
-            "
-          >
-            {icon}
-          </div>
-
-          <span className="text-[9px] font-bold text-[#0A1832]">
-            {title}
-          </span>
-        </div>
-
-        <span className="text-[8px] font-black text-[#0C5FF5]">
-          {value}
-        </span>
-      </div>
-
-      <div className="mt-2 h-1 overflow-hidden rounded-full bg-[#EEF3F8]">
-        <div
-          className="h-full rounded-full"
-          style={{
-            width: progress,
-            background:
-              "linear-gradient(90deg, #0C5FF5, #0289F9, #3531E7)",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================
-   MINI FEATURE
-   ========================================================= */
-
-function MiniFeature({ icon, text }) {
-  return (
-    <div
-      className="
-        flex
-        items-center
-        justify-center
-        gap-1.5
-        rounded-xl
-        border
-        border-[#EAF0F7]
-        bg-white
-        px-2
-        py-2
-      "
-    >
-      <span className="text-[#0C5FF5]">
-        {icon}
-      </span>
-
-      <span className="text-[7px] font-bold text-[#64748B] sm:text-[8px]">
-        {text}
-      </span>
     </div>
   );
 }
@@ -767,70 +211,61 @@ function MiniFeature({ icon, text }) {
    ========================================================= */
 
 function Hero() {
-  const navigate = useNavigate();
-
-  const handleExplorePrograms =
-    requireHomeDemoAccess(() => {
-      navigate("/courses");
-    });
-
-  const handleWatchDemo =
-    requireHomeDemoAccess(() => {
-      navigate("/courses");
-    });
-
   return (
     <section
+      id="home"
       className="
         relative
-        min-h-[calc(100vh-74px)]
+        min-h-[calc(100vh-66px)]
         overflow-hidden
-        bg-white
-        pt-[74px]
+        bg-gradient-to-b
+        from-[#f7faff]
+        via-[#f2f7ff]
+        to-[#eef5ff]
       "
     >
       <HeroBackground />
+
+      {/* =====================================================
+          MAIN HERO CONTAINER
+          ===================================================== */}
 
       <div
         className="
           relative
           z-10
           mx-auto
-          max-w-[1500px]
-          px-5
-          pb-10
-          pt-8
+          flex
+          min-h-[calc(100vh-66px)]
+          w-full
+          max-w-[1400px]
+          items-center
+          px-6
+          py-10
           sm:px-8
-          sm:pt-10
-          lg:px-10
-          lg:pb-12
-          lg:pt-12
-          xl:px-12
+          lg:px-12
+          xl:px-16
         "
       >
-        {/* =================================================
-            MAIN THREE COLUMN HERO
-            ================================================= */}
-
         <div
           className="
             grid
+            w-full
             items-center
-            gap-10
-            lg:grid-cols-[0.92fr_1.18fr_0.88fr]
-            lg:gap-7
-            xl:grid-cols-[0.92fr_1.2fr_0.88fr]
-            xl:gap-10
+            gap-8
+            lg:grid-cols-[0.96fr_1.04fr]
+            lg:gap-4
+            xl:grid-cols-[0.95fr_1.05fr]
           "
         >
           {/* =================================================
-              LEFT — HERO CONTENT
+              LEFT CONTENT
               ================================================= */}
 
           <motion.div
             initial={{
               opacity: 0,
-              x: -24,
+              x: -25,
             }}
             animate={{
               opacity: 1,
@@ -838,451 +273,438 @@ function Hero() {
             }}
             transition={{
               duration: 0.7,
-              ease: "easeOut",
+              ease: [0.22, 1, 0.36, 1],
             }}
-            className="relative z-20 max-w-[590px]"
+            className="
+              relative
+              z-20
+              mx-auto
+              w-full
+              max-w-[650px]
+              lg:mx-0
+            "
           >
-            {/* Eyebrow */}
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#DCE9FF] bg-[#F5F9FF] px-3.5 py-2">
-              <span
-                className="
-                  flex
-                  h-5
-                  w-5
-                  items-center
-                  justify-center
-                  rounded-full
-                  text-white
-                "
-                style={{
-                  background:
-                    "linear-gradient(135deg, #0C5FF5, #0289F9, #3531E7)",
-                }}
-              >
-                <FaBolt size={8} />
-              </span>
+            {/* EYEBROW */}
 
-              <span className="text-[10px] font-bold tracking-[0.04em] text-[#0C5FF5] sm:text-[11px]">
-                DATA EDUCATION, REIMAGINED
-              </span>
-            </div>
-
-            {/* Heading */}
-            <h1
+            <div
               className="
-                max-w-[620px]
-                text-[42px]
-                font-black
-                leading-[0.98]
-                tracking-[-0.055em]
-                text-[#0A1832]
-                sm:text-[53px]
-                lg:text-[48px]
-                xl:text-[58px]
+                inline-flex
+                items-center
+                gap-2
+                rounded-full
+                border
+                border-blue-200
+                bg-blue-50/90
+                px-3
+                py-1.5
+                text-[9px]
+                font-extrabold
+                uppercase
+                tracking-[0.07em]
+                text-[#1463FF]
+                shadow-sm
+                sm:px-3.5
+                sm:text-[10px]
               "
             >
-              Learn data.
+              <span
+                className="
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#1463FF]
+                "
+              />
+
+              Skills for a brighter tomorrow
+            </div>
+
+            {/* HEADING */}
+
+            <h1
+              className="
+                mt-6
+                max-w-[620px]
+                text-[43px]
+                font-extrabold
+                leading-[0.98]
+                tracking-[-0.055em]
+                text-[#091A3A]
+                sm:mt-7
+                sm:text-[52px]
+                md:text-[58px]
+                lg:mt-8
+                lg:text-[60px]
+                xl:text-[64px]
+              "
+            >
+              Learn Technology.
               <br />
 
               <span
                 className="
+                  bg-gradient-to-r
+                  from-[#087CFF]
+                  via-[#1463FF]
+                  to-[#3749F5]
                   bg-clip-text
                   text-transparent
                 "
-                style={{
-                  backgroundImage:
-                    "linear-gradient(100deg, #0C5FF5 0%, #0289F9 48%, #3531E7 100%)",
-                }}
               >
-                Build what matters.
+                Build What
+                <br />
+                Matters.
               </span>
             </h1>
 
-            {/* Description */}
+            {/* DESCRIPTION */}
+
             <p
               className="
-                mt-5
-                max-w-[520px]
-                text-sm
+                mt-6
+                max-w-[570px]
+                text-[14px]
                 font-medium
-                leading-6
-                text-[#64748B]
+                leading-[1.7]
+                text-slate-500
                 sm:text-[15px]
-                sm:leading-7
+                lg:text-[15px]
+                xl:text-[16px]
               "
             >
-              Practical data programs built around
-              real skills, real projects, expert
-              mentorship, and the confidence to take
-              your next career step.
+              Practical, career-focused programs with live learning,
+              real-world projects, expert mentorship and structured
+              career support.
             </p>
 
-            {/* CTA */}
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <motion.button
-                type="button"
-                onClick={handleExplorePrograms}
-                whileHover={{
-                  y: -2,
-                }}
-                whileTap={{
-                  scale: 0.98,
-                }}
+            {/* BUTTONS */}
+
+            <div
+              className="
+                mt-7
+                flex
+                flex-wrap
+                items-center
+                gap-3
+              "
+            >
+              {/* Explore Programs */}
+
+              <a
+                href="#programs"
                 className="
-                  group
                   inline-flex
+                  h-[42px]
                   items-center
                   justify-center
-                  gap-2.5
-                  rounded-full
-                  px-6
-                  py-3.5
-                  text-sm
+                  gap-3
+                  rounded-xl
+                  bg-[#1463FF]
+                  px-5
+                  text-[11px]
                   font-bold
                   text-white
-                  shadow-[0_14px_30px_rgba(12,95,245,0.24)]
+                  shadow-[0_10px_24px_rgba(20,99,255,0.24)]
                   transition-all
                   duration-200
-                  hover:shadow-[0_18px_38px_rgba(12,95,245,0.30)]
+                  hover:-translate-y-0.5
+                  hover:bg-[#0d55e8]
+                  hover:shadow-[0_14px_30px_rgba(20,99,255,0.28)]
+                  sm:h-[44px]
+                  sm:px-6
+                  sm:text-[12px]
                 "
-                style={{
-                  background:
-                    "linear-gradient(100deg, #0C5FF5 0%, #0289F9 52%, #3531E7 100%)",
-                }}
               >
                 Explore Programs
 
-                <FaArrowRight
-                  size={11}
-                  className="
-                    transition-transform
-                    duration-200
-                    group-hover:translate-x-1
-                  "
-                />
-              </motion.button>
+                <FaArrowRight size={10} />
+              </a>
 
-              <motion.button
-                type="button"
-                onClick={handleWatchDemo}
-                whileHover={{
-                  y: -2,
-                }}
-                whileTap={{
-                  scale: 0.98,
-                }}
+              {/* See How It Works */}
+
+              <a
+                href="#journey"
                 className="
-                  group
                   inline-flex
+                  h-[42px]
                   items-center
                   justify-center
-                  gap-2.5
-                  rounded-full
+                  gap-2
+                  rounded-xl
                   border
-                  border-[#DCE5F1]
+                  border-slate-200
                   bg-white
-                  px-6
-                  py-3.5
-                  text-sm
+                  px-5
+                  text-[11px]
                   font-bold
-                  text-[#0A1832]
-                  shadow-[0_8px_24px_rgba(10,24,50,0.06)]
+                  text-[#17233F]
+                  shadow-[0_6px_18px_rgba(15,23,42,0.06)]
                   transition-all
                   duration-200
-                  hover:border-[#BFD3F2]
-                  hover:shadow-[0_12px_30px_rgba(10,24,50,0.09)]
+                  hover:-translate-y-0.5
+                  hover:border-blue-200
+                  hover:text-[#1463FF]
+                  sm:h-[44px]
+                  sm:px-6
+                  sm:text-[12px]
                 "
               >
                 <span
                   className="
                     flex
-                    h-6
-                    w-6
+                    h-5
+                    w-5
                     items-center
                     justify-center
                     rounded-full
-                    bg-[#EAF2FF]
-                    text-[#0C5FF5]
-                    transition-colors
-                    group-hover:bg-[#0C5FF5]
-                    group-hover:text-white
+                    bg-[#1463FF]
+                    text-white
                   "
                 >
-                  <FaPlay size={8} />
+                  <FaPlay size={7} />
                 </span>
 
                 See How It Works
-              </motion.button>
+              </a>
             </div>
 
-            {/* Learning points */}
-            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3">
-              {[
-                "Practical learning",
-                "Real projects",
-                "Expert mentorship",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-2"
-                >
-                  <span
-                    className="
-                      flex
-                      h-5
-                      w-5
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-[#EAF2FF]
-                      text-[#0C5FF5]
-                    "
-                  >
-                    <FaCheck size={8} />
-                  </span>
+            {/* FEATURE PILLS */}
 
-                  <span className="text-[10px] font-semibold text-[#475569] sm:text-[11px]">
-                    {item}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <div
+              className="
+                mt-7
+                flex
+                max-w-[620px]
+                flex-wrap
+                gap-2
+              "
+            >
+              <FeaturePill icon={<FaChartSimple size={8} />}>
+                Practical Learning
+              </FeaturePill>
 
-            {/* Small trust line */}
-            <div className="mt-8 border-t border-[#EAF0F7] pt-5">
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-                <span className="text-[9px] font-bold uppercase tracking-[0.13em] text-[#94A3B8]">
-                  Learn
-                </span>
+              <FeaturePill icon={<FaCode size={8} />}>
+                Real Projects
+              </FeaturePill>
 
-                <span className="h-px w-5 bg-[#CBD5E1]" />
+              <FeaturePill icon={<FaCheck size={8} />}>
+                Expert Mentorship
+              </FeaturePill>
 
-                <span className="text-[9px] font-bold uppercase tracking-[0.13em] text-[#94A3B8]">
-                  Build
-                </span>
-
-                <span className="h-px w-5 bg-[#CBD5E1]" />
-
-                <span className="text-[9px] font-bold uppercase tracking-[0.13em] text-[#94A3B8]">
-                  Apply
-                </span>
-
-                <span className="h-px w-5 bg-[#CBD5E1]" />
-
-                <span className="text-[9px] font-bold uppercase tracking-[0.13em] text-[#0C5FF5]">
-                  Grow
-                </span>
-              </div>
+              <FeaturePill icon={<FaChartSimple size={8} />}>
+                Career Support
+              </FeaturePill>
             </div>
           </motion.div>
 
           {/* =================================================
-              MIDDLE — NEW PRODUCT VISUAL
+              RIGHT IMAGE COMPOSITION
               ================================================= */}
 
           <motion.div
             initial={{
               opacity: 0,
-              y: 25,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.8,
-              delay: 0.12,
-              ease: "easeOut",
-            }}
-            className="
-              order-first
-              flex
-              min-h-[430px]
-              items-center
-              justify-center
-              lg:order-none
-              lg:min-h-[570px]
-            "
-          >
-            <LearningPlatformVisual />
-          </motion.div>
-
-          {/* =================================================
-              RIGHT — EXISTING SIGNUP CARD
-              ================================================= */}
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: 24,
+              x: 25,
             }}
             animate={{
               opacity: 1,
               x: 0,
             }}
             transition={{
-              duration: 0.7,
-              delay: 0.2,
-              ease: "easeOut",
+              duration: 0.8,
+              delay: 0.08,
+              ease: [0.22, 1, 0.36, 1],
             }}
             className="
+              relative
+              mx-auto
               flex
+              min-h-[410px]
+              w-full
+              max-w-[650px]
               items-center
               justify-center
-              lg:justify-end
+              lg:min-h-[500px]
+              xl:min-h-[530px]
             "
           >
-            <HeroSignupCard />
+            {/* SOFT IMAGE PANEL */}
+
+            <div
+              className="
+                absolute
+                right-[2%]
+                top-[7%]
+                h-[76%]
+                w-[91%]
+                rounded-[28px]
+                border
+                border-white/70
+                bg-gradient-to-br
+                from-[#edf5ff]
+                via-[#eaf3ff]
+                to-[#f8fbff]
+                shadow-[0_30px_70px_rgba(42,77,125,0.10)]
+              "
+            />
+
+            {/* subtle inner glow */}
+
+            <div
+              className="
+                absolute
+                right-[6%]
+                top-[12%]
+                h-[64%]
+                w-[78%]
+                rounded-[30px]
+                bg-white/30
+                blur-[20px]
+              "
+            />
+
+            {/* =================================================
+                ACTUAL PERSON IMAGE
+
+                IMPORTANT:
+                No overflow-hidden here.
+                This prevents the transparent PNG from
+                getting chopped.
+                ================================================= */}
+
+            <motion.img
+              src={heroImage}
+              alt="Student learning technology with laptop"
+              className="
+                relative
+                z-10
+                block
+                h-auto
+                w-[95%]
+                max-w-[620px]
+                object-contain
+                drop-shadow-[0_24px_35px_rgba(15,23,42,0.14)]
+                sm:w-[92%]
+                lg:w-[96%]
+              "
+              animate={{
+                y: [0, -4, 0],
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 5,
+                ease: "easeInOut",
+              }}
+            />
+
+            {/* =================================================
+                PYTHON
+                ================================================= */}
+
+            <FloatingLabel
+              icon={
+                <span className="h-2 w-2 rounded-full bg-[#FFC629]" />
+              }
+              title="Python"
+              className="
+                left-[0%]
+                top-[20%]
+                sm:left-[2%]
+                lg:left-[0%]
+              "
+            />
+
+            {/* =================================================
+                AI / ML
+                ================================================= */}
+
+            <FloatingLabel
+              icon={
+                <span className="h-2 w-2 rounded-full bg-[#4A45E8]" />
+              }
+              title="AI / ML"
+              className="
+                left-[0%]
+                top-[46%]
+                sm:left-[1%]
+                lg:left-[-1%]
+              "
+            />
+
+            {/* =================================================
+                SQL
+                ================================================= */}
+
+            <FloatingLabel
+              icon={
+                <span className="h-2 w-2 rounded-full bg-[#1478FF]" />
+              }
+              title="SQL"
+              className="
+                right-[0%]
+                top-[26%]
+                sm:right-[1%]
+                lg:right-[-1%]
+              "
+            />
+
+            {/* =================================================
+                PROJECTS
+                ================================================= */}
+
+            <FloatingLabel
+              icon={
+                <FaCheck
+                  size={9}
+                  className="text-emerald-500"
+                />
+              }
+              title="Projects"
+              subtitle="15+ Built"
+              className="
+                right-[0%]
+                top-[57%]
+                sm:right-[1%]
+                lg:right-[-1%]
+              "
+            />
+
+            {/* =================================================
+                CAREER GROWTH
+                ================================================= */}
+
+            <FloatingLabel
+              icon={<FaChartSimple size={9} />}
+              title="Career Growth"
+              variant="blue"
+              className="
+                bottom-[5%]
+                left-1/2
+                -translate-x-1/2
+                sm:bottom-[3%]
+              "
+            />
           </motion.div>
         </div>
-
-        {/* =================================================
-            MOBILE / DESKTOP DATA STRIP
-            ================================================= */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 12,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.6,
-            delay: 0.5,
-          }}
-          className="
-            mx-auto
-            mt-8
-            flex
-            max-w-[1050px]
-            flex-wrap
-            items-center
-            justify-center
-            gap-x-6
-            gap-y-3
-            border-t
-            border-[#EAF0F7]
-            pt-5
-            lg:mt-3
-          "
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className="
-                flex
-                h-7
-                w-7
-                items-center
-                justify-center
-                rounded-lg
-                bg-[#EAF2FF]
-                text-[#0C5FF5]
-              "
-            >
-              <FaCode size={10} />
-            </span>
-
-            <span className="text-[10px] font-bold text-[#475569]">
-              Python
-            </span>
-          </div>
-
-          <div className="hidden h-4 w-px bg-[#DCE5F1] sm:block" />
-
-          <div className="flex items-center gap-2">
-            <span
-              className="
-                flex
-                h-7
-                w-7
-                items-center
-                justify-center
-                rounded-lg
-                bg-[#EAF2FF]
-                text-[#0289F9]
-              "
-            >
-              <FaDatabase size={10} />
-            </span>
-
-            <span className="text-[10px] font-bold text-[#475569]">
-              SQL
-            </span>
-          </div>
-
-          <div className="hidden h-4 w-px bg-[#DCE5F1] sm:block" />
-
-          <div className="flex items-center gap-2">
-            <span
-              className="
-                flex
-                h-7
-                w-7
-                items-center
-                justify-center
-                rounded-lg
-                bg-[#EEEFFE]
-                text-[#3531E7]
-              "
-            >
-              <FaBrain size={10} />
-            </span>
-
-            <span className="text-[10px] font-bold text-[#475569]">
-              AI & Machine Learning
-            </span>
-          </div>
-
-          <div className="hidden h-4 w-px bg-[#DCE5F1] sm:block" />
-
-          <div className="flex items-center gap-2">
-            <span
-              className="
-                flex
-                h-7
-                w-7
-                items-center
-                justify-center
-                rounded-lg
-                bg-[#EAF2FF]
-                text-[#0C5FF5]
-              "
-            >
-              <FaChartLine size={10} />
-            </span>
-
-            <span className="text-[10px] font-bold text-[#475569]">
-              Analytics
-            </span>
-          </div>
-
-          <div className="hidden h-4 w-px bg-[#DCE5F1] sm:block" />
-
-          <div className="flex items-center gap-2">
-            <span
-              className="
-                flex
-                h-7
-                w-7
-                items-center
-                justify-center
-                rounded-lg
-                bg-[#EAF2FF]
-                text-[#0C5FF5]
-              "
-            >
-              <FaLayerGroup size={10} />
-            </span>
-
-            <span className="text-[10px] font-bold text-[#475569]">
-              Real Projects
-            </span>
-          </div>
-        </motion.div>
       </div>
+
+      {/* =====================================================
+          BOTTOM TRANSITION
+          ===================================================== */}
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          bottom-0
+          left-0
+          right-0
+          h-16
+          bg-gradient-to-t
+          from-[#eef5ff]
+          to-transparent
+        "
+      />
     </section>
   );
 }

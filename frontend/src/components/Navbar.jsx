@@ -18,6 +18,7 @@ import {
 import {
   FaBars,
   FaXmark,
+  FaArrowRight,
 } from "react-icons/fa6";
 
 import dataLatticeLogo from "../assets/datalattice-logo.png";
@@ -27,6 +28,10 @@ import dataLatticeLogo from "../assets/datalattice-logo.png";
 // ============================================================
 
 const publicNavigation = [
+  {
+    label: "Home",
+    href: "#home",
+  },
   {
     label: "Programs",
     href: "#programs",
@@ -42,6 +47,10 @@ const publicNavigation = [
   {
     label: "Outcomes",
     href: "#outcomes",
+  },
+  {
+    label: "About",
+    href: "#about",
   },
 ];
 
@@ -110,10 +119,7 @@ function Navbar() {
   };
 
   // ==========================================================
-  // LISTEN FOR AUTH CHANGES
-  //
-  // Login and logout can happen without the Navbar itself
-  // being remounted. This event keeps the navbar in sync.
+  // AUTH CHANGE LISTENERS
   // ==========================================================
 
   useEffect(() => {
@@ -153,14 +159,7 @@ function Navbar() {
   const user = authState.user;
 
   // ==========================================================
-  // DETERMINE APPLICATION AREA
-  //
-  // IMPORTANT:
-  // Authentication alone does NOT determine which navbar
-  // should be shown.
-  //
-  // A logged-in student visiting "/" must still see the
-  // public Home navbar.
+  // APPLICATION AREAS
   // ==========================================================
 
   const isStudentArea =
@@ -222,25 +221,20 @@ function Navbar() {
   // ==========================================================
 
   const logout = () => {
-    // Remove authenticated session
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    // Immediately update this Navbar
     setAuthState({
       token: null,
       user: null,
     });
 
-    // Close mobile menu
     setMobileOpen(false);
 
-    // Notify the rest of the application
     window.dispatchEvent(
       new Event("Data Lattice-auth-change")
     );
 
-    // Always return to public Home
     navigate("/", {
       replace: true,
     });
@@ -273,28 +267,46 @@ function Navbar() {
   };
 
   // ==========================================================
-  // LOGGED-IN NAVIGATION
+  // DASHBOARD LINK STYLE
   // ==========================================================
 
   const dashboardLinkClass =
     ({ isActive }) => {
       return `
         relative
-        rounded-xl
-        px-3
-        py-2
-        text-sm
+        rounded-lg
+        px-2.5
+        py-1.5
+        text-[13px]
         font-semibold
         tracking-[-0.01em]
         transition-all
         duration-200
         ${
           isActive
-            ? "bg-white/70 text-[#1463FF] shadow-sm"
-            : "text-[#0B1B3A]/75 hover:bg-white/45 hover:text-[#1463FF]"
+            ? "text-[#1463FF]"
+            : "text-[#0B1B3A]/75 hover:text-[#1463FF]"
         }
       `;
     };
+
+  // ==========================================================
+  // PUBLIC NAV LINK STYLE
+  // ==========================================================
+
+  const publicLinkClass = `
+    relative
+    rounded-lg
+    px-2.5
+    py-1.5
+    text-[13px]
+    font-semibold
+    tracking-[-0.01em]
+    text-[#0B1B3A]/75
+    transition-colors
+    duration-200
+    hover:text-[#1463FF]
+  `;
 
   // ==========================================================
   // RENDER
@@ -303,7 +315,7 @@ function Navbar() {
   return (
     <>
       {/* ======================================================
-          GLASSMORPHISM NAVBAR
+          FULL-WIDTH FIXED TOP NAVBAR
       ====================================================== */}
 
       <motion.header
@@ -324,10 +336,11 @@ function Navbar() {
           inset-x-0
           top-0
           z-[100]
+          w-full
           border-b
-          border-white/65
-          bg-white/45
-          shadow-[0_8px_32px_rgba(11,27,58,0.06)]
+          border-white/60
+          bg-white/65
+          shadow-[0_6px_22px_rgba(11,27,58,0.05)]
           backdrop-blur-xl
           backdrop-saturate-150
         "
@@ -350,17 +363,25 @@ function Navbar() {
           "
         />
 
+        {/* ====================================================
+            NAVBAR CONTENT
+
+            Reduced from 76px to 64px.
+        ==================================================== */}
+
         <div
           className="
             relative
+            mx-auto
             flex
-            h-[76px]
+            h-[64px]
             w-full
             items-center
             justify-between
-            px-5
-            sm:px-7
-            lg:px-8
+           px-7
+sm:px-9
+lg:px-10
+xl:px-12
           "
         >
           {/* ==================================================
@@ -368,44 +389,35 @@ function Navbar() {
           ================================================== */}
 
           <Link
-            to="/"
-            onClick={() =>
-              setMobileOpen(false)
-            }
-            className="
-              group
-              flex
-              shrink-0
-              items-center
-              gap-2.5
-              -translate-y-1
-            "
-          >
-            {/* Final DataLattice logo */}
-
-            <img
-              src={dataLatticeLogo}
-              alt="DataLattice"
-              className="
-                h-[48px]
-                w-auto
-                max-w-[188px]
-                object-contain
-                object-left
-                transition-transform
-                duration-200
-                group-hover:scale-[1.01]
-              "
-            />
-
-          </Link>
+  to="/"
+  onClick={() =>
+    setMobileOpen(false)
+  }
+  className="
+    group
+    flex
+    shrink-0
+    items-center
+  "
+>
+  <img
+    src={dataLatticeLogo}
+    alt="DataLattice"
+    className="
+      h-[44px]
+      w-auto
+      max-w-[178px]
+      object-contain
+      object-left
+      transition-transform
+      duration-200
+      group-hover:scale-[1.01]
+    "
+  />
+</Link>
 
           {/* ==================================================
               DESKTOP PUBLIC NAVIGATION
-              
-              IMPORTANT:
-              This is shown on "/" even when the user is logged
-              in as a student.
           ================================================== */}
 
           {showPublicNavbar && (
@@ -413,14 +425,7 @@ function Navbar() {
               className="
                 hidden
                 items-center
-                gap-1
-                rounded-2xl
-                border
-                border-white/55
-                bg-white/25
-                p-1
-                shadow-[0_6px_22px_rgba(11,27,58,0.035)]
-                backdrop-blur-md
+                gap-0.5
                 lg:absolute
                 lg:left-1/2
                 lg:top-1/2
@@ -428,6 +433,7 @@ function Navbar() {
                 lg:-translate-x-1/2
                 lg:-translate-y-1/2
               "
+              aria-label="Public navigation"
             >
               {publicNavigation.map(
                 (item) => (
@@ -439,19 +445,9 @@ function Navbar() {
                         item.href
                       )
                     }
-                    className="
-                      rounded-xl
-                      px-4
-                      py-2
-                      text-[14px]
-                      font-semibold
-                      tracking-[-0.01em]
-                      text-[#0B1B3A]/70
-                      transition-all
-                      duration-200
-                      hover:bg-white/60
-                      hover:text-[#1463FF]
-                    "
+                    className={
+                      publicLinkClass
+                    }
                   >
                     {item.label}
                   </button>
@@ -461,7 +457,7 @@ function Navbar() {
           )}
 
           {/* ==================================================
-              LOGGED-IN DESKTOP NAVIGATION
+              DESKTOP AUTHENTICATED NAVIGATION
           ================================================== */}
 
           {showAuthenticatedNavbar && (
@@ -469,14 +465,7 @@ function Navbar() {
               className="
                 hidden
                 items-center
-                gap-1
-                rounded-2xl
-                border
-                border-white/55
-                bg-white/25
-                p-1
-                shadow-[0_6px_22px_rgba(11,27,58,0.035)]
-                backdrop-blur-md
+                gap-0.5
                 lg:absolute
                 lg:left-1/2
                 lg:top-1/2
@@ -484,10 +473,11 @@ function Navbar() {
                 lg:-translate-x-1/2
                 lg:-translate-y-1/2
               "
+              aria-label="Dashboard navigation"
             >
-              {/* ==================================================
+              {/* =================================================
                   STUDENT NAVIGATION
-              ================================================== */}
+              ================================================= */}
 
               {isStudentArea &&
                 user?.role === "student" && (
@@ -521,9 +511,9 @@ function Navbar() {
                   </>
                 )}
 
-              {/* ==================================================
+              {/* =================================================
                   ADMIN NAVIGATION
-              ================================================== */}
+              ================================================= */}
 
               {isAdminArea &&
                 user?.role === "admin" && (
@@ -557,9 +547,9 @@ function Navbar() {
                   </>
                 )}
 
-              {/* ==================================================
+              {/* =================================================
                   MENTOR NAVIGATION
-              ================================================== */}
+              ================================================= */}
 
               {isMentorArea &&
                 user?.role === "mentor" && (
@@ -604,48 +594,93 @@ function Navbar() {
               ml-auto
               hidden
               items-center
+              gap-2
               lg:flex
             "
           >
             {/* ==================================================
-                PUBLIC RIGHT SIDE
+                LOGIN
             ================================================== */}
 
             {showPublicNavbar && (
-              <Link
-                to="/login"
-                className="
-                  inline-flex
-                  items-center
-                  justify-center
-                  rounded-xl
-                  border
-                  border-white/25
-                  bg-[#1463FF]
-                  px-5
-                  py-2.5
-                  text-[14px]
-                  font-bold
-                  tracking-[-0.01em]
-                  text-white
-                  shadow-[0_8px_24px_rgba(20,99,255,0.20)]
-                  transition-all
-                  duration-200
-                  hover:-translate-y-0.5
-                  hover:bg-[#0B1B3A]
-                  hover:shadow-[0_12px_30px_rgba(11,27,58,0.20)]
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-[#1463FF]
-                  focus-visible:ring-offset-2
-                "
-              >
-                Login
-              </Link>
+              <>
+                <Link
+                  to="/login"
+                  className="
+                    inline-flex
+                    items-center
+                    justify-center
+                    rounded-lg
+                    border
+                    border-slate-200
+                    bg-white/70
+                    px-4
+                    py-2
+                    text-[13px]
+                    font-bold
+                    tracking-[-0.01em]
+                    text-[#1463FF]
+                    shadow-[0_3px_12px_rgba(11,27,58,0.04)]
+                    transition-all
+                    duration-200
+                    hover:-translate-y-0.5
+                    hover:text-[#0B1B3A]
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#1463FF]
+                    focus-visible:ring-offset-2
+                  "
+                >
+                  Login
+                </Link>
+
+                {/* ==================================================
+                    GET STARTED
+                ================================================== */}
+
+                <Link
+                  to="/register"
+                  className="
+                    inline-flex
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-lg
+                    border
+                    border-[#0B1B3A]/20
+                    bg-[#1463FF]
+                    px-4
+                    py-2
+                    text-[13px]
+                    font-bold
+                    tracking-[-0.01em]
+                    text-white
+                    shadow-[0_7px_20px_rgba(20,99,255,0.20)]
+                    transition-all
+                    duration-200
+                    hover:-translate-y-0.5
+                    hover:bg-[#0B1B3A]
+                    hover:shadow-[0_10px_26px_rgba(11,27,58,0.18)]
+                    focus-visible:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-[#1463FF]
+                    focus-visible:ring-offset-2
+                  "
+                >
+                  <span>
+                    Get Started
+                  </span>
+
+                  <FaArrowRight
+                    size={11}
+                    aria-hidden="true"
+                  />
+                </Link>
+              </>
             )}
 
             {/* ==================================================
-                AUTHENTICATED RIGHT SIDE
+                AUTHENTICATED USER
             ================================================== */}
 
             {showAuthenticatedNavbar && (
@@ -653,14 +688,14 @@ function Navbar() {
                 className="
                   flex
                   items-center
-                  gap-3
-                  rounded-2xl
+                  gap-2
+                  rounded-xl
                   border
-                  border-white/55
-                  bg-white/35
-                  px-2
-                  py-1.5
-                  shadow-[0_6px_22px_rgba(11,27,58,0.04)]
+                  border-white/60
+                  bg-white/45
+                  px-1.5
+                  py-1
+                  shadow-[0_5px_18px_rgba(11,27,58,0.04)]
                   backdrop-blur-md
                 "
               >
@@ -668,7 +703,7 @@ function Navbar() {
                   className="
                     flex
                     items-center
-                    gap-2.5
+                    gap-2
                   "
                 >
                   <img
@@ -678,8 +713,8 @@ function Navbar() {
                     )}&background=1463FF&color=fff`}
                     alt="Profile"
                     className="
-                      h-8
-                      w-8
+                      h-7
+                      w-7
                       rounded-full
                       ring-2
                       ring-white/80
@@ -694,7 +729,7 @@ function Navbar() {
                   >
                     <p
                       className="
-                        text-xs
+                        text-[11px]
                         font-bold
                         leading-tight
                         text-[#0B1B3A]
@@ -707,7 +742,7 @@ function Navbar() {
                     <p
                       className="
                         mt-0.5
-                        text-[10px]
+                        text-[9px]
                         font-medium
                         capitalize
                         leading-tight
@@ -724,15 +759,14 @@ function Navbar() {
                   type="button"
                   onClick={logout}
                   className="
-                    rounded-xl
-                    px-3
-                    py-2
-                    text-sm
+                    rounded-lg
+                    px-2.5
+                    py-1.5
+                    text-[12px]
                     font-semibold
                     text-[#64748B]
-                    transition-all
+                    transition-colors
                     duration-200
-                    hover:bg-white/60
                     hover:text-red-600
                   "
                 >
@@ -763,28 +797,27 @@ function Navbar() {
             className="
               ml-2
               flex
-              h-10
-              w-10
+              h-9
+              w-9
               items-center
               justify-center
-              rounded-xl
+              rounded-lg
               border
               border-white/70
               bg-white/55
               text-[#0B1B3A]
-              shadow-[0_6px_20px_rgba(11,27,58,0.06)]
+              shadow-[0_5px_16px_rgba(11,27,58,0.05)]
               backdrop-blur-md
-              transition-all
+              transition-colors
               duration-200
-              hover:bg-white/75
               hover:text-[#1463FF]
               lg:hidden
             "
           >
             {mobileOpen ? (
-              <FaXmark size={18} />
+              <FaXmark size={16} />
             ) : (
-              <FaBars size={18} />
+              <FaBars size={16} />
             )}
           </button>
         </div>
@@ -797,7 +830,9 @@ function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <>
-            {/* Backdrop */}
+            {/* ==================================================
+                BACKDROP
+            ================================================== */}
 
             <motion.div
               initial={{
@@ -822,7 +857,9 @@ function Navbar() {
               "
             />
 
-            {/* Glass Menu */}
+            {/* ==================================================
+                MOBILE GLASS MENU
+            ================================================== */}
 
             <motion.div
               initial={{
@@ -842,17 +879,17 @@ function Navbar() {
               }}
               className="
                 fixed
-                left-4
-                right-4
-                top-[84px]
+                left-3
+                right-3
+                top-[72px]
                 z-[95]
                 overflow-hidden
-                rounded-2xl
+                rounded-xl
                 border
                 border-white/70
-                bg-white/65
-                p-3
-                shadow-[0_24px_70px_rgba(11,27,58,0.14)]
+                bg-white/75
+                p-2.5
+                shadow-[0_22px_60px_rgba(11,27,58,0.13)]
                 backdrop-blur-2xl
                 backdrop-saturate-150
                 lg:hidden
@@ -877,11 +914,7 @@ function Navbar() {
 
               {showPublicNavbar && (
                 <>
-                  <div
-                    className="
-                      space-y-1
-                    "
-                  >
+                  <div className="space-y-0.5">
                     {publicNavigation.map(
                       (item) => (
                         <button
@@ -899,19 +932,15 @@ function Navbar() {
                             w-full
                             items-center
                             justify-between
-                            rounded-xl
-                            border
-                            border-transparent
-                            px-4
-                            py-3
+                            rounded-lg
+                            px-3
+                            py-2.5
                             text-left
-                            text-sm
+                            text-[13px]
                             font-semibold
                             text-[#0B1B3A]
-                            transition-all
+                            transition-colors
                             duration-200
-                            hover:border-white/70
-                            hover:bg-white/60
                             hover:text-[#1463FF]
                           "
                         >
@@ -931,12 +960,19 @@ function Navbar() {
                     )}
                   </div>
 
+                  {/* ==================================================
+                      MOBILE ACTIONS
+                  ================================================== */}
+
                   <div
                     className="
                       mt-2
+                      flex
+                      flex-col
+                      gap-2
                       border-t
                       border-white/70
-                      pt-3
+                      pt-2.5
                     "
                   >
                     <Link
@@ -951,20 +987,59 @@ function Navbar() {
                         w-full
                         items-center
                         justify-center
-                        rounded-xl
+                        rounded-lg
+                        border
+                        border-slate-200
+                        bg-white/75
+                        px-4
+                        py-2.5
+                        text-[13px]
+                        font-bold
+                        text-[#1463FF]
+                        transition-colors
+                        duration-200
+                        hover:text-[#0B1B3A]
+                      "
+                    >
+                      Login
+                    </Link>
+
+                    <Link
+                      to="/register"
+                      onClick={() =>
+                        setMobileOpen(
+                          false
+                        )
+                      }
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-center
+                        gap-2
+                        rounded-lg
+                        border
+                        border-[#0B1B3A]/20
                         bg-[#1463FF]
                         px-4
-                        py-3
-                        text-sm
+                        py-2.5
+                        text-[13px]
                         font-bold
                         text-white
-                        shadow-[0_10px_24px_rgba(20,99,255,0.18)]
+                        shadow-[0_8px_20px_rgba(20,99,255,0.17)]
                         transition-all
                         duration-200
                         hover:bg-[#0B1B3A]
                       "
                     >
-                      Login
+                      <span>
+                        Get Started
+                      </span>
+
+                      <FaArrowRight
+                        size={11}
+                        aria-hidden="true"
+                      />
                     </Link>
                   </div>
                 </>
@@ -975,11 +1050,7 @@ function Navbar() {
               ================================================== */}
 
               {showAuthenticatedNavbar && (
-                <div
-                  className="
-                    space-y-1
-                  "
-                >
+                <div className="space-y-0.5">
                   {/* User */}
 
                   <div
@@ -988,11 +1059,11 @@ function Navbar() {
                       flex
                       items-center
                       gap-3
-                      rounded-xl
+                      rounded-lg
                       border
                       border-white/70
                       bg-white/50
-                      p-3
+                      p-2.5
                       shadow-sm
                       backdrop-blur-md
                     "
@@ -1004,8 +1075,8 @@ function Navbar() {
                       )}&background=1463FF&color=fff`}
                       alt="Profile"
                       className="
-                        h-10
-                        w-10
+                        h-9
+                        w-9
                         rounded-full
                         ring-2
                         ring-white/80
@@ -1015,7 +1086,7 @@ function Navbar() {
                     <div>
                       <p
                         className="
-                          text-sm
+                          text-[13px]
                           font-bold
                           text-[#0B1B3A]
                         "
@@ -1027,7 +1098,7 @@ function Navbar() {
                       <p
                         className="
                           mt-0.5
-                          text-[11px]
+                          text-[10px]
                           capitalize
                           text-[#64748B]
                         "
@@ -1038,9 +1109,9 @@ function Navbar() {
                     </div>
                   </div>
 
-                  {/* ==================================================
+                  {/* =================================================
                       STUDENT MOBILE NAVIGATION
-                  ================================================== */}
+                  ================================================= */}
 
                   {isStudentArea &&
                     user?.role ===
@@ -1090,9 +1161,9 @@ function Navbar() {
                       </>
                     )}
 
-                  {/* ==================================================
+                  {/* =================================================
                       ADMIN MOBILE NAVIGATION
-                  ================================================== */}
+                  ================================================= */}
 
                   {isAdminArea &&
                     user?.role ===
@@ -1142,9 +1213,9 @@ function Navbar() {
                       </>
                     )}
 
-                  {/* ==================================================
+                  {/* =================================================
                       MENTOR MOBILE NAVIGATION
-                  ================================================== */}
+                  ================================================= */}
 
                   {isMentorArea &&
                     user?.role ===
@@ -1194,7 +1265,7 @@ function Navbar() {
                       </>
                     )}
 
-                  {/* LOGOUT */}
+                  {/* Logout */}
 
                   <button
                     type="button"
@@ -1202,19 +1273,16 @@ function Navbar() {
                     className="
                       mt-2
                       w-full
-                      rounded-xl
-                      border
-                      border-transparent
-                      px-4
-                      py-3
+                      rounded-lg
+                      px-3
+                      py-2.5
                       text-left
-                      text-sm
+                      text-[13px]
                       font-semibold
                       text-red-600
-                      transition-all
+                      transition-colors
                       duration-200
-                      hover:border-red-100
-                      hover:bg-red-50/70
+                      hover:text-red-700
                     "
                   >
                     Logout

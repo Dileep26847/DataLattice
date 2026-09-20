@@ -2,22 +2,31 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   FaArrowRight,
   FaChartLine,
+  FaCode,
   FaDatabase,
-  FaProjectDiagram,
-} from "react-icons/fa";
+  FaRocket,
+} from "react-icons/fa6";
 
-const programSignals = [
+const signals = [
   {
-    label: "Data Science",
-    icon: FaChartLine,
-  },
-  {
-    label: "Data Analytics",
+    label: "Data",
     icon: FaDatabase,
+    position: "left-[10%] top-[24%]",
   },
   {
-    label: "Project-based learning",
-    icon: FaProjectDiagram,
+    label: "Analytics",
+    icon: FaChartLine,
+    position: "right-[10%] top-[27%]",
+  },
+  {
+    label: "Projects",
+    icon: FaCode,
+    position: "left-[15%] bottom-[20%]",
+  },
+  {
+    label: "Career",
+    icon: FaRocket,
+    position: "right-[14%] bottom-[18%]",
   },
 ];
 
@@ -27,43 +36,260 @@ export default function CTA() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-white px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24"
+      className="
+        relative
+        isolate
+        overflow-hidden
+        bg-[#08172F]
+        min-h-[430px]
+        w-full
+      "
     >
-      <div className="mx-auto w-full max-w-7xl">
+      {/* =====================================================
+          BACKGROUND GRID
+      ===================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          opacity-[0.055]
+        "
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              rgba(255,255,255,0.8) 1px,
+              transparent 1px
+            ),
+            linear-gradient(
+              90deg,
+              rgba(255,255,255,0.8) 1px,
+              transparent 1px
+            )
+          `,
+          backgroundSize: "48px 48px",
+        }}
+      />
+
+      {/* =====================================================
+          LARGE AMBIENT GLOWS
+      ===================================================== */}
+
+      <motion.div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          left-1/2
+          top-1/2
+          h-[430px]
+          w-[430px]
+          -translate-x-1/2
+          -translate-y-1/2
+          rounded-full
+          bg-[#0C5FF5]/10
+          blur-[100px]
+        "
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                scale: [1, 1.15, 1],
+                opacity: [0.45, 0.7, 0.45],
+              }
+        }
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <motion.div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          -right-32
+          top-[-180px]
+          h-[420px]
+          w-[420px]
+          rounded-full
+          bg-[#3531E7]/15
+          blur-[110px]
+        "
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                x: [0, -35, 0],
+                y: [0, 25, 0],
+              }
+        }
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      {/* =====================================================
+          ANIMATED LIGHT PATHS
+      ===================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          overflow-hidden
+        "
+      >
         <motion.div
-          initial={
-            shouldReduceMotion
-              ? false
-              : {
-                  opacity: 0,
-                  y: 20,
-                }
-          }
-          whileInView={
+          className="
+            absolute
+            left-[-10%]
+            top-[48%]
+            h-px
+            w-[120%]
+            bg-gradient-to-r
+            from-transparent
+            via-[#0289F9]/50
+            to-transparent
+          "
+          animate={
             shouldReduceMotion
               ? undefined
               : {
-                  opacity: 1,
-                  y: 0,
+                  x: ["-10%", "10%", "-10%"],
                 }
           }
-          viewport={{
-            once: true,
-            amount: 0.25,
-          }}
           transition={{
-            duration: shouldReduceMotion ? 0 : 0.65,
-            ease: "easeOut",
+            duration: 7,
+            repeat: Infinity,
+            ease: "easeInOut",
           }}
+        />
+
+        <motion.div
           className="
-            relative
-            overflow-hidden
-            rounded-[30px]
-            bg-[#0A1832]
+            absolute
+            left-[50%]
+            top-[-20%]
+            h-[140%]
+            w-px
+            bg-gradient-to-b
+            from-transparent
+            via-[#0C5FF5]/30
+            to-transparent
           "
-        >
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  opacity: [0.2, 0.6, 0.2],
+                }
+          }
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+
+      {/* =====================================================
+          FLOATING SIGNALS
+      ===================================================== */}
+
+      {!shouldReduceMotion &&
+        signals.map((item, index) => {
+          const Icon = item.icon;
+
+          return (
+            <motion.div
+              key={item.label}
+              className={`
+                absolute
+                z-10
+                hidden
+                items-center
+                gap-2
+                rounded-full
+                border
+                border-white/10
+                bg-white/[0.045]
+                px-3
+                py-2
+                text-[9px]
+                font-semibold
+                uppercase
+                tracking-[0.14em]
+                text-white/45
+                backdrop-blur-md
+                sm:flex
+                ${item.position}
+              `}
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              animate={{
+                y: [0, index % 2 === 0 ? -8 : 8, 0],
+              }}
+              transition={{
+                opacity: {
+                  duration: 0.5,
+                  delay: index * 0.12,
+                },
+                y: {
+                  duration: 4 + index * 0.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
+            >
+              <Icon className="text-[#0289F9]" size={10} />
+
+              {item.label}
+            </motion.div>
+          );
+        })}
+
+      {/* =====================================================
+          MAIN CONTENT
+      ===================================================== */}
+
+      <div
+        className="
+          relative
+          z-20
+          mx-auto
+          flex
+          min-h-[430px]
+          w-full
+          max-w-7xl
+          items-center
+          justify-center
+          px-5
+          py-14
+          sm:px-8
+          lg:px-10
+        "
+      >
+        <div className="relative w-full max-w-[820px] text-center">
           {/* =================================================
-              QUIET BRAND ACCENT
+              ORBIT
           ================================================= */}
 
           <div
@@ -71,380 +297,449 @@ export default function CTA() {
             className="
               pointer-events-none
               absolute
-              right-[-120px]
-              top-[-150px]
-              h-[430px]
-              w-[430px]
+              left-1/2
+              top-1/2
+              h-[270px]
+              w-[270px]
+              -translate-x-1/2
+              -translate-y-1/2
               rounded-full
-              opacity-30
-              blur-3xl
+              border
+              border-[#0C5FF5]/10
+              sm:h-[330px]
+              sm:w-[330px]
             "
-            style={{
-              background:
-                "radial-gradient(circle, rgba(53,49,231,0.55) 0%, rgba(53,49,231,0) 70%)",
-            }}
           />
 
-          <div
+          <motion.div
             aria-hidden="true"
             className="
               pointer-events-none
               absolute
-              bottom-[-180px]
-              left-[35%]
-              h-[420px]
-              w-[420px]
+              left-1/2
+              top-1/2
+              h-[215px]
+              w-[215px]
+              -translate-x-1/2
+              -translate-y-1/2
               rounded-full
-              opacity-20
-              blur-3xl
+              border
+              border-[#0289F9]/20
+              border-dashed
+              sm:h-[265px]
+              sm:w-[265px]
             "
-            style={{
-              background:
-                "radial-gradient(circle, rgba(2,137,249,0.6) 0%, rgba(2,137,249,0) 70%)",
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    rotate: 360,
+                  }
+            }
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear",
             }}
           />
 
           {/* =================================================
-              CONTENT
+              CENTER GLOW
           ================================================= */}
 
-          <div
+          <motion.div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              left-1/2
+              top-[42%]
+              h-28
+              w-28
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              bg-[#0C5FF5]/20
+              blur-[55px]
+            "
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    scale: [1, 1.35, 1],
+                    opacity: [0.4, 0.8, 0.4],
+                  }
+            }
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* =================================================
+              EYEBROW
+          ================================================= */}
+
+          <motion.div
+            initial={
+              shouldReduceMotion
+                ? false
+                : {
+                    opacity: 0,
+                    y: 10,
+                  }
+            }
+            whileInView={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    opacity: 1,
+                    y: 0,
+                  }
+            }
+            viewport={{
+              once: true,
+              amount: 0.4,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
             className="
               relative
               z-10
-              grid
-              gap-12
-              px-7
-              py-10
-              sm:px-10
-              sm:py-12
-              lg:grid-cols-[1fr_0.65fr]
-              lg:items-end
-              lg:px-14
-              lg:py-14
-              xl:px-16
+              mx-auto
+              flex
+              w-fit
+              items-center
+              gap-2
+              rounded-full
+              border
+              border-[#0289F9]/20
+              bg-[#0289F9]/[0.06]
+              px-3.5
+              py-1.5
             "
           >
-            {/* =================================================
-                LEFT
-            ================================================= */}
+            <motion.span
+              className="
+                h-1.5
+                w-1.5
+                rounded-full
+                bg-[#0289F9]
+              "
+              animate={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      opacity: [1, 0.35, 1],
+                    }
+              }
+              transition={{
+                duration: 1.8,
+                repeat: Infinity,
+              }}
+            />
 
-            <div className="max-w-3xl">
-              {/* Eyebrow */}
+            <span
+              className="
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-[0.22em]
+                text-[#4CA7FF]
+              "
+            >
+              Your next move
+            </span>
+          </motion.div>
 
-              <div className="flex items-center gap-3">
-                <span className="h-px w-9 bg-[#0289F9]" />
+          {/* =================================================
+              HEADING
+          ================================================= */}
 
-                <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#4CA7FF]">
-                  Start your next step
-                </p>
-              </div>
+          <motion.h2
+            initial={
+              shouldReduceMotion
+                ? false
+                : {
+                    opacity: 0,
+                    y: 18,
+                  }
+            }
+            whileInView={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    opacity: 1,
+                    y: 0,
+                  }
+            }
+            viewport={{
+              once: true,
+              amount: 0.4,
+            }}
+            transition={{
+              duration: 0.65,
+              delay: 0.05,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="
+              relative
+              z-10
+              mt-5
+              text-[36px]
+              font-black
+              leading-[1]
+              tracking-[-0.055em]
+              text-white
+              sm:text-[48px]
+              lg:text-[56px]
+            "
+          >
+            Ready to build
+            <br />
 
-              {/* Heading */}
+            <span
+              className="
+                bg-gradient-to-r
+                from-[#0C5FF5]
+                via-[#0289F9]
+                to-[#6E63FF]
+                bg-clip-text
+                text-transparent
+              "
+            >
+              your future?
+            </span>
+          </motion.h2>
 
-              <h2
+          {/* =================================================
+              DESCRIPTION
+          ================================================= */}
+
+          <motion.p
+            initial={
+              shouldReduceMotion
+                ? false
+                : {
+                    opacity: 0,
+                    y: 12,
+                  }
+            }
+            whileInView={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    opacity: 1,
+                    y: 0,
+                  }
+            }
+            viewport={{
+              once: true,
+              amount: 0.4,
+            }}
+            transition={{
+              duration: 0.55,
+              delay: 0.12,
+            }}
+            className="
+              relative
+              z-10
+              mx-auto
+              mt-5
+              max-w-[590px]
+              text-[13px]
+              font-medium
+              leading-6
+              text-white/45
+              sm:text-[14px]
+            "
+          >
+            Build practical technology skills through structured
+            learning, real projects and expert mentorship.
+          </motion.p>
+
+          {/* =================================================
+              ACTIONS
+          ================================================= */}
+
+          <motion.div
+            initial={
+              shouldReduceMotion
+                ? false
+                : {
+                    opacity: 0,
+                    y: 14,
+                  }
+            }
+            whileInView={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    opacity: 1,
+                    y: 0,
+                  }
+            }
+            viewport={{
+              once: true,
+              amount: 0.4,
+            }}
+            transition={{
+              duration: 0.55,
+              delay: 0.2,
+            }}
+            className="
+              relative
+              z-10
+              mt-7
+              flex
+              flex-col
+              items-center
+              justify-center
+              gap-3
+              sm:flex-row
+            "
+          >
+            {/* Primary */}
+
+            <motion.a
+              href="/courses"
+              whileHover={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      y: -3,
+                      scale: 1.02,
+                    }
+              }
+              whileTap={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      scale: 0.98,
+                    }
+              }
+              className="
+                group
+                relative
+                inline-flex
+                items-center
+                justify-center
+                gap-2
+                overflow-hidden
+                rounded-xl
+                bg-[#0C5FF5]
+                px-6
+                py-3.5
+                text-xs
+                font-bold
+                text-white
+                shadow-[0_12px_35px_rgba(12,95,245,0.3)]
+              "
+            >
+              {/* Button shine */}
+
+              <span
+                aria-hidden="true"
                 className="
-                  mt-6
-                  text-4xl
-                  font-semibold
-                  leading-[1.02]
-                  tracking-[-0.05em]
-                  text-white
-                  sm:text-5xl
-                  lg:text-[60px]
+                  absolute
+                  inset-y-0
+                  -left-20
+                  w-12
+                  rotate-[20deg]
+                  bg-white/20
+                  blur-md
+                  transition-all
+                  duration-700
+                  group-hover:left-[110%]
                 "
-              >
-                Learn data.
-                <br />
-                <span className="bg-gradient-to-r from-[#0C5FF5] via-[#0289F9] to-[#3531E7] bg-clip-text text-transparent">
-                  Build capability.
-                </span>
-              </h2>
+              />
 
-              {/* Description */}
+              <span className="relative z-10">
+                Explore Programs
+              </span>
 
-              <p
-                className="
-                  mt-6
-                  max-w-2xl
-                  text-sm
-                  leading-7
-                  text-white/55
-                  sm:text-base
-                  sm:leading-7
-                "
-              >
-                Choose a focused learning path, strengthen your technical
-                skills, practice what you learn, and build projects that show
-                what you can do.
-              </p>
-
-              {/* =================================================
-                  PROGRAM SIGNALS
-              ================================================= */}
-
-              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
-                {programSignals.map((item) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <div
-                      key={item.label}
-                      className="
-                        flex
-                        items-center
-                        gap-2
-                        text-xs
-                        font-medium
-                        text-white/65
-                      "
-                    >
-                      <span
-                        className="
-                          flex
-                          h-7
-                          w-7
-                          items-center
-                          justify-center
-                          rounded-lg
-                          border
-                          border-white/10
-                          bg-white/[0.05]
-                        "
-                      >
-                        <Icon className="text-[11px] text-[#0289F9]" />
-                      </span>
-
-                      {item.label}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* =================================================
-                  ACTIONS
-              ================================================= */}
-
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <motion.a
-                  href="/courses"
-                  whileHover={
-                    shouldReduceMotion
-                      ? undefined
-                      : {
-                          y: -2,
-                        }
-                  }
-                  whileTap={
-                    shouldReduceMotion
-                      ? undefined
-                      : {
-                          scale: 0.98,
-                        }
-                  }
-                  className="
-                    inline-flex
-                    items-center
-                    justify-center
-                    gap-2
-                    rounded-xl
-                    bg-[#0C5FF5]
-                    px-6
-                    py-3.5
-                    text-sm
-                    font-semibold
-                    text-white
-                    shadow-[0_12px_28px_rgba(12,95,245,0.25)]
-                    transition-colors
-                    duration-200
-                    hover:bg-[#0289F9]
-                  "
-                >
-                  Explore programs
-                  <FaArrowRight className="text-[10px]" />
-                </motion.a>
-
-                <motion.a
-                  href="/login"
-                  whileHover={
-                    shouldReduceMotion
-                      ? undefined
-                      : {
-                          y: -2,
-                        }
-                  }
-                  className="
-                    inline-flex
-                    items-center
-                    justify-center
-                    rounded-xl
-                    border
-                    border-white/15
-                    bg-white/[0.04]
-                    px-6
-                    py-3.5
-                    text-sm
-                    font-semibold
-                    text-white
-                    transition-all
-                    duration-200
-                    hover:border-white/25
-                    hover:bg-white/[0.08]
-                  "
-                >
-                  Sign in
-                </motion.a>
-              </div>
-            </div>
-
-            {/* =================================================
-                RIGHT — SIMPLE CLOSING VISUAL
-            ================================================= */}
-
-            <div className="lg:flex lg:justify-end">
-              <motion.div
-                initial={
-                  shouldReduceMotion
-                    ? false
-                    : {
-                        opacity: 0,
-                        x: 20,
-                      }
-                }
-                whileInView={
-                  shouldReduceMotion
-                    ? undefined
-                    : {
-                        opacity: 1,
-                        x: 0,
-                      }
-                }
-                viewport={{
-                  once: true,
-                  amount: 0.25,
-                }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.7,
-                  delay: shouldReduceMotion ? 0 : 0.1,
-                }}
+              <FaArrowRight
                 className="
                   relative
-                  w-full
-                  max-w-[330px]
-                  lg:mb-1
+                  z-10
+                  text-[10px]
+                  transition-transform
+                  duration-200
+                  group-hover:translate-x-1
                 "
-              >
-                {/* Top label */}
+              />
+            </motion.a>
 
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/35">
-                    Your next move
-                  </span>
+            {/* Secondary */}
 
-                  <span className="text-[9px] font-bold tracking-[0.16em] text-[#0289F9]">
-                    01
-                  </span>
-                </div>
-
-                {/* Main statement */}
-
-                <div className="py-7">
-                  <p
-                    className="
-                      text-2xl
-                      font-semibold
-                      leading-[1.15]
-                      tracking-[-0.035em]
-                      text-white
-                      sm:text-3xl
-                    "
-                  >
-                    Start with a skill.
-                    <br />
-                    <span className="text-white/40">
-                      Leave with something
-                    </span>
-                    <br />
-                    <span className="text-[#0289F9]">you can show.</span>
-                  </p>
-                </div>
-
-                {/* Progress line */}
-
-                <div className="border-t border-white/10 pt-5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] uppercase tracking-[0.16em] text-white/30">
-                      Learn
-                    </span>
-
-                    <span className="text-[9px] uppercase tracking-[0.16em] text-white/30">
-                      Build
-                    </span>
-
-                    <span className="text-[9px] uppercase tracking-[0.16em] text-white/30">
-                      Grow
-                    </span>
-                  </div>
-
-                  <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/10">
-                    <motion.div
-                      initial={{
-                        width: 0,
-                      }}
-                      whileInView={{
-                        width: "100%",
-                      }}
-                      viewport={{
-                        once: true,
-                      }}
-                      transition={{
-                        duration: shouldReduceMotion ? 0 : 1.1,
-                        ease: "easeOut",
-                      }}
-                      className="
-                        h-full
-                        rounded-full
-                        bg-gradient-to-r
-                        from-[#0C5FF5]
-                        via-[#0289F9]
-                        to-[#3531E7]
-                      "
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* =================================================
-              BOTTOM BRAND LINE
-          ================================================= */}
-
-          <div
-            className="
-              relative
-              z-10
-              border-t
-              border-white/[0.08]
-              px-7
-              py-4
-              sm:px-10
-              lg:px-14
-              xl:px-16
-            "
-          >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-white/25">
-                DataLattice
-              </p>
-
-              <p className="text-[10px] text-white/30">
-                Learn · Build · Grow
-              </p>
-            </div>
-          </div>
-        </motion.div>
+            <motion.a
+              href="/login"
+              whileHover={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      y: -3,
+                    }
+              }
+              className="
+                inline-flex
+                items-center
+                justify-center
+                rounded-xl
+                border
+                border-white/20
+                bg-white/[0.025]
+                px-6
+                py-3.5
+                text-xs
+                font-bold
+                text-white/85
+                backdrop-blur-sm
+                transition-all
+                duration-200
+                hover:border-[#0289F9]/50
+                hover:bg-white/[0.06]
+                hover:text-white
+              "
+            >
+              Talk to Our Team
+            </motion.a>
+          </motion.div>
+        </div>
       </div>
+
+      {/* =====================================================
+          BOTTOM LIGHT LINE
+      ===================================================== */}
+
+      <motion.div
+        aria-hidden="true"
+        className="
+          absolute
+          bottom-0
+          left-0
+          h-px
+          w-full
+          bg-gradient-to-r
+          from-transparent
+          via-[#0289F9]
+          to-transparent
+        "
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                opacity: [0.3, 1, 0.3],
+              }
+        }
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
     </section>
   );
 }

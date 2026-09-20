@@ -1,8 +1,8 @@
 {
-  "name": "skillnova-lms",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
@@ -12,18 +12,21 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "axios": "^1.20.0",
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^4.21.2",
+    "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "mailtrap": "^4.10.0",
     "multer": "^2.2.0",
     "mysql2": "^3.23.2",
     "nodemailer": "^9.0.3",
+    "otplib": "^13.5.0",
+    "qrcode": "^1.5.4",
     "razorpay": "^2.9.8",
-    "react-hook-form": "^7.83.0",
-    "react-loader-spinner": "^8.0.2",
-    "react-toastify": "^11.1.0"
+    "react-player": "^3.4.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
