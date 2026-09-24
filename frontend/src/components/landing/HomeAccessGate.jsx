@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { FaXmark, FaLock } from "react-icons/fa6";
+import {
+  AnimatePresence,
+  motion,
+} from "framer-motion";
+import {
+  FaXmark,
+  FaLock,
+} from "react-icons/fa6";
+
 import HeroSignupCard from "./HeroSignupCard";
 
 /* =========================================================
-   DATALATTICE HOME ACCESS GATE
+   CONSTANTS
    ========================================================= */
 
 const VERIFICATION_STORAGE_KEY =
@@ -22,15 +29,17 @@ const DEMO_VERIFIED_EVENT =
 
 export function isDemoVerified() {
   try {
-    const stored = sessionStorage.getItem(
-      VERIFICATION_STORAGE_KEY
-    );
+    const stored =
+      sessionStorage.getItem(
+        VERIFICATION_STORAGE_KEY
+      );
 
     if (!stored) {
       return false;
     }
 
-    const verification = JSON.parse(stored);
+    const verification =
+      JSON.parse(stored);
 
     return verification?.verified === true;
   } catch (error) {
@@ -48,12 +57,16 @@ export function isDemoVerified() {
    ========================================================= */
 
 export function openHomeSignupGate() {
-  if (typeof window === "undefined") {
+  if (
+    typeof window === "undefined"
+  ) {
     return;
   }
 
   window.dispatchEvent(
-    new CustomEvent(OPEN_GATE_EVENT)
+    new CustomEvent(
+      OPEN_GATE_EVENT
+    )
   );
 }
 
@@ -61,40 +74,28 @@ export function openHomeSignupGate() {
    PROTECT HOMEPAGE ACTION
    ========================================================= */
 
-export function requireHomeDemoAccess(callback) {
+export function requireHomeDemoAccess(
+  callback
+) {
   return (event) => {
-    /*
-     * Stop links/buttons from navigating before
-     * the access check is completed.
-     */
     if (event?.preventDefault) {
       event.preventDefault();
     }
 
-    /*
-     * Stop the click from bubbling into another
-     * clickable parent.
-     */
     if (event?.stopPropagation) {
       event.stopPropagation();
     }
 
-    /*
-     * Already verified:
-     * continue with the original action.
-     */
     if (isDemoVerified()) {
-      if (typeof callback === "function") {
+      if (
+        typeof callback === "function"
+      ) {
         callback(event);
       }
 
       return;
     }
 
-    /*
-     * New visitor:
-     * remain on Home and open the floating signup card.
-     */
     openHomeSignupGate();
   };
 }
@@ -103,12 +104,15 @@ export function requireHomeDemoAccess(callback) {
    HOME ACCESS GATE
    ========================================================= */
 
-function HomeAccessGate({ children }) {
-  const [open, setOpen] = useState(false);
+function HomeAccessGate({
+  children,
+}) {
+  const [open, setOpen] =
+    useState(false);
 
   /* =======================================================
-     OPEN SIGNUP MODAL
-     ======================================================= */
+     OPEN GATE EVENT
+  ======================================================= */
 
   useEffect(() => {
     const handleOpenGate = () => {
@@ -133,8 +137,8 @@ function HomeAccessGate({ children }) {
   }, []);
 
   /* =======================================================
-     OTP VERIFICATION SUCCESS
-     ======================================================= */
+     VERIFIED EVENT
+  ======================================================= */
 
   useEffect(() => {
     const handleDemoVerified = () => {
@@ -160,7 +164,7 @@ function HomeAccessGate({ children }) {
 
   /* =======================================================
      BODY SCROLL LOCK
-     ======================================================= */
+  ======================================================= */
 
   useEffect(() => {
     if (!open) {
@@ -171,9 +175,12 @@ function HomeAccessGate({ children }) {
     const previousOverflow =
       document.body.style.overflow;
 
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow =
+      "hidden";
 
-    const handleEscape = (event) => {
+    const handleEscape = (
+      event
+    ) => {
       if (event.key === "Escape") {
         setOpen(false);
       }
@@ -197,7 +204,7 @@ function HomeAccessGate({ children }) {
 
   /* =======================================================
      RENDER
-     ======================================================= */
+  ======================================================= */
 
   return (
     <>
@@ -211,14 +218,17 @@ function HomeAccessGate({ children }) {
               inset-0
               z-[10000]
               flex
-              items-center
+              items-start
               justify-center
               overflow-y-auto
+              overscroll-contain
               bg-[#0B1B3A]/60
-              px-4
-              py-6
+              px-3
+              py-5
               backdrop-blur-md
+              sm:items-center
               sm:px-6
+              sm:py-8
             "
             initial={{
               opacity: 0,
@@ -242,10 +252,6 @@ function HomeAccessGate({ children }) {
               }
             }}
           >
-            {/* =================================================
-                FLOATING CARD
-                ================================================= */}
-
             <motion.div
               initial={{
                 opacity: 0,
@@ -271,18 +277,24 @@ function HomeAccessGate({ children }) {
                 flex
                 w-full
                 max-w-[460px]
+                shrink-0
                 flex-col
                 items-center
               "
+              onMouseDown={(event) =>
+                event.stopPropagation()
+              }
             >
               {/* =================================================
                   CLOSE
-                  ================================================= */}
+              ================================================= */}
 
               <button
                 type="button"
                 aria-label="Close signup"
-                onClick={() => setOpen(false)}
+                onClick={() =>
+                  setOpen(false)
+                }
                 className="
                   absolute
                   -right-1
@@ -312,12 +324,13 @@ function HomeAccessGate({ children }) {
 
               {/* =================================================
                   LABEL
-                  ================================================= */}
+              ================================================= */}
 
               <div
                 className="
                   mb-3
                   inline-flex
+                  shrink-0
                   items-center
                   gap-2
                   rounded-full
@@ -348,10 +361,12 @@ function HomeAccessGate({ children }) {
               </div>
 
               {/* =================================================
-                  SIGNUP / OTP CARD
-                  ================================================= */}
+                  SIGNUP CARD
+              ================================================= */}
 
-              <HeroSignupCard />
+              <div className="w-full">
+                <HeroSignupCard />
+              </div>
             </motion.div>
           </motion.div>
         )}

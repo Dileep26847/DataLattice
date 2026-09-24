@@ -9,7 +9,6 @@ import {
 
 /* =========================================================
    REAL PROJECTS
-   UI ONLY — FUNCTIONALITY CAN BE INTEGRATED LATER
    ========================================================= */
 
 const projects = [
@@ -39,35 +38,88 @@ const projects = [
   },
 ];
 
+/* =========================================================
+   REAL PROJECTS
+   ========================================================= */
+
 function RealProjects() {
   return (
-    <section className="relative overflow-hidden bg-[#F7F9FD] py-16 sm:py-20 lg:py-24">
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-7 lg:px-8">
-
+    <section
+      id="projects"
+      className="
+        relative
+        overflow-hidden
+        bg-[#F7F9FD]
+        py-14
+        sm:py-16
+        lg:py-20
+      "
+    >
+      <div className="mx-auto w-full max-w-7xl px-5 sm:px-7 lg:px-10">
         {/* =================================================
             HEADER
         ================================================= */}
 
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
-          viewport={{ once: true, amount: 0.2 }}
+          initial={{
+            opacity: 0,
+            y: 18,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.55,
+            ease: "easeOut",
+          }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           className="mx-auto max-w-3xl text-center"
         >
-          <div className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#1769F5]">
+          {/* Badge */}
+
+          <div className="inline-flex items-center rounded-full border border-[#BCD5FF] bg-[#EAF2FF] px-4 py-1.5">
+            <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#1769F5]">
               Real Projects
             </span>
           </div>
 
-          <h2 className="mt-5 text-4xl font-bold leading-[1.08] tracking-[-0.04em] text-[#081733] sm:text-5xl lg:text-[50px]">
+          {/* Heading */}
+
+          <h2
+            className="
+              mt-4
+              text-3xl
+              font-bold
+              leading-[1.08]
+              tracking-[-0.04em]
+              text-[#081733]
+              sm:text-4xl
+              lg:text-[44px]
+            "
+          >
             Build. Showcase. Stand Out.
           </h2>
 
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
-            Work on industry-relevant projects and build a portfolio that gets
-            you noticed by top companies.
+          {/* Description */}
+
+          <p
+            className="
+              mx-auto
+              mt-4
+              max-w-2xl
+              text-sm
+              leading-6
+              text-[#7B8CA8]
+              sm:text-base
+              sm:leading-7
+            "
+          >
+            Work on industry-relevant projects and build a portfolio that
+            gets you noticed by top companies.
           </p>
         </motion.div>
 
@@ -75,7 +127,16 @@ function RealProjects() {
             PROJECT GRID
         ================================================= */}
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <div
+          className="
+            mt-10
+            grid
+            gap-5
+            md:grid-cols-2
+            lg:grid-cols-3
+            lg:gap-6
+          "
+        >
           {projects.map((project, index) => (
             <ProjectCard
               key={project.title}
@@ -86,18 +147,28 @@ function RealProjects() {
         </div>
 
         {/* =================================================
-            VIEW MORE BUTTON
+            VIEW MORE
         ================================================= */}
 
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 12,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
           transition={{
             duration: 0.45,
             delay: 0.15,
+            ease: "easeOut",
           }}
-          viewport={{ once: true }}
-          className="mt-12"
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
+          className="mt-8 flex justify-center"
         >
           <button
             type="button"
@@ -151,15 +222,15 @@ function ProjectCard({ project, index }) {
     <motion.article
       initial={{
         opacity: 0,
-        y: 25,
+        y: 20,
       }}
       whileInView={{
         opacity: 1,
         y: 0,
       }}
       transition={{
-        duration: 0.55,
-        delay: index * 0.1,
+        duration: 0.5,
+        delay: index * 0.08,
         ease: [0.22, 1, 0.36, 1],
       }}
       viewport={{
@@ -167,7 +238,7 @@ function ProjectCard({ project, index }) {
         amount: 0.15,
       }}
       whileHover={{
-        y: -5,
+        y: -4,
       }}
       className="
         group
@@ -183,7 +254,7 @@ function ProjectCard({ project, index }) {
       "
     >
       {/* =================================================
-          IMAGE
+          PROJECT IMAGE
       ================================================= */}
 
       <div className="relative aspect-[1.95/1] overflow-hidden bg-slate-100">
@@ -201,37 +272,77 @@ function ProjectCard({ project, index }) {
           "
         />
 
-        {/* subtle overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            bg-gradient-to-t
+            from-black/10
+            via-transparent
+            to-transparent
+            opacity-0
+            transition-opacity
+            duration-300
+            group-hover:opacity-100
+          "
+        />
       </div>
 
       {/* =================================================
-          CONTENT
+          PROJECT CONTENT
       ================================================= */}
 
       <div className="px-5 pb-5 pt-5 sm:px-[22px] sm:pb-[22px]">
-
         {/* Category */}
 
         <div className="flex items-center gap-2">
-          <div className="flex h-5 w-5 items-center justify-center rounded-md bg-blue-50 text-[#1769F5]">
+          <div
+            className="
+              flex
+              h-5
+              w-5
+              items-center
+              justify-center
+              rounded-md
+              bg-blue-50
+              text-[#1769F5]
+            "
+          >
             <Icon size={9} />
           </div>
 
-          <p className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#1769F5]">
+          <p
+            className="
+              text-[9px]
+              font-bold
+              uppercase
+              tracking-[0.08em]
+              text-[#1769F5]
+            "
+          >
             {project.category}
           </p>
         </div>
 
         {/* Title */}
 
-        <h3 className="mt-2 text-lg font-bold tracking-[-0.025em] text-[#0A1832] sm:text-[18px]">
+        <h3
+          className="
+            mt-2
+            text-lg
+            font-bold
+            tracking-[-0.025em]
+            text-[#0A1832]
+            sm:text-[18px]
+          "
+        >
           {project.title}
         </h3>
 
         {/* Tags */}
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3.5 flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag}

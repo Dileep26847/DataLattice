@@ -70,9 +70,9 @@ function LearningOutcomes() {
         border-t
         border-slate-100
         bg-white
-        py-14
-        sm:py-16
-        lg:py-20
+        py-12
+        sm:py-14
+        lg:py-16
       "
     >
       <div
@@ -133,14 +133,14 @@ function LearningOutcomes() {
 
           <h2
             className="
-              mt-5
+              mt-4
               text-3xl
               font-semibold
               leading-[1.08]
               tracking-[-0.045em]
               text-[#0A1832]
               sm:text-4xl
-              lg:text-[44px]
+              lg:text-[42px]
             "
           >
             Real Skills. Real Growth.
@@ -151,7 +151,7 @@ function LearningOutcomes() {
           <p
             className="
               mx-auto
-              mt-4
+              mt-3
               max-w-2xl
               text-sm
               leading-6
@@ -171,7 +171,7 @@ function LearningOutcomes() {
 
         <div
           className="
-            mt-10
+            mt-8
             grid
             gap-3
             sm:grid-cols-2
@@ -228,11 +228,11 @@ function OutcomeCard({ outcome, index }) {
         border
         border-slate-200
         bg-white
-        shadow-[0_10px_30px_rgba(10,24,50,0.05)]
+        shadow-[0_8px_24px_rgba(10,24,50,0.045)]
         transition-all
         duration-300
         hover:border-slate-300
-        hover:shadow-[0_18px_40px_rgba(10,24,50,0.09)]
+        hover:shadow-[0_16px_35px_rgba(10,24,50,0.08)]
       "
     >
       {/* ====================================================
@@ -250,14 +250,14 @@ function OutcomeCard({ outcome, index }) {
           CONTENT
       ==================================================== */}
 
-      <div className="p-6">
+      <div className="p-5">
         {/* Icon */}
 
         <div
           className="
             flex
-            h-11
-            w-11
+            h-10
+            w-10
             items-center
             justify-center
             rounded-xl
@@ -270,15 +270,15 @@ function OutcomeCard({ outcome, index }) {
             color: outcome.accent,
           }}
         >
-          <Icon size={16} />
+          <Icon size={15} />
         </div>
 
         {/* Title */}
 
         <h3
           className="
-            mt-5
-            min-h-[42px]
+            mt-4
+            min-h-[40px]
             text-sm
             font-semibold
             leading-5
@@ -295,7 +295,7 @@ function OutcomeCard({ outcome, index }) {
           className="
             mt-2
             text-[11px]
-            leading-[1.7]
+            leading-[1.65]
             text-slate-500
           "
         >

@@ -10,48 +10,41 @@ import {
 
 // ============================================================
 // WHY DATALATTICE
+// Figma section: why-section
 // ============================================================
 
 const features = [
   {
-    title: "Live & Recorded",
-    subtitle: "Classes",
+    title: "Live & Recorded Classes",
     description:
       "Flexible learning, anytime anywhere. Access material whenever you need.",
     icon: FaVideo,
     iconColor: "#0C8BFF",
-    glowColor: "rgba(12,139,255,0.18)",
-    lineColor: "#0C8BFF",
+    glowColor: "rgba(12, 139, 255, 0.18)",
   },
   {
-    title: "Real-World",
-    subtitle: "Projects",
+    title: "Real-World Projects",
     description:
       "Build a strong portfolio that stands out to recruiters and tech leaders.",
     icon: FaBriefcase,
     iconColor: "#00C9D8",
-    glowColor: "rgba(0,201,216,0.18)",
-    lineColor: "#00C9D8",
+    glowColor: "rgba(0, 201, 216, 0.18)",
   },
   {
     title: "Expert Mentors",
-    subtitle: "",
     description:
       "Learn directly from industry professionals working at top tech firms.",
     icon: FaUsers,
     iconColor: "#9B5CFF",
-    glowColor: "rgba(155,92,255,0.18)",
-    lineColor: "#9B5CFF",
+    glowColor: "rgba(155, 92, 255, 0.18)",
   },
   {
     title: "Career Support",
-    subtitle: "",
     description:
       "Get end-to-end guidance, extensive mock interviews and robust placement assistance.",
     icon: FaAward,
     iconColor: "#FFB800",
-    glowColor: "rgba(255,184,0,0.18)",
-    lineColor: "#FFB800",
+    glowColor: "rgba(255, 184, 0, 0.18)",
   },
 ];
 
@@ -59,114 +52,209 @@ const features = [
 // MAIN COMPONENT
 // ============================================================
 
-function WhyDataWave() {
+function WhyData() {
   return (
     <section
+      id="why-datalattice"
       className="
         relative
+        w-full
         overflow-hidden
         bg-[#081A36]
-        px-5
-        py-20
-        sm:px-7
-        sm:py-24
-        lg:px-8
-        lg:py-[88px]
       "
     >
       {/* ======================================================
-          SUBTLE BACKGROUND GLOW
-      ====================================================== */}
+          BACKGROUND ORB — TOP LEFT
+          Figma: orb-tl
+          ====================================================== */}
 
       <div
+        aria-hidden="true"
         className="
           pointer-events-none
           absolute
-          left-1/2
-          top-0
-          h-[420px]
-          w-[800px]
-          -translate-x-1/2
+          -left-[120px]
+          -top-[80px]
+          h-[480px]
+          w-[480px]
           rounded-full
-          bg-[#0C5FF5]/[0.055]
+          bg-[#0C5FF5]/[0.07]
           blur-[110px]
         "
       />
 
       {/* ======================================================
-          CONTENT CONTAINER
-      ====================================================== */}
+          BACKGROUND ORB — BOTTOM RIGHT
+          Figma: orb-br
+          ====================================================== */}
 
-      <div className="relative mx-auto w-full max-w-[1000px]">
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          -right-[120px]
+          top-[300px]
+          h-[560px]
+          w-[560px]
+          rounded-full
+          bg-[#1267F5]/[0.06]
+          blur-[120px]
+        "
+      />
+
+      {/* ======================================================
+          MAIN CONTENT
+          Figma:
+          x = 120
+          width = 1200
+          ====================================================== */}
+
+      <div
+        className="
+          relative
+          mx-auto
+          w-full
+          max-w-[1200px]
+          px-5
+          py-[72px]
+          sm:px-8
+          sm:py-[90px]
+          lg:px-0
+          lg:py-[120px]
+        "
+      >
         {/* ====================================================
             SECTION HEADER
-        ==================================================== */}
+            Figma:
+            section-header
+            width: 1200
+            height: 238
+            ==================================================== */}
 
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          viewport={{ once: true, amount: 0.25 }}
-          className="text-center"
+          initial={{
+            opacity: 0,
+            y: 18,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.55,
+            ease: "easeOut",
+          }}
+          viewport={{
+            once: true,
+            amount: 0.25,
+          }}
+          className="
+            flex
+            flex-col
+            items-center
+            text-center
+          "
         >
-          {/* Badge */}
+          {/* ==================================================
+              EYEBROW
+              Figma:
+              eyebrow-badge
+              width: 135px
+              height: 30px
+              ================================================== */}
 
-          <div className="inline-flex items-center rounded-full border border-[#0C5FF5]/40 bg-[#0C5FF5]/10 px-3 py-1.5">
-            <span className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#1687FF] sm:text-[10px]">
+          <div
+            className="
+              inline-flex
+              h-[30px]
+              items-center
+              rounded-full
+              border
+              border-[#0C8BFF]/35
+              bg-[#0C8BFF]/[0.10]
+              px-4
+            "
+          >
+            <span
+              className="
+                text-[10px]
+                font-bold
+                uppercase
+                tracking-[0.08em]
+                text-[#1687FF]
+              "
+            >
               Why DataLattice
             </span>
           </div>
 
-          {/* Heading */}
+          {/* ==================================================
+              HEADING
+              Figma:
+              y = 50
+              height = 110
+              ================================================== */}
 
           <h2
             className="
-              mx-auto
               mt-5
-              max-w-[850px]
-              text-3xl
+              max-w-[1200px]
+              text-center
+              text-[34px]
               font-bold
-              leading-[1.08]
-              tracking-[-0.035em]
+              leading-[1.16]
+              tracking-[-0.045em]
               text-white
-              sm:text-4xl
+              sm:text-[38px]
               md:text-[40px]
               lg:text-[42px]
             "
           >
             More Than a Course. A Complete Learning
-            <span className="block">Experience.</span>
+            <span className="block">
+              Experience.
+            </span>
           </h2>
 
-          {/* Description */}
+          {/* ==================================================
+              DESCRIPTION
+              Figma:
+              width = 580
+              y = 180
+              ================================================== */}
 
           <p
             className="
-              mx-auto
               mt-5
-              max-w-[610px]
-              text-sm
-              leading-6
-              text-slate-400
+              max-w-[580px]
+              text-center
+              text-[14px]
+              leading-7
+              text-[#7F8EA8]
               sm:text-[15px]
-              sm:leading-7
             "
           >
-            Everything you need to go from zero to job-ready - structured,
-            supported, and results-driven.
+            Everything you need to go from zero to job-ready -
+            structured, supported, and results-driven.
           </p>
         </motion.div>
 
         {/* ====================================================
-            FEATURE CARDS
-        ==================================================== */}
+            FEATURE GRID
+            Figma:
+            why-grid
+            x = 120
+            y = 430
+            width = 1200
+            ==================================================== */}
 
         <div
           className="
-            mt-12
+            mt-[72px]
             grid
-            gap-4
-            sm:mt-14
+            grid-cols-1
+            gap-6
             sm:grid-cols-2
             lg:grid-cols-4
           "
@@ -186,6 +274,10 @@ function WhyDataWave() {
 
 // ============================================================
 // FEATURE CARD
+// Figma:
+// why-card
+// width = 282px
+// height = 343px
 // ============================================================
 
 function FeatureCard({ feature, index }) {
@@ -211,44 +303,40 @@ function FeatureCard({ feature, index }) {
         amount: 0.2,
       }}
       whileHover={{
-        y: -5,
+        y: -4,
       }}
       className="
         group
         relative
-        min-h-[250px]
+        min-h-[343px]
         overflow-hidden
         rounded-[20px]
         border
-        border-white/[0.08]
-        bg-gradient-to-b
-        from-[#12294D]
-        to-[#102545]
-        p-7
+        border-white/[0.07]
+        bg-[#102545]
         shadow-[0_18px_45px_rgba(0,0,0,0.14)]
         transition-all
         duration-300
-        hover:border-white/[0.14]
-        hover:shadow-[0_22px_55px_rgba(0,0,0,0.22)]
-        sm:min-h-[270px]
-        sm:p-8
+        hover:border-white/[0.13]
+        hover:shadow-[0_24px_55px_rgba(0,0,0,0.22)]
       "
     >
-      {/* ====================================================
-          CARD GLOW
-      ==================================================== */}
+      {/* ======================================================
+          CARD HOVER GLOW
+          ====================================================== */}
 
       <div
+        aria-hidden="true"
         className="
           pointer-events-none
           absolute
-          -right-16
-          -top-16
-          h-40
-          w-40
+          -right-20
+          -top-20
+          h-[190px]
+          w-[190px]
           rounded-full
           opacity-0
-          blur-3xl
+          blur-[65px]
           transition-opacity
           duration-500
           group-hover:opacity-100
@@ -258,83 +346,122 @@ function FeatureCard({ feature, index }) {
         }}
       />
 
-      {/* ====================================================
-          ICON
-      ==================================================== */}
+      {/* ======================================================
+          ICON OUTER
+          Figma:
+          x = 40
+          y = 40
+          width = 72
+          height = 72
+          ====================================================== */}
 
       <div
         className="
-          relative
+          absolute
+          left-10
+          top-10
           flex
-          h-14
-          w-14
+          h-[72px]
+          w-[72px]
           items-center
           justify-center
-          rounded-[16px]
+          rounded-[18px]
           border
           transition-all
           duration-300
         "
         style={{
           color: feature.iconColor,
-          borderColor: `${feature.iconColor}45`,
+          borderColor: `${feature.iconColor}42`,
           backgroundColor: `${feature.iconColor}10`,
-          boxShadow: `0 8px 25px ${feature.glowColor}`,
+          boxShadow: `0 10px 30px ${feature.glowColor}`,
         }}
       >
-        <Icon size={21} />
-
-        {/* Small inner glow */}
+        <Icon size={32} />
 
         <div
-          className="pointer-events-none absolute inset-0 rounded-[16px] opacity-50"
+          aria-hidden="true"
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            rounded-[18px]
+            opacity-50
+          "
           style={{
-            boxShadow: `inset 0 0 18px ${feature.glowColor}`,
+            boxShadow: `inset 0 0 20px ${feature.glowColor}`,
           }}
         />
       </div>
 
-      {/* ====================================================
-          TEXT
-      ==================================================== */}
+      {/* ======================================================
+          CONTENT
+          Figma:
+          x = 40
+          y = 136
+          width = 202
+          ====================================================== */}
 
-      <div className="relative mt-5">
-        <h3 className="text-[17px] font-bold leading-[1.15] text-white">
+      <div
+        className="
+          absolute
+          left-10
+          top-[136px]
+          w-[202px]
+        "
+      >
+        <h3
+          className="
+            max-w-[202px]
+            text-[17px]
+            font-bold
+            leading-[1.45]
+            tracking-[-0.025em]
+            text-white
+          "
+        >
           {feature.title}
-
-          {feature.subtitle && (
-            <span className="block">{feature.subtitle}</span>
-          )}
         </h3>
 
-        <p className="mt-2.5 max-w-[205px] text-[12px] leading-[1.7] text-slate-400 sm:text-[13px]">
+        <p
+          className="
+            mt-[10px]
+            max-w-[202px]
+            text-[12px]
+            leading-[1.65]
+            text-[#8291A9]
+            sm:text-[13px]
+          "
+        >
           {feature.description}
         </p>
       </div>
 
-      {/* ====================================================
-          BOTTOM ACCENT
-      ==================================================== */}
+      {/* ======================================================
+          ACCENT LINE
+          Figma:
+          x = 40
+          y = 300
+          width = 48
+          height = 3
+          ====================================================== */}
 
-      <div className="absolute bottom-7 left-7 sm:left-8">
-        <div className="flex items-center gap-0">
-          <span
-            className="h-[2px] w-7 rounded-full"
-            style={{
-              backgroundColor: feature.lineColor,
-            }}
-          />
-
-          <span
-            className="h-[2px] w-7 rounded-full opacity-20"
-            style={{
-              backgroundColor: feature.lineColor,
-            }}
-          />
-        </div>
-      </div>
+      <div
+        className="
+          absolute
+          bottom-[40px]
+          left-10
+          h-[3px]
+          w-12
+          rounded-full
+        "
+        style={{
+          backgroundColor: feature.iconColor,
+          boxShadow: `0 0 14px ${feature.glowColor}`,
+        }}
+      />
     </motion.article>
   );
 }
 
-export default WhyDataWave;
+export default WhyData;

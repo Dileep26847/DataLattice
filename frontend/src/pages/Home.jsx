@@ -1,232 +1,187 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 import Hero from "../components/landing/Hero";
-import HomeAccessGate from "../components/landing/HomeAccessGate";
-
-import WhyDataWave from "../components/landing/WhyDataWave";
+import TrustSection from "../components/landing/TrustSection";
+import FeaturedCourses from "../components/landing/FeaturedCourses";
 import LearningJourney from "../components/landing/LearningJourney";
+import WhyDataWave from "../components/landing/WhyDataWave";
 import RealProjects from "../components/landing/RealProjects";
 import SuccessStories from "../components/landing/SuccessStories";
-
-
 import Mentors from "../components/landing/Mentors";
 import LearningOutcomes from "../components/landing/LearningOutcomes";
 import CareerSupport from "../components/landing/CareerSupport";
-import Leadership from "../components/landing/Leadership";
-
-import Stats from "../components/landing/Stats";
-import FAQ from "../components/landing/FAQ";
 import CTA from "../components/landing/CTA";
+import FAQ from "../components/landing/FAQ";
 import Newsletter from "../components/landing/Newsletter";
 
-import FeaturedCourses from "../components/FeaturedCourses";
-
 /* =========================================================
-   DATALATTICE HOME PAGE
-   ========================================================= */
-
-/* =========================================================
-   WHATSAPP BUTTON
-   ========================================================= */
-
-function WhatsAppButton() {
-  return (
-    <motion.a
-      href="https://wa.me/917204376429"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Chat with DataLattice on WhatsApp"
-      title="Chat with DataLattice on WhatsApp"
-      initial={{
-        opacity: 0,
-        scale: 0.8,
-      }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-      }}
-      transition={{
-        duration: 0.5,
-        delay: 0.4,
-        ease: "easeOut",
-      }}
-      whileHover={{
-        scale: 1.08,
-        y: -3,
-      }}
-      whileTap={{
-        scale: 0.95,
-      }}
-      className="
-        fixed
-        bottom-5
-        right-5
-        z-[9999]
-        flex
-        h-14
-        w-14
-        items-center
-        justify-center
-        rounded-full
-        border-2
-        border-white
-        shadow-[0_10px_30px_rgba(37,211,102,0.30)]
-        sm:bottom-6
-        sm:right-6
-      "
-      style={{
-        backgroundColor: "#25D366",
-      }}
-    >
-      <svg
-        width="29"
-        height="29"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          d="M20.52 3.48A11.82 11.82 0 0 0 12.08 0C5.46 0 0.08 5.38 0.08 12c0 2.11.55 4.17 1.6 5.98L.02 24l6.17-1.62A11.9 11.9 0 0 0 12.08 24C18.7 24 24.08 18.62 24.08 12c0-3.21-1.25-6.23-3.56-8.52Z"
-          fill="white"
-        />
-
-        <path
-          d="M17.52 13.93c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.21 5.08 4.5.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z"
-          fill="#25D366"
-        />
-      </svg>
-    </motion.a>
-  );
-}
-
-/* =========================================================
-   MAIN HOME COMPONENT
+   HOME
    ========================================================= */
 
 function Home() {
+  /* =======================================================
+     HASH / SECTION SCROLLING
+     ======================================================= */
+
+  useEffect(() => {
+    const scrollToHash = () => {
+      const hash = window.location.hash;
+
+      if (!hash) {
+        window.scrollTo({
+          top: 0,
+          behavior: "auto",
+        });
+
+        return;
+      }
+
+      const element = document.querySelector(hash);
+
+      if (!element) {
+        return;
+      }
+
+      const navbarOffset = 72;
+
+      const elementTop =
+        element.getBoundingClientRect().top +
+        window.scrollY;
+
+      window.scrollTo({
+        top: Math.max(elementTop - navbarOffset, 0),
+        behavior: "smooth",
+      });
+    };
+
+    const timer = window.setTimeout(scrollToHash, 80);
+
+    window.addEventListener("hashchange", scrollToHash);
+
+    return () => {
+      window.clearTimeout(timer);
+
+      window.removeEventListener(
+        "hashchange",
+        scrollToHash
+      );
+    };
+  }, []);
+
   return (
-    <HomeAccessGate>
-      <div className="min-h-screen bg-white">
+    <div
+      id="home-page"
+      className="
+        min-h-screen
+        w-full
+        overflow-x-hidden
+        bg-white
+        text-[#0B1B3A]
+      "
+    >
+      {/* =====================================================
+          NAVIGATION
+          ===================================================== */}
+
+      <Navbar />
+
+      {/* =====================================================
+          MAIN CONTENT
+          ===================================================== */}
+
+      <main className="w-full">
 
         {/* ===================================================
-            PUBLIC NAVBAR
+            HERO
             =================================================== */}
 
-        <Navbar />
+        <Hero />
 
         {/* ===================================================
-            MAIN HOMEPAGE
+            TRUSTED COMPANIES / INSTITUTIONS
             =================================================== */}
 
-        <main>
-
-          {/* =================================================
-              01. HERO
-              ================================================= */}
-
-          <Hero />
-
-          {/* =================================================
-              02. FEATURED COURSES
-              ================================================= */}
-
-          <FeaturedCourses />
-
-          {/* =================================================
-              03. WHY DATALATTICE
-              ================================================= */}
-
-          <WhyDataWave />
-
-          {/* =================================================
-              04. LEARNING JOURNEY
-              ================================================= */}
-
-          <LearningJourney />
-
-          {/* =================================================
-              05. REAL PROJECTS
-              ================================================= */}
-
-          <RealProjects />
-
-          {/* =================================================
-              08. LEARNING OUTCOMES / SUCCESS STORIES
-              ================================================= */}
-
-          <SuccessStories />
-
-          {/* =================================================
-              06. MENTORS
-              ================================================= */}
-
-          <Mentors />
-
-          <LearningOutcomes />
-
-          <CareerSupport />
-
-          {/* =================================================
-              07. LEADERSHIP
-              ================================================= */}
-
-          <Leadership />
-
-          
-
-          {/* =================================================
-              09. STATS
-
-              Stats has been moved here so it appears
-              immediately before FAQ.
-              ================================================= */}
-
-          <Stats />
-
-          {/* =================================================
-              10. FAQ
-              ================================================= */}
-
-          <FAQ />
-
-          {/* =================================================
-              11. FINAL CTA
-              ================================================= */}
-
-          <CTA />
-
-          <Newsletter />
-
-          {/* =================================================
-              11. FINAL CTA
-              ================================================= */}
-
-          
-
-        </main>
+        <TrustSection />
 
         {/* ===================================================
-            FOOTER
+            FEATURED COURSES / PROGRAMS
             =================================================== */}
 
-        <Footer />
+        <FeaturedCourses />
 
         {/* ===================================================
-            HOME-PAGE-ONLY WHATSAPP BUTTON
-
-            Stays fixed while the user scrolls through the
-            entire homepage.
+            LEARNING JOURNEY
             =================================================== */}
 
-        <WhatsAppButton />
+        <LearningJourney />
 
-      </div>
-    </HomeAccessGate>
+        {/* ===================================================
+            WHY DATALATTICE
+            =================================================== */}
+
+        <WhyDataWave />
+
+        {/* ===================================================
+            REAL PROJECTS
+            Comes below Learning Journey / Why DataLattice
+            =================================================== */}
+
+        <RealProjects />
+
+        {/* ===================================================
+            SUCCESS STORIES
+            =================================================== */}
+
+        <SuccessStories />
+
+        {/* ===================================================
+            MENTORS
+            =================================================== */}
+
+        <Mentors />
+
+        {/* ===================================================
+            LEARNING OUTCOMES
+            =================================================== */}
+
+        <LearningOutcomes />
+
+        {/* ===================================================
+            CAREER SUPPORT
+            =================================================== */}
+
+        <CareerSupport />
+
+        {/* ===================================================
+            FINAL CTA
+            =================================================== */}
+
+        <CTA />
+
+        {/* ===================================================
+            FAQ
+            =================================================== */}
+
+        <FAQ />
+
+        {/* ===================================================
+            NEWSLETTER / STAY UPDATED
+            =================================================== */}
+
+        <Newsletter />
+
+      </main>
+
+      {/* =====================================================
+          FOOTER
+          Footer lives in /components, not /landing
+          ===================================================== */}
+
+      <Footer />
+    </div>
   );
 }
 
